@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5553224440681834,
-        "y": 5.624124468563885
+        "x": 3.417603795966786,
+        "y": 7.3434519572953745
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5562769097222224,
-        "y": 6.023524016203704
+        "x": 5.531987884004237,
+        "y": 7.4921358580508475
       },
       "isLocked": false,
-      "linkedName": "StartLeft"
+      "linkedName": "LeftTrench"
     },
     {
       "anchor": {
-        "x": 0.5556583629893244,
-        "y": 6.9561209964435635
+        "x": 7.7763100834216115,
+        "y": 6.717609297757768
       },
       "prevControl": {
-        "x": 1.7788875868055565,
-        "y": 6.843458839699074
+        "x": 7.57385995983404,
+        "y": 7.545506433174435
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Depot Point"
+      "linkedName": "LeftStartOfBalls"
     }
   ],
   "rotationTargets": [],
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -91.17714488598035
+    "rotation": -90.60476632344506
   },
   "reversed": false,
-  "folder": "Left to Depot",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

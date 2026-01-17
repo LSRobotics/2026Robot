@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot to Trench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left Trench to Start of Balls"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left Cycle Collect"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Balls to Left Hub"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Hub to Left Trench"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

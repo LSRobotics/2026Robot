@@ -5,7 +5,8 @@
   "pathFolders": [
     "Left to Depot",
     "Left to Sweep",
-    "Right to Sweep"
+    "Right to Sweep",
+    "Right to Outpost"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,

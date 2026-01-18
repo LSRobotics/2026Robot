@@ -1,6 +1,7 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2026.2.1"
+    id "com.peterabeles.gversion" version "1.10"
 }
 
 java {
@@ -43,6 +44,23 @@ deploy {
 
 def deployArtifact = deploy.targets.roborio.artifacts.frcJava
 
+task(replayWatch, type: JavaExec) {
+    mainClass = "org.littletonrobotics.junction.ReplayWatch"
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+
+project.compileJava.dependsOn(createVersionFile)
+gversion {
+  srcDir = "src/main/java/"
+  classPackage = "frc.robot"
+  className = "BuildConstants"
+  dateFormat = "yyyy-MM-dd HH:mm:ss z"
+  timeZone = "America/New_York" 
+  indent = "  "
+}
+
+
 // Set to true to use debug for all targets including JNI, which will drastically impact
 // performance.
 wpi.java.debugJni = false
@@ -66,6 +84,9 @@ dependencies {
     nativeDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.desktop)
     nativeDebug wpi.java.vendor.jniDebug(wpi.platforms.desktop)
     simulationDebug wpi.sim.enableDebug()
+
+    def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
+    annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
 
     nativeRelease wpi.java.deps.wpilibJniRelease(wpi.platforms.desktop)
     nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)

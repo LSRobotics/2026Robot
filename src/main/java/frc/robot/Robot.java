@@ -9,8 +9,11 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 /**
@@ -91,11 +94,11 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = new PathPlannerAuto(m_robotContainer.getAutonomousCommand())
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
 
-    // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
-      CommandScheduler.getInstance().schedule(m_autonomousCommand);
+      m_autonomousCommand.schedule();
     }
   }
 

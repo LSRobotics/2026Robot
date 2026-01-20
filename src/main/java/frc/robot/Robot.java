@@ -95,8 +95,8 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = new PathPlannerAuto(m_robotContainer.getAutonomousCommand())
-        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
+    // m_autonomousCommand = new PathPlannerAuto(m_robotContainer.getAutonomousCommand())
+    //     .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();

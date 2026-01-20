@@ -35,7 +35,7 @@ public class RobotContainer {
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
 
-    private final SendableChooser<Command> autoChooser;
+   // private final SendableChooser<Command> autoChooser;
 
 
   /**
@@ -44,8 +44,8 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
 
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Mode", autoChooser);
+    // autoChooser = AutoBuilder.buildAutoChooser();
+    // SmartDashboard.putData("Auto Mode", autoChooser);
 
     configureBindings();
   }
@@ -86,8 +86,8 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return autoChooser.getSelected();
-  }
+  // public Command getAutonomousCommand() {
+  //   // An example command will be run in autonomous
+  //   return autoChooser.getSelected();
+  // }
 }

@@ -62,6 +62,7 @@ public final class PhaseTimer {
 
         if (elapsedTime >= 10 && !transitionPhaseDone) {
             transitionPhaseDone = true;
+            amIActive = !amIActive;
             phaseTimer.reset(); // Reset after transition phase
         } else if (elapsedTime >= 25 && !firstPhaseDone) {
             firstPhaseDone = true;

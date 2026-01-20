@@ -4,17 +4,18 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import frc.robot.BuildConstants;
 
 /**
  * The methods in this class are called automatically corresponding to each
@@ -25,7 +26,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
-
   private final RobotContainer m_robotContainer;
 
   /**
@@ -67,6 +67,7 @@ public class Robot extends LoggedRobot {
    * and
    * SmartDashboard integrated updating.
    */
+  
   @Override
   public void robotPeriodic() {
     // Runs the Scheduler. This is responsible for polling buttons, adding
@@ -116,11 +117,22 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    PhaseTimer.initialize();
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    PhaseTimer.update();
+    SmartDashboard.putBoolean("Is Alliance Hub Active?", PhaseTimer.isHubActive());
+    SmartDashboard.putNumber("Elapsed Time in Phase", PhaseTimer.getTime());
+    System.out.println(PhaseTimer.isHubActive());
+    System.out.println(PhaseTimer.getTime());
+  }
+
+  @Override
+  public void teleopExit() {
+    PhaseTimer.stop();
   }
 
   @Override

@@ -113,7 +113,7 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
     m_driverController.a()
-        .whileTrue(new AimAtHubCommand(m_turretSubsystem, () -> m_drive.getState().Pose));
+        .whileTrue(new AimAtHubCommand(m_turretSubsystem, () -> m_drive.getState().Pose, () -> m_drive.getState().Speeds));
   }
 
   /**

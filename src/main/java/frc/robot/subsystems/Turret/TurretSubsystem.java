@@ -29,10 +29,15 @@ public class TurretSubsystem extends SubsystemBase{
     }
 
     public void pointAtAngle(Angle angle){
-        PIDController pid = new PIDController(0.05, 0, 0);
+        PIDController pid = new PIDController(0.1, 0, 0.01);
         double speed = pid.calculate(inputs.turretAngle.in(Degrees), angle.in(Degrees));
         setSpeed(speed);
         pid.close();
     }
+
+    public Angle getAngle(){
+        return inputs.turretAngle;
+    }
+
     
 }

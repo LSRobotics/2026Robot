@@ -14,9 +14,9 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class TurretIOSim implements TurretIO {
 
+
     private static final double mechWidth = 1.0;
     private static final double mechHeight = 1.0;
-
     private static final double turretLength = 0.5;
 
     private static final double visualOffsetDeg = 90.0;
@@ -27,8 +27,8 @@ public class TurretIOSim implements TurretIO {
     private final LoggedMechanismRoot2d root =
             mech.getRoot(
                     "TurretRoot",
-                    mechWidth / 2.0,
-                    mechHeight / 2.0
+                    (mechWidth / 2.0) + TurretConstants.turretOffset.getX(),
+                    (mechHeight / 2.0) + TurretConstants.turretOffset.getY()
             );
 
     private final LoggedMechanismLigament2d turret =
@@ -56,6 +56,7 @@ public class TurretIOSim implements TurretIO {
         double deltaDeg =
                 speed
                 * TurretConstants.maxSpeed.in(DegreesPerSecond)
+                * TurretConstants.turretGearRatio
                 * (1d / 50d); 
 
         turret.setAngle(turret.getAngle() + deltaDeg);

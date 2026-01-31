@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.Timer;
 public final class PhaseTimer {
     private static Optional<Alliance> alliance = DriverStation.getAlliance();
     private static String whoIsInactiveFirst = DriverStation.getGameSpecificMessage();
+    private static String currentPhase;
     private static Timer phaseTimer = new Timer();
     private static boolean amIActive;
     private static boolean transitionPhaseDone = false;
@@ -80,6 +81,20 @@ public final class PhaseTimer {
             fourthPhaseDone = true;
             amIActive = true;
             phaseTimer.reset(); // Reset after fourth phase
+        }
+
+        if (fourthPhaseDone) {
+            currentPhase = "Endgame";
+        } else if (thirdPhaseDone) {
+            currentPhase = "Phase 4";
+        } else if (secondPhaseDone) {
+            currentPhase = "Phase 3";
+        } else if (firstPhaseDone) {
+            currentPhase = "Phase 2";
+        } else if (transitionPhaseDone) {
+            currentPhase = "Phase 1";
+        } else {
+            currentPhase = "Transition Phase";
         }
     }
 

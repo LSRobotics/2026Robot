@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.AutoLog;
 import frc.robot.subsystems.intake.IntakeIO;
+import edu.wpi.first.units.measure.AngularVelocity;
 
 public class IntakeSubsystem extends SubsystemBase {
     private final IntakeIO io;
@@ -13,12 +14,8 @@ public class IntakeSubsystem extends SubsystemBase {
         this.io = io;
     }
 
-    public void runIntake() {
-        io.setRollerSpeed(IntakeConstants.INTAKE_SPEED);
-    }
-
-    public void runArm() {
-        io.setArmSpeed(IntakeConstants.INTAKE_ARM_SPEED);
+    public void runIntake(double speed) {
+        io.setRollerSpeed(speed);
     }
 
     @Override
@@ -27,7 +24,7 @@ public class IntakeSubsystem extends SubsystemBase {
         Logger.processInputs("Intake", inputs);
     }
 
-    public double getRollerSpeed() {
+    public AngularVelocity getRollerSpeed() {
         return inputs.intakeRollerSpeed;
     }
 }

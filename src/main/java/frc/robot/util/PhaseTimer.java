@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.util;
 
 import java.util.Optional;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -104,6 +104,10 @@ public final class PhaseTimer {
 
     public static double getTime() {
         return phaseTimer.get();
+    }
+
+    public static String getCurrentPhase() {
+        return currentPhase;
     }
 
     private static void resetPhases() {

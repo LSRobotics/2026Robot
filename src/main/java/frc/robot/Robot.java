@@ -16,6 +16,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import frc.robot.BuildConstants;
+import frc.robot.util.PhaseTimer;
 
 /**
  * The methods in this class are called automatically corresponding to each
@@ -126,8 +127,7 @@ public class Robot extends LoggedRobot {
     PhaseTimer.update();
     SmartDashboard.putBoolean("Is Alliance Hub Active?", PhaseTimer.isHubActive());
     SmartDashboard.putNumber("Elapsed Time in Phase", PhaseTimer.getTime());
-    System.out.println(PhaseTimer.isHubActive());
-    System.out.println(PhaseTimer.getTime());
+    SmartDashboard.putString("Current Phase", PhaseTimer.getCurrentPhase());
   }
 
   @Override

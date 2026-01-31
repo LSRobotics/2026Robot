@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.787368923611112,
+        "y": 1.3552034143518517
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.785736719664126,
+        "y": 2.5533886174031197
+      },
+      "isLocked": false,
+      "linkedName": "RightStartOfBalls"
+    },
+    {
+      "anchor": {
+        "x": 7.787368923611112,
+        "y": 3.6058096089336154
+      },
+      "prevControl": {
+        "x": 7.782490636613671,
+        "y": 2.836440416452325
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 89.97336067163428
+  },
+  "reversed": false,
+  "folder": "Right to Sweep",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 89.41971643350206
+  },
+  "useDefaultConstraints": false
+}

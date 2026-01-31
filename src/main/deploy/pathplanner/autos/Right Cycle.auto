@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Outpost to Trench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Trench to Start of Balls"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Cycle Collect"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Balls to Right Hub"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Hub to Right Trench"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

@@ -5,6 +5,8 @@
   "pathFolders": [
     "Left to Depot",
     "Left to Sweep",
+    "Left Cycle",
+    "Right Cycle",
     "Right to Outpost",
     "Right to Sweep"
   ],

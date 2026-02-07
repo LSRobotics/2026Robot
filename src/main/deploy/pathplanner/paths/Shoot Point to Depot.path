@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5553224440681834,
-        "y": 5.624124468563885
+        "x": 2.0727046263345197,
+        "y": 5.331482799525504
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5562769097222224,
-        "y": 6.023524016203704
+        "x": 2.0619454329774625,
+        "y": 5.9339976275207595
       },
       "isLocked": false,
-      "linkedName": "StartLeft"
+      "linkedName": "Shoot Point"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 6.9561209964435635
       },
       "prevControl": {
-        "x": 1.7788875868055565,
-        "y": 6.843458839699074
+        "x": 1.3518386714116257,
+        "y": 7.3757295373665475
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,10 +45,10 @@
     "rotation": -91.17714488598035
   },
   "reversed": false,
-  "folder": "Left to Depot",
+  "folder": "Center to Depot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -29.148071845712956
   },
   "useDefaultConstraints": true
 }

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.7711838671441003,
-        "y": 6.2352550415265515
+        "x": 0.5986951364175572,
+        "y": 5.170094899169632
       },
       "isLocked": false,
       "linkedName": "Depot Point"
@@ -20,8 +20,8 @@
         "y": 5.213131672597865
       },
       "prevControl": {
-        "x": 0.33853855278766337,
-        "y": 5.86944246737841
+        "x": 0.5556583629893244,
+        "y": 6.90232502965599
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": -90.35586983062188
   },
   "reversed": false,
-  "folder": "Left to Depot",
+  "folder": "Center to Depot",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -91.17714488598035

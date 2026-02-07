@@ -7,7 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Hub to Depot"
+            "pathName": "Hub to Shoot Point"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot Point to Depot"
           }
         },
         {
@@ -26,6 +38,18 @@
           "type": "path",
           "data": {
             "pathName": "Depot Collect Loop 2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot Sweep 2 to Shoot Point"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
           }
         }
       ]

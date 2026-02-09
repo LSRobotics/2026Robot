@@ -1,23 +1,12 @@
 package frc.robot.util;
-
 import java.util.Optional;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 
-/**
- * PhaseTimer is a utility class to manage timed phases in a robot match.
- * 
- * Usage:
- * - Call PhaseTimer.initialize() to set up the timer based on alliance and game data.
- * - Call PhaseTimer.start() to begin the timer.
- * - Periodically call PhaseTimer.update() from Robot.periodic() to handle phase transitions.
- * - Use PhaseTimer.isHubActive() to check if the hub is active.
- * - Use PhaseTimer.getTime() to get the elapsed time.
- */
 public final class PhaseTimer {
-    private static Optional<Alliance> alliance = DriverStation.getAlliance();
-    private static String whoIsInactiveFirst = DriverStation.getGameSpecificMessage();
+    private static Optional<Alliance> alliance;
+    private static String whoIsInactiveFirst;
     private static String currentPhase;
     private static Timer phaseTimer = new Timer();
     private static boolean amIActive;
@@ -27,8 +16,11 @@ public final class PhaseTimer {
     private static boolean thirdPhaseDone = false;
     private static boolean fourthPhaseDone = false;
     private static double elapsedTime = 0;
-
+    
     public static boolean initialize() {
+        alliance = DriverStation.getAlliance();
+        whoIsInactiveFirst = DriverStation.getGameSpecificMessage();
+        
         if (alliance.isPresent()) {
             if (alliance.get().equals(Alliance.Red) && whoIsInactiveFirst.equals("R")) {
                 amIActive = true;
@@ -39,7 +31,7 @@ public final class PhaseTimer {
                 start();
                 return true;
             } else {
-                amIActive = false;
+                amIActive = true;
                 start();
                 return true;
             }
@@ -47,69 +39,74 @@ public final class PhaseTimer {
         start();
         return false;
     }
-
+    
     public static void start() {
         phaseTimer.reset();
         phaseTimer.start();
         resetPhases();
+        amIActive = true;
     }
-
+    
     public static void stop() {
         phaseTimer.stop();
     }
-
+    
     public static void update() {
         elapsedTime = phaseTimer.get();
-
+        
         if (elapsedTime >= 10 && !transitionPhaseDone) {
             transitionPhaseDone = true;
-            amIActive = !amIActive;
-            phaseTimer.reset(); // Reset after transition phase
-        } else if (elapsedTime >= 25 && !firstPhaseDone) {
+            alliance = DriverStation.getAlliance();
+            whoIsInactiveFirst = DriverStation.getGameSpecificMessage();
+            if (alliance.isPresent()) {
+                if ((alliance.get().equals(Alliance.Red) && whoIsInactiveFirst.equals("R")) ||
+                    (alliance.get().equals(Alliance.Blue) && whoIsInactiveFirst.equals("B"))) {
+                    amIActive = false;
+                } else {
+                    amIActive = true;
+                }
+            }
+        } else if (elapsedTime >= 35 && !firstPhaseDone) {
             firstPhaseDone = true;
             amIActive = !amIActive;
-            phaseTimer.reset(); // Reset after first phase
-        } else if (elapsedTime >= 25 && !secondPhaseDone) {
+        } else if (elapsedTime >= 60 && !secondPhaseDone) {
             secondPhaseDone = true;
             amIActive = !amIActive;
-            phaseTimer.reset(); // Reset after second phase
-        } else if (elapsedTime >= 25 && !thirdPhaseDone) {
+        } else if (elapsedTime >= 85 && !thirdPhaseDone) {
             thirdPhaseDone = true;
             amIActive = !amIActive;
-            phaseTimer.reset(); // Reset after third phase
-        } else if (elapsedTime >= 25 && !fourthPhaseDone) {
+        } else if (elapsedTime >= 110 && !fourthPhaseDone) {
             fourthPhaseDone = true;
             amIActive = true;
-            phaseTimer.reset(); // Reset after fourth phase
         }
-
+        
         if (fourthPhaseDone) {
             currentPhase = "Endgame";
         } else if (thirdPhaseDone) {
-            currentPhase = "Phase 4";
+            currentPhase = "Shift 4";
         } else if (secondPhaseDone) {
-            currentPhase = "Phase 3";
+            currentPhase = "Shift 3";
         } else if (firstPhaseDone) {
-            currentPhase = "Phase 2";
+            currentPhase = "Shift 2";
         } else if (transitionPhaseDone) {
-            currentPhase = "Phase 1";
+            currentPhase = "Shift 1";
         } else {
             currentPhase = "Transition Phase";
         }
     }
-
+    
     public static boolean isHubActive() {
         return amIActive;
     }
-
+    
     public static double getTime() {
         return phaseTimer.get();
     }
-
+    
     public static String getCurrentPhase() {
         return currentPhase;
     }
-
+    
     private static void resetPhases() {
         transitionPhaseDone = false;
         firstPhaseDone = false;

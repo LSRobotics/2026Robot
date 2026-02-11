@@ -16,6 +16,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import frc.robot.BuildConstants;
+import frc.robot.util.GameTimers;
 import frc.robot.util.PhaseTimer;
 
 /**
@@ -27,6 +28,7 @@ import frc.robot.util.PhaseTimer;
  */
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
+  @SuppressWarnings("unused")
   private final RobotContainer m_robotContainer;
 
   /**
@@ -79,6 +81,7 @@ public class Robot extends LoggedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    GameTimers.update();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

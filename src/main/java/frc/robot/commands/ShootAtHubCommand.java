@@ -94,7 +94,7 @@ public class ShootAtHubCommand extends Command {
 
     public void spinUpFlywheel(double targetRPM) {
         double feedforwardVoltage = flywheelFeedforward.calculate(targetRPM);
-        double controlOutput = flywheelController.calculate(m_Shooter.getFlywheelVelocity().in(RPM), targetRPM)*ShooterConstants.FlywheelConstants.maxVoltage.in(Volt);
+        double controlOutput = flywheelController.calculate(m_Shooter.getFlywheelVelocity().times(ShooterConstants.FlywheelConstants.gearRatio).in(RPM), targetRPM)*ShooterConstants.FlywheelConstants.maxVoltage.in(Volt);
         double totalVoltage = feedforwardVoltage + controlOutput;
         totalVoltage = MathUtil.clamp(totalVoltage, -ShooterConstants.FlywheelConstants.maxVoltage.in(Volt), ShooterConstants.FlywheelConstants.maxVoltage.in(Volt));
         m_Shooter.setFlywheelVoltage(Volt.of(totalVoltage));

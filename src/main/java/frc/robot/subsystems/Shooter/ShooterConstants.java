@@ -20,6 +20,7 @@ public class ShooterConstants {
         public static final double kS = 0.1; // TODO
         public static final double kV = 0.1; // TODO
         public static final Voltage maxVoltage = Volts.of(5);
+        public static final double gearRatio = 1d/1d;
     }
 
     public class HoodConstants {

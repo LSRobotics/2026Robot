@@ -9,8 +9,6 @@ public class RunKickerCommand extends Command {
   private final KickerSubsystem kicker;
   
   
-
-
   /**
    * Creates a new ExampleCommand.
    *

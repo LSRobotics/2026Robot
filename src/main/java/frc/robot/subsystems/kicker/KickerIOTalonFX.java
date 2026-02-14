@@ -19,6 +19,7 @@ public class KickerIOTalonFX implements KickerIO{
     public void updateInputs(KickerIOInputs inputs) {
         inputs.kickerMotorCurrent = Amps.of(kickerMotor.getSupplyCurrent().getValueAsDouble());
         inputs.kickerSpeed = kickerMotor.getRotorVelocity().getValue();
+        inputs.speed = kickerMotor.get();
     }
 
     @Override

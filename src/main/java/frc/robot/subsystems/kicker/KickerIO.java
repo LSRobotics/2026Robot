@@ -13,6 +13,7 @@ public interface KickerIO {
     public static class KickerIOInputs {
         public Current kickerMotorCurrent = Amps.of(0);
         public AngularVelocity kickerSpeed = RPM.of(0);
+        public double speed = 0;
     }
 
     public default void updateInputs(KickerIOInputs inputs) {}

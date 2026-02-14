@@ -24,7 +24,7 @@ public class KickerSubsystem extends SubsystemBase {
         Logger.processInputs("Kicker", inputs);
     }
 
-    public AngularVelocity getKickerSpeed() {
-        return inputs.kickerSpeed;
+    public double getKickerSpeed() {
+        return inputs.speed;
     }
 }

@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-
 import frc.robot.subsystems.kicker.KickerSubsystem;
 import frc.robot.subsystems.spindexer.SpindexerConstants;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
@@ -42,8 +41,10 @@ public class RunIndexerCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    spindexer.runSpindexer(0.5);
     kicker.runKicker(0.5);
+    if (kicker.getKickerSpeed() >= 0.45) {
+        spindexer.runSpindexer(0.5);
+    }
   }
 
   // Called once the command ends or is interrupted.

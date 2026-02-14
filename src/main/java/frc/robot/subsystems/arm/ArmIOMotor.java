@@ -38,8 +38,8 @@ public class ArmIOMotor implements ArmIO {
         armMotor.stopMotor();
     }
     
-    public AngularVelocity getArmSpeed() {
-        return RPM.of(armMotor.getRotorVelocity().getValueAsDouble());
-    }
+    // public AngularVelocity getArmSpeed() {
+    //     return RPM.of(armMotor.getRotorVelocity().getValueAsDouble());
+    // }
     
 }

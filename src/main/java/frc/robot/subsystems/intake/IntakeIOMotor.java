@@ -34,7 +34,7 @@ public class IntakeIOMotor implements IntakeIO {
         intakeMotor.stopMotor();
     }
 
-    public AngularVelocity getRollerSpeed() {
-        return RPM.of(intakeMotor.getRotorVelocity().getValueAsDouble());
-    }
+    // public AngularVelocity getRollerSpeed() {
+    //     return RPM.of(intakeMotor.getRotorVelocity().getValueAsDouble());
+    // }
 }

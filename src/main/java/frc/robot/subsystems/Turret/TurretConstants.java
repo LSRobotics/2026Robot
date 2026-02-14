@@ -1,0 +1,30 @@
+package frc.robot.subsystems.Turret;
+
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Milliseconds;
+import static edu.wpi.first.units.Units.Second;
+
+import java.util.concurrent.TimeUnit;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Time;
+
+public class TurretConstants {
+    public static final Translation2d turretOffset = new Translation2d(0.0, 0.0); //From center
+    public static final double turretGearRatio =10d/144.01d;
+
+    public static final AngularVelocity maxSpeed = DegreesPerSecond.of(50);
+
+    public static final Pose2d hubBlue = new Pose2d(Meters.of(4.5), Meters.of(4), new Rotation2d());
+
+    public static final int turretMotorID = 62;
+
+    public static final double maxControlSpeed = 0.25;
+
+    public static final Time lookaheadLatency = Milliseconds.of(10);
+
+}

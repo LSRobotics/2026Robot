@@ -2,8 +2,6 @@ package frc.robot.subsystems.Shooter;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 

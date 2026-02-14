@@ -24,5 +24,7 @@ public interface ShooterFlywheelIO {
     public default void setSpeed(double speed) {}
 
     public default void stop() {}
+
+    public void updateInputs(ShooterFlywheelIOInputs inputs);
     
 } 

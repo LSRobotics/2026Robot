@@ -31,4 +31,9 @@ public class ShooterHoodIOLinearActuator implements ShooterHoodIO{
         setPosition(command);
     }
 
+    @Override
+    public void updateInputs(ShooterHoodIOInputs inputs) {
+        inputs.position = actuator.getPosition();
+    }
+
 }

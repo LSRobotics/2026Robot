@@ -5,7 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.AutoLog;
 import frc.robot.subsystems.kicker.KickerIO;
 import edu.wpi.first.units.measure.AngularVelocity;
-
+@Deprecated(forRemoval = true) //Use the one on the dedicated branch
 public class KickerSubsystem extends SubsystemBase {
     private final KickerIO io;
     private final KickerIOInputsAutoLogged inputs = new KickerIOInputsAutoLogged();

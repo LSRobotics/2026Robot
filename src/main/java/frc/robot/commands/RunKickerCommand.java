@@ -3,7 +3,7 @@ package frc.robot.commands;
 import frc.robot.subsystems.kicker.KickerSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.kicker.KickerConstants;
-
+@Deprecated(forRemoval = true) //Use the one on the dedicated branch
 public class RunKickerCommand extends Command {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final KickerSubsystem kicker;

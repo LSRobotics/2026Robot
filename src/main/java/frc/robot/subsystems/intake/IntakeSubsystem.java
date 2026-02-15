@@ -21,9 +21,9 @@ public class IntakeSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("Intake", inputs);
+        Logger.processInputs("Intake", inputs);   
     }
-
+    
     public AngularVelocity getRollerSpeed() {
         return inputs.intakeRollerSpeed;
     }

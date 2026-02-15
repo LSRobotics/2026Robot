@@ -77,15 +77,13 @@ public class ShootAtHubCommand extends Command {
         Pose2d robotPose = robotPoseSupplier.get();
         ChassisSpeeds chassisSpeeds = chassisSpeedSupplier.get();
 
-        Pose2d turretPose = robotPose.transformBy(
-                new Transform2d(TurretConstants.turretOffset, new Rotation2d()));
+        Pose2d turretPose = robotPose.transformBy(new Transform2d(TurretConstants.turretOffset, new Rotation2d()));
 
         Translation2d relVelocity = new Translation2d(
                 chassisSpeeds.vxMetersPerSecond,
                 chassisSpeeds.vyMetersPerSecond);
 
-        Translation2d relPosition = targetHubPose.getTranslation()
-                .minus(turretPose.getTranslation());
+        Translation2d relPosition = targetHubPose.getTranslation().minus(turretPose.getTranslation());
         double distanceToTarget = relPosition.getNorm();
 
         double targetRPM = ShootingConstants.flywheelSpeedMap.get(distanceToTarget);
@@ -93,11 +91,9 @@ public class ShootAtHubCommand extends Command {
         double oldRPM = targetRPM;
 
         for (int i = 0; i < ShootingConstants.maxIterations; i++) {
-            Translation2d predictedTurretTranslation = turretPose.getTranslation()
-                    .plus(relVelocity.times(TOF));
+            Translation2d predictedTurretTranslation = turretPose.getTranslation().plus(relVelocity.times(TOF));
 
-            Translation2d predictedRelPosition = targetHubPose.getTranslation()
-                    .minus(predictedTurretTranslation);
+            Translation2d predictedRelPosition = targetHubPose.getTranslation().minus(predictedTurretTranslation);
             double predictedDistance = predictedRelPosition.getNorm();
 
             targetRPM = ShootingConstants.flywheelSpeedMap.get(predictedDistance);
@@ -176,7 +172,7 @@ public class ShootAtHubCommand extends Command {
     }
 
     private class ShootingConstants {
-        public static final int maxIterations = 5;
+        public static final int maxIterations = 4;
         public static final double ToFtolerance = 0.05; // seconds
         public static final InterpolatingDoubleTreeMap flywheelSpeedMap = new InterpolatingDoubleTreeMap(); // Meters to  RPM
         public static final InterpolatingDoubleTreeMap flywheelTOFMap = new InterpolatingDoubleTreeMap(); // Meters toseconds in air

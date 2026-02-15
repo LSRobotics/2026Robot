@@ -41,9 +41,9 @@ public class RunIndexerCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    kicker.runKicker(0.5);
-    if (kicker.getKickerSpeed() >= 0.45) {
-        spindexer.runSpindexer(0.5);
+    kicker.runKicker(KickerConstants.KICKER_SPEED);
+    if (kicker.getKickerSpeed() >= SpindexerConstants.SPINDEXER_MIN_SPEED) {
+        spindexer.runSpindexer(SpindexerConstants.SPINDEXER_SPEED);
     }
   }
 

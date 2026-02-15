@@ -4,16 +4,25 @@ import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Volts;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.arm.ArmConstants;
 
-public class ArmIOMotor implements ArmIO {
+public class ArmIOTalonFX implements ArmIO {
     private final TalonFX armMotor = new TalonFX(ArmConstants.ARM_MOTOR_ID);
 
-    public ArmIOMotor() {}
+    public ArmIOTalonFX() {
+        armMotor.setNeutralMode(NeutralModeValue.Brake);
+        armMotor.getConfigurator().apply(new CurrentLimitsConfigs()
+            .withStatorCurrentLimit(ArmConstants.STATOR_CURRENT_LIMIT)
+            .withStatorCurrentLimitEnable(true)
+            .withSupplyCurrentLimit(ArmConstants.SUPPLY_CURRENT_LIMIT)
+            .withSupplyCurrentLimitEnable(true));
+    }
 
     @Override
     public void updateInputs(ArmIOInputs inputs) {

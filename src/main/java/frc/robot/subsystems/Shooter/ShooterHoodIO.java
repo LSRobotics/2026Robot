@@ -17,4 +17,6 @@ public interface ShooterHoodIO {
 
     public default void setAngle(Angle angle) {}
 
+    public void updateInputs(ShooterHoodIOInputs inputs);
+
 }

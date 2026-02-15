@@ -2,6 +2,8 @@ package frc.robot.subsystems.Shooter;
 
 import static edu.wpi.first.units.Units.RPM;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -10,12 +12,20 @@ public class ShooterSubsystem extends SubsystemBase{
     private final ShooterFlywheelIO flywheelIO;
     private final ShooterHoodIO hoodIO;
 
-    private final ShooterFlywheelIO.ShooterFlywheelIOInputs flywheelInputs = new ShooterFlywheelIO.ShooterFlywheelIOInputs();
-    //private final ShooterHoodIO.ShooterHoodIOInputs hoodInputs = new ShooterH
+    private final ShooterFlywheelIOInputsAutoLogged flywheelInputs = new ShooterFlywheelIOInputsAutoLogged();
+    private final ShooterHoodIOInputsAutoLogged hoodInputs = new ShooterHoodIOInputsAutoLogged();
 
     public ShooterSubsystem(ShooterFlywheelIO flywheelIO, ShooterHoodIO hoodIO) {
         this.flywheelIO = flywheelIO;
         this.hoodIO = hoodIO;
+    }
+
+    @Override
+    public void periodic() {
+        flywheelIO.updateInputs(flywheelInputs);
+        hoodIO.updateInputs(hoodInputs);
+        Logger.processInputs("Shooter/Flywheel", flywheelInputs);
+        Logger.processInputs("Shooter/Hood", hoodInputs);
     }
 
     public void setFlywheelVelocity(AngularVelocity velocity) {

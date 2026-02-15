@@ -87,12 +87,12 @@ public class ShootAtHubCommand extends Command {
         double distanceToTarget = relPosition.getNorm();
 
         double targetRPM = ShootingConstants.flywheelSpeedMap.get(distanceToTarget);
-        double timeOfFlight = ShootingConstants.flywheelTOFMap.get(distanceToTarget);
+        double TOF = ShootingConstants.flywheelTOFMap.get(distanceToTarget);
         double oldRPM = targetRPM;
 
         for (int i = 0; i < ShootingConstants.maxIterations; i++) {
             Translation2d predictedTurretTranslation = turretPose.getTranslation()
-                    .plus(relVelocity.times(timeOfFlight));
+                    .plus(relVelocity.times(TOF));
 
             Translation2d predictedRelPosition = targetHubPose.getTranslation()
                     .minus(predictedTurretTranslation);
@@ -101,26 +101,26 @@ public class ShootAtHubCommand extends Command {
             targetRPM = ShootingConstants.flywheelSpeedMap.get(predictedDistance);
 
             double difference = targetRPM - oldRPM;
-            if (Math.abs(difference) > ShootingConstants.maxRPMChange * timeOfFlight) {
-                targetRPM = oldRPM + Math.signum(difference) * ShootingConstants.maxRPMChange * timeOfFlight;
+            if (Math.abs(difference) > ShootingConstants.maxRPMChange * TOF) {
+                targetRPM = oldRPM + Math.signum(difference) * ShootingConstants.maxRPMChange * TOF;
             }
 
-            double newTimeOfFlight = ShootingConstants.flywheelTOFMap.get(predictedDistance);
+            double newTOF = ShootingConstants.flywheelTOFMap.get(predictedDistance);
 
-            if (Math.abs(newTimeOfFlight - timeOfFlight) < ShootingConstants.ToFtolerance) {
+            if (Math.abs(newTOF - TOF) < ShootingConstants.ToFtolerance) {
                 break;
             }
 
-            timeOfFlight = newTimeOfFlight;
+            TOF = newTOF;
             oldRPM = targetRPM;
         }
 
         Pose2d predictedRobotPose = robotPose.plus(
                 new Transform2d(
                         new Translation2d(
-                                chassisSpeeds.vxMetersPerSecond * timeOfFlight,
-                                chassisSpeeds.vyMetersPerSecond * timeOfFlight),
-                        new Rotation2d(chassisSpeeds.omegaRadiansPerSecond * timeOfFlight)));
+                                chassisSpeeds.vxMetersPerSecond * TOF,
+                                chassisSpeeds.vyMetersPerSecond * TOF),
+                        new Rotation2d(chassisSpeeds.omegaRadiansPerSecond * TOF)));
 
         aimTurret(predictedRobotPose, targetHubPose);
         spinUpFlywheel(targetRPM);

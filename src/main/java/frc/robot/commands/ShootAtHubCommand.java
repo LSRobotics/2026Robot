@@ -28,6 +28,8 @@ import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.VoltageUnit;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,6 +40,7 @@ import frc.robot.subsystems.Turret.TurretSubsystem;
 import frc.robot.util.MathUtils;
 import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.estimator.AngleStatistics;
 
 public class ShootAtHubCommand extends Command {
     @SuppressWarnings("PMD.UnusedPrivateField")
@@ -59,8 +62,7 @@ public class ShootAtHubCommand extends Command {
         this.m_Shooter = shooterSubsystem;
         this.robotPoseSupplier = robotPoseSupplier;
         this.chassisSpeedSupplier = chassisSpeedSupplier;
-        this.targetHubPose = DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ? TurretConstants.hubBlue
-                : TurretConstants.hubRed;
+        this.targetHubPose = DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ? TurretConstants.hubBlue: TurretConstants.hubRed;
         addRequirements(m_Turret, m_Shooter);
     }
 
@@ -156,6 +158,10 @@ public class ShootAtHubCommand extends Command {
 
         Logger.recordOutput("Turret/PID_Error", turretPID.getError());
         Logger.recordOutput("Turret/PID_Setpoint", turretPID.getSetpoint());
+    }
+
+    public void setHoodAngle(Angle a) {
+        m_Shooter.setHoodAngle(a);
     }
 
     @Override

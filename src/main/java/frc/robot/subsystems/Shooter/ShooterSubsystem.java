@@ -4,7 +4,9 @@ import static edu.wpi.first.units.Units.RPM;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -42,6 +44,14 @@ public class ShooterSubsystem extends SubsystemBase{
 
     public void setHoodPosition(double position) {
         hoodIO.setPosition(position);
+    }
+
+    public void setHoodLength(Distance length) {
+        hoodIO.setLength(length);
+    }
+
+    public void setHoodAngle(Angle angle) {
+        hoodIO.setAngle(angle);
     }
 
     public AngularVelocity getFlywheelVelocity() {

@@ -1,9 +1,11 @@
 package frc.robot.subsystems.Shooter;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meter;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Servo;
 
@@ -36,4 +38,11 @@ public class ShooterHoodIOLinearActuator implements ShooterHoodIO{
         inputs.position = actuator.getPosition();
     }
 
+    @Override
+    public void setAngle(Angle a) { //law of cosines
+        double length = Math.sqrt(Math.pow(ShooterConstants.HoodConstants.hoodPivotToActuatorMount.in(Meter), 2) + 
+            Math.pow(ShooterConstants.HoodConstants.actuatorMountToHoodEdge.in(Meter), 2) - 
+            2 * ShooterConstants.HoodConstants.hoodPivotToActuatorMount.in(Meter) * ShooterConstants.HoodConstants.actuatorMountToHoodEdge.in(Meter) * Math.cos(a.in(Degrees)));
+        setLength(Meter.of(length));
+    }
 }

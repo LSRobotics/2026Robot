@@ -1,6 +1,7 @@
 package frc.robot.subsystems.Shooter;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Millimeters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
@@ -33,5 +34,7 @@ public class ShooterConstants {
     public static class HoodConstants {
         public static final int hoodLinearActuatorPWMID = 0;
         public static final Distance actuatorLength = Millimeters.of(100);
+        public static final Distance hoodPivotToActuatorMount = Inches.of(10);
+        public static final Distance actuatorMountToHoodEdge = Inches.of(6.5);
     }
 }

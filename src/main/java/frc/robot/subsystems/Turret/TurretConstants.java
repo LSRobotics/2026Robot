@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Turret;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Milliseconds;
@@ -10,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Time;
 
@@ -27,5 +29,7 @@ public class TurretConstants {
     public static final double maxControlSpeed = 0.5;
 
     public static final Time lookaheadLatency = Milliseconds.of(10);
+
+    public static final Angle turretRangeOneWay = Degrees.of(90);
 
 }

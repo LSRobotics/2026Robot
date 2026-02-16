@@ -10,12 +10,14 @@ public final class PhaseTimer {
     private static String currentPhase;
     private static Timer phaseTimer = new Timer();
     private static boolean amIActive;
+    private static boolean amIInactiveFirst;
     private static boolean transitionPhaseDone = false;
     private static boolean firstPhaseDone = false;
     private static boolean secondPhaseDone = false;
     private static boolean thirdPhaseDone = false;
     private static boolean fourthPhaseDone = false;
     private static double elapsedTime = 0;
+    private static double timeLimit = 10;
     
     public static boolean initialize() {
         alliance = DriverStation.getAlliance();
@@ -23,15 +25,15 @@ public final class PhaseTimer {
         
         if (alliance.isPresent()) {
             if (alliance.get().equals(Alliance.Red) && whoIsInactiveFirst.equals("R")) {
-                amIActive = true;
+                amIInactiveFirst = true;
                 start();
                 return true;
             } else if (alliance.get().equals(Alliance.Blue) && whoIsInactiveFirst.equals("B")) {
-                amIActive = true;
+                amIInactiveFirst = true;
                 start();
                 return true;
             } else {
-                amIActive = true;
+                amIInactiveFirst = false;
                 start();
                 return true;
             }
@@ -44,7 +46,6 @@ public final class PhaseTimer {
         phaseTimer.reset();
         phaseTimer.start();
         resetPhases();
-        amIActive = true;
     }
     
     public static void stop() {
@@ -53,31 +54,43 @@ public final class PhaseTimer {
     
     public static void update() {
         elapsedTime = phaseTimer.get();
+
+        if (!transitionPhaseDone) {
+            amIActive = false;
+        }
         
-        if (elapsedTime >= 10 && !transitionPhaseDone) {
+        if (elapsedTime >= timeLimit && !transitionPhaseDone) {
             transitionPhaseDone = true;
-            alliance = DriverStation.getAlliance();
-            whoIsInactiveFirst = DriverStation.getGameSpecificMessage();
-            if (alliance.isPresent()) {
-                if ((alliance.get().equals(Alliance.Red) && whoIsInactiveFirst.equals("R")) ||
-                    (alliance.get().equals(Alliance.Blue) && whoIsInactiveFirst.equals("B"))) {
-                    amIActive = false;
-                } else {
-                    amIActive = true;
-                }
-            }
-        } else if (elapsedTime >= 35 && !firstPhaseDone) {
+            amIActive = !amIInactiveFirst;
+            timeLimit = 25;
+            phaseTimer.reset();
+            // alliance = DriverStation.getAlliance();
+            // whoIsInactiveFirst = DriverStation.getGameSpecificMessage();
+            // if (alliance.isPresent()) {
+            //     if ((alliance.get().equals(Alliance.Red) && whoIsInactiveFirst.equals("R")) ||
+            //         (alliance.get().equals(Alliance.Blue) && whoIsInactiveFirst.equals("B"))) {
+            //         amIActive = false;
+            //     } else {
+            //         amIActive = true;
+            //     }
+            // }
+        } else if (elapsedTime >= timeLimit && !firstPhaseDone) {
             firstPhaseDone = true;
             amIActive = !amIActive;
-        } else if (elapsedTime >= 60 && !secondPhaseDone) {
+            phaseTimer.reset();
+        } else if (elapsedTime >= timeLimit && !secondPhaseDone) {
             secondPhaseDone = true;
             amIActive = !amIActive;
-        } else if (elapsedTime >= 85 && !thirdPhaseDone) {
+            phaseTimer.reset();
+        } else if (elapsedTime >= timeLimit && !thirdPhaseDone) {
             thirdPhaseDone = true;
             amIActive = !amIActive;
-        } else if (elapsedTime >= 110 && !fourthPhaseDone) {
+            phaseTimer.reset();
+        } else if (elapsedTime >= timeLimit && !fourthPhaseDone) {
             fourthPhaseDone = true;
             amIActive = true;
+            timeLimit = 30;
+            phaseTimer.reset();
         }
         
         if (fourthPhaseDone) {
@@ -100,7 +113,7 @@ public final class PhaseTimer {
     }
     
     public static double getTime() {
-        return phaseTimer.get();
+        return timeLimit - phaseTimer.get();
     }
     
     public static String getCurrentPhase() {
@@ -108,6 +121,7 @@ public final class PhaseTimer {
     }
     
     private static void resetPhases() {
+        timeLimit = 10;
         transitionPhaseDone = false;
         firstPhaseDone = false;
         secondPhaseDone = false;

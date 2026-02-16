@@ -2,6 +2,7 @@ package frc.robot.subsystems.arm;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.arm.ArmIO;
@@ -26,5 +27,9 @@ public class ArmSubsystem extends SubsystemBase {
 
     public AngularVelocity getArmSpeed() {
         return inputs.armSpeed;
+    }
+
+    public Angle getArmEncoder() {
+        return inputs.armAngle;
     }
 }

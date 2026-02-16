@@ -5,16 +5,10 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ArmOutCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.RunIntakeCommand;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.arm.ArmConstants;
-import frc.robot.subsystems.arm.ArmIOTalonFX;
-import frc.robot.subsystems.arm.ArmSubsystem;
-import frc.robot.subsystems.intake.IntakeIOTalonFX;
-import frc.robot.subsystems.intake.IntakeSubsystem;
+
 
 import static edu.wpi.first.units.Units.Degrees;
 
@@ -43,12 +37,6 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
-
-  private final IntakeIOTalonFX intakeIO = new IntakeIOTalonFX();
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(intakeIO);
-
-  private final ArmIOTalonFX armIO = new ArmIOTalonFX();
-  private final ArmSubsystem armSubsystem = new ArmSubsystem(armIO);
 
    // private final SendableChooser<Command> autoChooser;
 
@@ -94,9 +82,7 @@ public class RobotContainer {
     // pressed,
     // cancelling on release.
   
-    m_driverController.b().whileTrue(new RunIntakeCommand(intakeSubsystem));
-    m_driverController.povUp().onTrue(new ArmOutCommand(armSubsystem, ArmConstants.ARM_REST_ANGLE.in(Degrees)));
-    m_driverController.povDown().onTrue(new ArmOutCommand(armSubsystem, ArmConstants.ARM_DEPLOY_ANGLE.in(Degrees)));
+
   }
 
   /**

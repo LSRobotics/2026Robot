@@ -10,14 +10,15 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volt;
-import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -29,18 +30,13 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter.ShooterConstants;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.subsystems.Turret.TurretConstants;
 import frc.robot.subsystems.Turret.TurretSubsystem;
 import frc.robot.util.MathUtils;
-import edu.wpi.first.math.controller.BangBangController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.estimator.AngleStatistics;
 
 public class ShootAtHubCommand extends Command {
     @SuppressWarnings("PMD.UnusedPrivateField")
@@ -64,12 +60,14 @@ public class ShootAtHubCommand extends Command {
         this.chassisSpeedSupplier = chassisSpeedSupplier;
         this.targetHubPose = DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ? TurretConstants.hubBlue: TurretConstants.hubRed;
         addRequirements(m_Turret, m_Shooter);
+
+        flywheelController.setTolerance(ShooterConstants.FlywheelConstants.flywheelTolerance.in(RotationsPerSecond));
+        AimingConstants.initialize();
+        turretPID.setTolerance(TurretConstants.turretTolerance.in(Degrees));
     }
 
     @Override
     public void initialize() {
-        ShootingConstants.initialize();
-        turretPID.setTolerance(0.2);
     }
 
     @Override
@@ -86,26 +84,26 @@ public class ShootAtHubCommand extends Command {
         Translation2d relPosition = targetHubPose.getTranslation().minus(turretPose.getTranslation());
         double distanceToTarget = relPosition.getNorm();
 
-        double targetRPM = ShootingConstants.flywheelSpeedMap.get(distanceToTarget);
-        double TOF = ShootingConstants.flywheelTOFMap.get(distanceToTarget);
+        double targetRPM = AimingConstants.flywheelSpeedMap.get(distanceToTarget);
+        double TOF = AimingConstants.flywheelTOFMap.get(distanceToTarget);
         double oldRPM = targetRPM;
 
-        for (int i = 0; i < ShootingConstants.maxIterations; i++) {
+        for (int i = 0; i < AimingConstants.maxIterations; i++) {
             Translation2d predictedTurretTranslation = turretPose.getTranslation().plus(relVelocity.times(TOF));
 
             Translation2d predictedRelPosition = targetHubPose.getTranslation().minus(predictedTurretTranslation);
             double predictedDistance = predictedRelPosition.getNorm();
 
-            targetRPM = ShootingConstants.flywheelSpeedMap.get(predictedDistance);
+            targetRPM = AimingConstants.flywheelSpeedMap.get(predictedDistance);
 
             double difference = targetRPM - oldRPM;
-            if (Math.abs(difference) > ShootingConstants.maxRPMChange * TOF) {
-                targetRPM = oldRPM + Math.signum(difference) * ShootingConstants.maxRPMChange * TOF;
+            if (Math.abs(difference) > AimingConstants.maxRPMChange * TOF) {
+                targetRPM = oldRPM + Math.signum(difference) * AimingConstants.maxRPMChange * TOF;
             }
 
-            double newTOF = ShootingConstants.flywheelTOFMap.get(predictedDistance);
+            double newTOF = AimingConstants.flywheelTOFMap.get(predictedDistance);
 
-            if (Math.abs(newTOF - TOF) < ShootingConstants.ToFtolerance) {
+            if (Math.abs(newTOF - TOF) < AimingConstants.ToFtolerance) {
                 break;
             }
 
@@ -171,7 +169,7 @@ public class ShootAtHubCommand extends Command {
         return false;
     }
 
-    private class ShootingConstants {
+    private class AimingConstants {
         public static final int maxIterations = 4;
         public static final double ToFtolerance = 0.05; // seconds
         public static final InterpolatingDoubleTreeMap flywheelSpeedMap = new InterpolatingDoubleTreeMap(); // Meters to  RPM
@@ -186,8 +184,8 @@ public class ShootAtHubCommand extends Command {
             flywheelTOFMap.put(Meters.of(0).in(Meters), Seconds.of(0).in(Seconds));
         }
 
-        public ShootingConstants() throws Exception {
-            throw new Exception("dont instantiate this class");
+        public AimingConstants() throws Exception {
+            throw new Exception("dont instantiate this");
         }
     }
 }

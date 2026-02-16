@@ -29,6 +29,7 @@ public class ShooterConstants {
         public static final Voltage maxVoltage = Volts.of(8);
         public static final Voltage bangBangVolts = Volts.of(5); // TODO
         public static final double gearRatio = 1d/1d;
+        public static final AngularVelocity flywheelTolerance = RPM.of(50); // TODO
     }
 
     public static class HoodConstants {

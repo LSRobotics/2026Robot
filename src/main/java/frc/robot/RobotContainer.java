@@ -7,7 +7,6 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.RunIntakeCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.intake.IntakeIOMotor;
 import frc.robot.subsystems.intake.IntakeSubsystem;
@@ -84,7 +83,6 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(new RunIntakeCommand(intakeSubsystem));
   }
 
   /**

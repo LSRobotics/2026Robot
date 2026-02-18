@@ -24,6 +24,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.Measure;
@@ -87,12 +88,13 @@ public class ShootAtHubCommand extends Command {
         double targetRPM = AimingConstants.flywheelSpeedMap.get(distanceToTarget);
         double TOF = AimingConstants.flywheelTOFMap.get(distanceToTarget);
         double oldRPM = targetRPM;
+        double predictedDistance = distanceToTarget;
 
         for (int i = 0; i < AimingConstants.maxIterations; i++) {
             Translation2d predictedTurretTranslation = turretPose.getTranslation().plus(relVelocity.times(TOF));
 
             Translation2d predictedRelPosition = targetHubPose.getTranslation().minus(predictedTurretTranslation);
-            double predictedDistance = predictedRelPosition.getNorm();
+            predictedDistance = predictedRelPosition.getNorm();
 
             targetRPM = AimingConstants.flywheelSpeedMap.get(predictedDistance);
 
@@ -118,6 +120,9 @@ public class ShootAtHubCommand extends Command {
                                 chassisSpeeds.vyMetersPerSecond * TOF),
                         new Rotation2d(chassisSpeeds.omegaRadiansPerSecond * TOF)));
 
+                        double hoodAngleDeg = AimingConstants.hoodAngleMap.get(predictedDistance);
+
+        setHoodAngle(Degrees.of(hoodAngleDeg));
         aimTurret(predictedRobotPose, targetHubPose);
         spinUpFlywheel(targetRPM);
     }
@@ -169,12 +174,31 @@ public class ShootAtHubCommand extends Command {
         return false;
     }
 
+        /*
+    1.Start with mid hood angle
+
+    2.Adjust hood until trajectory is good
+
+    3.Adjust RPM until consistent
+
+    4.Prefer higher arcs and lower rpm 
+
+    5. test 3 balls
+
+    6. Measure average TOF 
+
+    7.Populate all 3 tables together
+    */
+
     private class AimingConstants {
         public static final int maxIterations = 4;
         public static final double ToFtolerance = 0.05; // seconds
-        public static final InterpolatingDoubleTreeMap flywheelSpeedMap = new InterpolatingDoubleTreeMap(); // Meters to  RPM
-        public static final InterpolatingDoubleTreeMap flywheelTOFMap = new InterpolatingDoubleTreeMap(); // Meters toseconds in air
+        public static final InterpolatingDoubleTreeMap flywheelSpeedMap = new InterpolatingDoubleTreeMap(); // Meters to  RPM at best hood angle
+        public static final InterpolatingDoubleTreeMap flywheelTOFMap = new InterpolatingDoubleTreeMap(); // Meters toseconds in air at best hood angle
+        public static final InterpolatingDoubleTreeMap hoodAngleMap = new InterpolatingDoubleTreeMap(); // Meters to hood angle in degrees
         public static final double maxRPMChange = 300; // RPM per second TODO: tune this
+
+        public static final double hoodTestRPM = 3000; //TODO: RPM for hood table
 
         public static void initialize() { //TODO: fill out once bot is done
             // Meters to RPM
@@ -182,10 +206,17 @@ public class ShootAtHubCommand extends Command {
 
             // Meters to tof
             flywheelTOFMap.put(Meters.of(0).in(Meters), Seconds.of(0).in(Seconds));
+
+            // Meters to hood angle at hoodTestRPM
+            hoodAngleMap.put(Meters.of(0).in(Meters), Degrees.of(0).in(Degrees));
         }
 
         public AimingConstants() throws Exception {
             throw new Exception("dont instantiate this");
+
         }
     }
+
 }
+
+ 

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.Shooter;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Millimeters;
 import static edu.wpi.first.units.Units.RPM;
@@ -11,6 +12,7 @@ import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.VoltageUnit;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Distance;
@@ -37,5 +39,9 @@ public class ShooterConstants {
         public static final Distance actuatorLength = Millimeters.of(100);
         public static final Distance hoodPivotToActuatorMount = Inches.of(10);
         public static final Distance actuatorMountToHoodEdge = Inches.of(6.5);
+        public static final Angle minAngle = Degrees.of(0);//TODO
+        public static final Angle maxAngle = Degrees.of(45); // TODO
+        public static final Angle angleOffset = Degrees.of(0); // mechanical zero offset
+
     }
 }

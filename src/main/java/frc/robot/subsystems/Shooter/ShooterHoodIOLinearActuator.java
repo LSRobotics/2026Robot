@@ -2,12 +2,14 @@ package frc.robot.subsystems.Shooter;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meter;
+import static edu.wpi.first.units.Units.Radian;
 
 import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Servo;
+import frc.robot.util.MathUtils;
 
 public class ShooterHoodIOLinearActuator implements ShooterHoodIO{
     private Servo actuator;
@@ -20,6 +22,7 @@ public class ShooterHoodIOLinearActuator implements ShooterHoodIO{
 
     @Override
     public void setPosition(double position) {
+        position = MathUtils.clamp(-1d, 1d, position);
         actuator.setSpeed(position);
     }
 
@@ -40,9 +43,10 @@ public class ShooterHoodIOLinearActuator implements ShooterHoodIO{
 
     @Override
     public void setAngle(Angle a) { //law of cosines
-        double length = Math.sqrt(Math.pow(ShooterConstants.HoodConstants.hoodPivotToActuatorMount.in(Meter), 2) + 
+        double theta = a.in(Radian) + ShooterConstants.HoodConstants.angleOffset.in(Radian);
+        double value = Math.pow(ShooterConstants.HoodConstants.hoodPivotToActuatorMount.in(Meter), 2) + 
             Math.pow(ShooterConstants.HoodConstants.actuatorMountToHoodEdge.in(Meter), 2) - 
-            2 * ShooterConstants.HoodConstants.hoodPivotToActuatorMount.in(Meter) * ShooterConstants.HoodConstants.actuatorMountToHoodEdge.in(Meter) * Math.cos(a.in(Degrees)));
-        setLength(Meter.of(length));
-    }
+            2 * ShooterConstants.HoodConstants.hoodPivotToActuatorMount.in(Meter) * ShooterConstants.HoodConstants.actuatorMountToHoodEdge.in(Meter) * Math.cos(theta);
+        setLength(Meter.of(Math.sqrt(Math.max(0, value))));
+}
 }

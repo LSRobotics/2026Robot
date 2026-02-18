@@ -16,10 +16,12 @@ import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.util.SendableSupplier;
 
 import static edu.wpi.first.units.Units.Degrees;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -89,7 +91,11 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    DoubleSupplier sliderInput = () -> m_operatorController.getRawAxis(OperatorConstants.slider);
+    Supplier<Double> sliderInput = () -> m_operatorController.getRawAxis(OperatorConstants.slider);
+    Supplier <Double> sliderInputScaled = () -> sliderInput.get()*2 - 1; 
+
+    SmartDashboard.putData("Slider",new SendableSupplier<Double>("Slider", sliderInput));
+    SmartDashboard.putData("Slider Scaled",new SendableSupplier<Double>("Slider Scaled", sliderInputScaled));
 
 
 

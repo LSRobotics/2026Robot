@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmOutCommand;
 import frc.robot.commands.Autos;
@@ -20,6 +21,7 @@ import frc.robot.util.SendableSupplier;
 
 import static edu.wpi.first.units.Units.Degrees;
 
+import java.time.Instant;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -27,6 +29,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.units.measure.Angle;
@@ -92,10 +95,15 @@ public class RobotContainer {
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
     Supplier<Double> sliderInput = () -> m_operatorController.getRawAxis(OperatorConstants.slider);
-    Supplier <Double> sliderInputScaled = () -> sliderInput.get()*2 - 1; 
+    Supplier<Double> operatorYaw = () -> m_operatorController.getRawAxis(OperatorConstants.yaw);
+    Supplier<Double> operatorPitch = () -> m_operatorController.getRawAxis(OperatorConstants.pitch);
+    Supplier<Double> operatorRoll = () -> m_operatorController.getRawAxis(OperatorConstants.roll);
+    m_driverController.a().onTrue(new InstantCommand(() -> m_driverController.setRumble(RumbleType.kBothRumble, 1)).andThen(new InstantCommand(()-> m_driverController.setRumble(RumbleType.kBothRumble, 0))));
 
     SmartDashboard.putData("Slider",new SendableSupplier<Double>("Slider", sliderInput));
-    SmartDashboard.putData("Slider Scaled",new SendableSupplier<Double>("Slider Scaled", sliderInputScaled));
+    SmartDashboard.putData("Yaw",new SendableSupplier<Double>("Yaw", operatorYaw));
+    SmartDashboard.putData("Pitch",new SendableSupplier<Double>("Pitch", operatorPitch));
+    SmartDashboard.putData("Roll",new SendableSupplier<Double>("Roll", operatorRoll));
 
 
 

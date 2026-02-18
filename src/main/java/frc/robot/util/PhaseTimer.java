@@ -24,11 +24,8 @@ public final class PhaseTimer {
         whoIsInactiveFirst = DriverStation.getGameSpecificMessage();
         
         if (alliance.isPresent()) {
-            if (alliance.get().equals(Alliance.Red) && whoIsInactiveFirst.equals("R")) {
-                amIInactiveFirst = true;
-                start();
-                return true;
-            } else if (alliance.get().equals(Alliance.Blue) && whoIsInactiveFirst.equals("B")) {
+            if ((alliance.get().equals(Alliance.Red) && whoIsInactiveFirst.equals("R")) || 
+            (alliance.get().equals(Alliance.Blue) && whoIsInactiveFirst.equals("B"))) {
                 amIInactiveFirst = true;
                 start();
                 return true;

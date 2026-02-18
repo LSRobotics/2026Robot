@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.GenericHID;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmOutCommand;
 import frc.robot.commands.Autos;
@@ -17,6 +18,8 @@ import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 import static edu.wpi.first.units.Units.Degrees;
+
+import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -43,6 +46,8 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
+  private final GenericHID m_operatorController = new GenericHID(
+      OperatorConstants.kOperatorControllerPort);
 
   private final IntakeIOTalonFX intakeIO = new IntakeIOTalonFX();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(intakeIO);
@@ -83,6 +88,8 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
+
+    DoubleSupplier sliderInput = () -> m_operatorController.getRawAxis(OperatorConstants.slider);
 
 
 

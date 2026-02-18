@@ -82,8 +82,13 @@ public class ShootAtHubCommand extends Command {
                 chassisSpeeds.vxMetersPerSecond,
                 chassisSpeeds.vyMetersPerSecond);
 
+
         Translation2d relPosition = targetHubPose.getTranslation().minus(turretPose.getTranslation());
         double distanceToTarget = relPosition.getNorm();
+
+        Logger.recordOutput("Aiming/DistanceToTarget", distanceToTarget);
+        Logger.recordOutput("Aiming/TargetHubPose", targetHubPose);
+        Logger.recordOutput("Aiming/TurretPose", turretPose);
 
         double targetRPM = AimingConstants.flywheelSpeedMap.get(distanceToTarget);
         double TOF = AimingConstants.flywheelTOFMap.get(distanceToTarget);
@@ -104,6 +109,11 @@ public class ShootAtHubCommand extends Command {
             }
 
             double newTOF = AimingConstants.flywheelTOFMap.get(predictedDistance);
+
+            Logger.recordOutput("Aiming/Iteration", i);
+            Logger.recordOutput("Aiming/PredictedDistance", predictedDistance);
+            Logger.recordOutput("Aiming/TargetRPM", targetRPM);
+            Logger.recordOutput("Aiming/TOF", TOF);
 
             if (Math.abs(newTOF - TOF) < AimingConstants.ToFtolerance) {
                 break;
@@ -137,6 +147,10 @@ public class ShootAtHubCommand extends Command {
         totalVoltage = MathUtil.clamp(totalVoltage, -ShooterConstants.FlywheelConstants.maxVoltage.in(Volt),
                 ShooterConstants.FlywheelConstants.maxVoltage.in(Volt));
 
+        Logger.recordOutput("Aiming/Flywheel/TargetRPM", targetRPM);
+        Logger.recordOutput("Aiming/Flywheel/FeedforwardVoltage", feedforwardVoltage);
+        Logger.recordOutput("Aiming/Flywheel/TotalVoltage", totalVoltage);
+
         m_Shooter.setFlywheelVoltage(Volt.of(totalVoltage));
     }
 
@@ -155,12 +169,13 @@ public class ShootAtHubCommand extends Command {
         speed = MathUtils.clamp(-TurretConstants.maxControlSpeed, TurretConstants.maxControlSpeed, speed);
         m_Turret.setSpeed(speed);
 
-        Logger.recordOutput("Turret/PID_Error", turretPID.getError());
-        Logger.recordOutput("Turret/PID_Setpoint", turretPID.getSetpoint());
+        Logger.recordOutput("Aiming/Turret/PID_Error", turretPID.getError());
+        Logger.recordOutput("Aiming/Turret/PID_Setpoint", turretPID.getSetpoint());
     }
 
     public void setHoodAngle(Angle a) {
         m_Shooter.setHoodAngle(a);
+        Logger.recordOutput("Aiming/Hood/Angle", a);
     }
 
     @Override

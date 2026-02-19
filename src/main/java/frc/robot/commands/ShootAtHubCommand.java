@@ -1,6 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.commands;
 
@@ -24,7 +21,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.AngularVelocityUnit;
 import edu.wpi.first.units.Measure;
@@ -32,6 +28,7 @@ import edu.wpi.first.units.PerUnit;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter.ShooterConstants;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
@@ -46,7 +43,8 @@ public class ShootAtHubCommand extends Command {
     private final Supplier<Pose2d> robotPoseSupplier;
     private final Supplier<ChassisSpeeds> chassisSpeedSupplier;
 
-    private PIDController turretPID = new PIDController(0.008, 0, 0.0001);
+    //private PIDController turretPID = new PIDController(0.008, 0, 0.0001);
+    private PIDController turretPID = new PIDController(TurretConstants.kP, 0, TurretConstants.kD);
     private BangBangController flywheelController = new BangBangController();
     private SimpleMotorFeedforward flywheelFeedforward = new SimpleMotorFeedforward(
         ((Measure<PerUnit<VoltageUnit, AngularVelocityUnit>>) ShooterConstants.FlywheelConstants.kS).in(ShooterConstants.FlywheelConstants.VoltsPerRotationsPerSecond),
@@ -59,12 +57,13 @@ public class ShootAtHubCommand extends Command {
         this.m_Shooter = shooterSubsystem;
         this.robotPoseSupplier = robotPoseSupplier;
         this.chassisSpeedSupplier = chassisSpeedSupplier;
-        this.targetHubPose = DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ? TurretConstants.hubBlue: TurretConstants.hubRed;
+        this.targetHubPose = DriverStation.getAlliance().orElse(Alliance.Blue) == DriverStation.Alliance.Blue ? TurretConstants.hubBlue: TurretConstants.hubRed;
         addRequirements(m_Turret, m_Shooter);
 
         flywheelController.setTolerance(ShooterConstants.FlywheelConstants.flywheelTolerance.in(RotationsPerSecond));
         AimingConstants.initialize();
         turretPID.setTolerance(TurretConstants.turretTolerance.in(Degrees));
+        Logger.recordOutput("Aiming/TargetHubPose", targetHubPose);
     }
 
     @Override
@@ -102,6 +101,8 @@ public class ShootAtHubCommand extends Command {
             predictedDistance = predictedRelPosition.getNorm();
 
             targetRPM = AimingConstants.flywheelSpeedMap.get(predictedDistance);
+
+            Logger.recordOutput("Aiming/RawSpeedRPM", targetRPM);
 
             double difference = targetRPM - oldRPM;
             if (Math.abs(difference) > AimingConstants.maxRPMChange * TOF) {
@@ -201,7 +202,12 @@ public class ShootAtHubCommand extends Command {
     5. Measure average TOF (From leaving flywheel to passing top plane of hub funnel)
 
     6.Populate all 3 tables together
+
+    7. Repeat ~8 times
     */
+   //First: 2m, 3m, 4m, 5m
+   //Second: 0.5m, 1m, 1.5m, 2.5m, 3.5m, 4.5m, 5.5m, 6m
+   //Third: 2.25m, 2.75m, 3.25m, 3.75m, 4.25m
 
     private class AimingConstants {
         public static final int maxIterations = 4;
@@ -209,9 +215,9 @@ public class ShootAtHubCommand extends Command {
         public static final InterpolatingDoubleTreeMap flywheelSpeedMap = new InterpolatingDoubleTreeMap(); // Meters to  RPM at best hood angle
         public static final InterpolatingDoubleTreeMap flywheelTOFMap = new InterpolatingDoubleTreeMap(); // Meters toseconds in air at best hood angle
         public static final InterpolatingDoubleTreeMap hoodAngleMap = new InterpolatingDoubleTreeMap(); // Meters to hood angle in degrees
-        public static final double maxRPMChange = 300; // RPM per second TODO: tune this
+        public static final double maxRPMChange = 1000; // RPM per second TODO: tune this
 
-        public static final double hoodTestRPM = 3000; //TODO: RPM for hood table
+       // public static final double hoodTestRPM = 3000; //TODO: RPM for hood table
 
         public static void initialize() { //TODO: fill out once bot is done
             // Meters to RPM

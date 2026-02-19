@@ -26,5 +26,8 @@ public class TurretConstants {
     public static final double maxControlSpeed = 0.5;
     public static final Time lookaheadLatency = Milliseconds.of(10);
     public static final Angle turretRangeOneWay = Degrees.of(90);
+    //new PIDController(0.008, 0, 0.0001);
+    public static final double kP = 0.008;
+    public static final double kD = 0.0001;
 
 }

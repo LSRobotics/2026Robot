@@ -1,0 +1,23 @@
+import frc.robot.subsystems.kicker.KickerIO;
+import  org.littletonrobotics.junction.AutoLog;
+
+public class KickerIOMotor implements KickerIO {
+    private final TalonFX kickerMotor = new TalonFX(KickerConstants.KICKER_MOTOR_ID);
+
+    public KickerIOMotor() {}
+
+    @Override
+    public void updateInputs(KickerIOInputs inputs) {
+        inputs.kickerSpeed = kickerMotor.getRotorVelocity().getValue();
+    }
+
+    @Override
+    public void setKickerSpeed(double speed) {
+        kickerMotor.set(speed);
+    }
+
+    @Override
+    public void stop() {
+        kickerMotor.stopMotor();
+    }
+}

@@ -9,7 +9,6 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 
-
 import static edu.wpi.first.units.Units.Degrees;
 
 import org.littletonrobotics.junction.Logger;
@@ -41,8 +40,7 @@ public class RobotContainer {
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
 
-   // private final SendableChooser<Command> autoChooser;
-
+  // private final SendableChooser<Command> autoChooser;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -76,16 +74,11 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-
-
-// Regenerate tuner constants before doing anything with swerve
-
-
+    // Regenerate tuner constants before doing anything with swerve
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
     // cancelling on release.
-  
 
   }
 
@@ -95,7 +88,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   // public Command getAutonomousCommand() {
-  //   // An example command will be run in autonomous
-  //   return autoChooser.getSelected();
+  // // An example command will be run in autonomous
+  // return autoChooser.getSelected();
   // }
 }

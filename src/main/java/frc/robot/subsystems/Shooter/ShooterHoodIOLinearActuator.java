@@ -11,13 +11,13 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Servo;
 import frc.robot.util.MathUtils;
 
-public class ShooterHoodIOLinearActuator implements ShooterHoodIO{
+public class ShooterHoodIOLinearActuator implements ShooterHoodIO {
     private Servo actuator;
 
     public ShooterHoodIOLinearActuator(int pwmID) {
         actuator = new Servo(pwmID);
 
-        actuator.setBoundsMicroseconds((int)(2.0*1000), (int)(1.8*1000), (int)(1.5*1000), (int)(1.2*1000), (int)(1.0*1000));
+        actuator.setBoundsMicroseconds((int) (2.0 * 1000), (int) (1.8 * 1000), (int) (1.5 * 1000), (int) (1.2 * 1000), (int) (1.0 * 1000));
     }
 
     @Override
@@ -42,11 +42,12 @@ public class ShooterHoodIOLinearActuator implements ShooterHoodIO{
     }
 
     @Override
-    public void setAngle(Angle a) { //law of cosines
+    public void setAngle(Angle a) { // law of cosines
         double theta = a.in(Radian) + ShooterConstants.HoodConstants.angleOffset.in(Radian);
-        double value = Math.pow(ShooterConstants.HoodConstants.hoodPivotToActuatorMount.in(Meter), 2) + 
-            Math.pow(ShooterConstants.HoodConstants.actuatorMountToHoodEdge.in(Meter), 2) - 
-            2 * ShooterConstants.HoodConstants.hoodPivotToActuatorMount.in(Meter) * ShooterConstants.HoodConstants.actuatorMountToHoodEdge.in(Meter) * Math.cos(theta);
+        double value = Math.pow(ShooterConstants.HoodConstants.hoodPivotToActuatorMount.in(Meter), 2) +
+                Math.pow(ShooterConstants.HoodConstants.actuatorMountToHoodEdge.in(Meter), 2) -
+                2 * ShooterConstants.HoodConstants.hoodPivotToActuatorMount.in(Meter)
+                * ShooterConstants.HoodConstants.actuatorMountToHoodEdge.in(Meter) * Math.cos(theta);
         setLength(Meter.of(Math.sqrt(Math.max(0, value))));
-}
+    }
 }

@@ -189,20 +189,18 @@ public class ShootAtHubCommand extends Command {
         return false;
     }
 
-        /*
+        /*TODO: FInalize
     1.Start with mid hood angle
 
-    2.Adjust hood until trajectory is good
+    2.Adjust hood until trajectory is good (Prefer higher arcs and lower rpm ) 
 
     3.Adjust RPM until consistent
 
-    4.Prefer higher arcs and lower rpm 
+    4. test 5 balls
 
-    5. test 3 balls
+    5. Measure average TOF (From leaving flywheel to passing top plane of hub funnel)
 
-    6. Measure average TOF 
-
-    7.Populate all 3 tables together
+    6.Populate all 3 tables together
     */
 
     private class AimingConstants {

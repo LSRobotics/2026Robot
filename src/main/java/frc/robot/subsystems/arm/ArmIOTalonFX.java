@@ -10,17 +10,17 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.subsystems.arm.ArmConstants;
+import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;;
 
 public class ArmIOTalonFX implements ArmIO {
-    private final TalonFX armMotor = new TalonFX(ArmConstants.ARM_MOTOR_ID);
+    private final TalonFX armMotor = new TalonFX(ArmMotorConstants.ARM_MOTOR_ID);
 
     public ArmIOTalonFX() {
         armMotor.setNeutralMode(NeutralModeValue.Brake);
         armMotor.getConfigurator().apply(new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(ArmConstants.STATOR_CURRENT_LIMIT)
+            .withStatorCurrentLimit(ArmMotorConstants.STATOR_CURRENT_LIMIT)
             .withStatorCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(ArmConstants.SUPPLY_CURRENT_LIMIT)
+            .withSupplyCurrentLimit(ArmMotorConstants.SUPPLY_CURRENT_LIMIT)
             .withSupplyCurrentLimitEnable(true));
     }
 
@@ -28,7 +28,7 @@ public class ArmIOTalonFX implements ArmIO {
     public void updateInputs(ArmIOInputs inputs) {
         inputs.armMotorCurrent = Amps.of(armMotor.getSupplyCurrent().getValueAsDouble());
         inputs.armAngle = armMotor.getRotorPosition().getValue();
-        inputs.armOut = inputs.armAngle.equals(ArmConstants.ARM_DEPLOY_ANGLE);
+        inputs.armOut = inputs.armAngle.equals(ArmMotorConstants.ARM_DEPLOY_ANGLE);
         inputs.armSpeed = armMotor.getRotorVelocity().getValue();
     }
 

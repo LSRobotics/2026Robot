@@ -8,6 +8,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import static edu.wpi.first.units.Units.Volts;
+import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;
 
 public interface ArmIO {
 
@@ -15,7 +16,7 @@ public interface ArmIO {
     public static class ArmIOInputs {
         public Current armMotorCurrent = Amps.of(0);
         public boolean armOut = false;
-        public Angle armAngle = ArmConstants.ARM_REST_ANGLE;
+        public Angle armAngle = ArmMotorConstants.ARM_REST_ANGLE;
         public AngularVelocity armSpeed = RPM.of(0);
     }
 

@@ -20,7 +20,21 @@ public final class Constants {
     public static final int yaw = 2;
     public static final int pitch = 1;
     public static final int roll = 0;
-
-    
+    public static final int trigger = 0;
+    public static final int leftStickButton = 2;
+    public static final int rightStickButton = 3;
+    public static final int middleStickButton = 1;
+    public static final int left1 = 4;
+    public static final int left2 = 5;
+    public static final int left3 = 6;
+    public static final int left4 = 9;
+    public static final int left5 = 8;
+    public static final int left6 = 7;
+    public static final int right1 = 12;
+    public static final int right2 = 11;
+    public static final int right3 = 10;
+    public static final int right4 = 13;
+    public static final int right5 = 14;
+    public static final int right6 = 15;
   }
 }

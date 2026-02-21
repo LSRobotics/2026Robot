@@ -18,7 +18,8 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.RunIntakeCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.util.SendableSupplier;
-import frc.robot.subsystems.arm.ArmConstants;
+import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;
+import frc.robot.subsystems.arm.ArmConstants.ArmLimitSwitchConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
 
@@ -114,8 +115,8 @@ public class RobotContainer {
     // pressed,
     // cancelling on release.
     m_driverController.b().whileTrue(new RunIntakeCommand(intakeSubsystem));
-    m_driverController.povUp().onTrue(new ArmOutCommand(armSubsystem, ArmConstants.ARM_REST_ANGLE.in(Degrees)));
-    m_driverController.povDown().onTrue(new ArmOutCommand(armSubsystem, ArmConstants.ARM_DEPLOY_ANGLE.in(Degrees)));
+    m_driverController.povUp().onTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE.in(Degrees)));
+    m_driverController.povDown().onTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE.in(Degrees)));
   }
 
   /**

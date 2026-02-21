@@ -4,7 +4,8 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.arm.ArmConstants;
+import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;
+import frc.robot.subsystems.arm.ArmConstants.ArmLimitSwitchConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 
 import static edu.wpi.first.units.Units.Degrees;
@@ -34,11 +35,11 @@ public class ArmOutCommand extends Command {
   @Override
   public void initialize() { // TODO SIGNS ARE NOT FINAL; MUST BE TUNED FOR DIRECTION
     if (m_arm.getArmEncoder().in(Degrees) < angle) {
-        tolerance = -ArmConstants.ARM_TOLERANCE;
-        m_arm.runArm(ArmConstants.ARM_SPEED);
+        tolerance = -ArmMotorConstants.ARM_TOLERANCE;
+        m_arm.runArm(ArmMotorConstants.ARM_SPEED);
     } else {
-        tolerance = ArmConstants.ARM_TOLERANCE;
-        m_arm.runArm(-ArmConstants.ARM_SPEED);
+        tolerance = ArmMotorConstants.ARM_TOLERANCE;
+        m_arm.runArm(-ArmMotorConstants.ARM_SPEED);
     }
   }
 

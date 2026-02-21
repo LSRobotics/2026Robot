@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.LTVDifferentialDriveController;
 import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -46,9 +47,10 @@ public class ShootAtHubCommand extends Command {
     //private PIDController turretPID = new PIDController(0.008, 0, 0.0001);
     private PIDController turretPID = new PIDController(TurretConstants.kP, 0, TurretConstants.kD);
     private BangBangController flywheelController = new BangBangController();
+    //@SuppressWarnings("unchecked")
     private SimpleMotorFeedforward flywheelFeedforward = new SimpleMotorFeedforward(
-        ((Measure<PerUnit<VoltageUnit, AngularVelocityUnit>>) ShooterConstants.FlywheelConstants.kS).in(ShooterConstants.FlywheelConstants.VoltsPerRotationsPerSecond),
-        ((Measure<PerUnit<VoltageUnit, AngularVelocityUnit>>) ShooterConstants.FlywheelConstants.kV).in(ShooterConstants.FlywheelConstants.VoltsPerRotationsPerSecond)); //Safe
+        ((Measure<PerUnit<VoltageUnit, AngularVelocityUnit>>) ShooterConstants.FlywheelConstants.kS).in(ShooterConstants.FlywheelConstants.VoltsPerRotationsPerSecond), 
+        ((Measure<PerUnit<VoltageUnit, AngularVelocityUnit>>) ShooterConstants.FlywheelConstants.kV).in(ShooterConstants.FlywheelConstants.VoltsPerRotationsPerSecond)); //Safe //
     private final Pose2d targetHubPose;
 
     public ShootAtHubCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem,
@@ -202,8 +204,6 @@ public class ShootAtHubCommand extends Command {
     5. Measure average TOF (From leaving flywheel to passing top plane of hub funnel)
 
     6.Populate all 3 tables together
-
-    7. Repeat ~8 times
     */
    //First: 2m, 3m, 4m, 5m
    //Second: 0.5m, 1m, 1.5m, 2.5m, 3.5m, 4.5m, 5.5m, 6m

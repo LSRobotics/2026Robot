@@ -48,7 +48,6 @@ public class ShooterFlywheelIOTalonFX implements ShooterFlywheelIO {
         inputs.velocity = flywheelMotor1.getVelocity().getValue();
         inputs.motor1Current = flywheelMotor1.getStatorCurrent().getValue();
         inputs.motor2Current = flywheelMotor2.getStatorCurrent().getValue();
-
     }
 
 }

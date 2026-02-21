@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -47,6 +48,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  
+  private final SpindexerIOSparkFlex SpinIO = new SpindexerIOSparkFlex();
+  private final SpindexerSubsystem spindexer = new SpindexerSubsystem(SpinIO);
+  
+
+
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
@@ -118,6 +125,8 @@ public class RobotContainer {
     m_driverController.povUp().onTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE.in(Degrees)));
     m_driverController.povDown().onTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE.in(Degrees)));
   }
+
+    
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

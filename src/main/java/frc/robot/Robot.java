@@ -103,7 +103,7 @@ public class Robot extends LoggedRobot {
     //     .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
 
     if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+      CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
   }
 

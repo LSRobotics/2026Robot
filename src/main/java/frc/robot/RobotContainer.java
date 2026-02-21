@@ -10,11 +10,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.arm.ArmConstants;
-import frc.robot.subsystems.arm.ArmIOTalonFX;
-import frc.robot.subsystems.arm.ArmSubsystem;
-import frc.robot.subsystems.intake.IntakeIOTalonFX;
-import frc.robot.subsystems.intake.IntakeSubsystem;
+
 import frc.robot.util.SendableSupplier;
 
 import static edu.wpi.first.units.Units.Degrees;

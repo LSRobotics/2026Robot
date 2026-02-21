@@ -7,10 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ArmOutCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.RunIntakeCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -25,11 +23,16 @@ import java.time.Instant;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import static edu.wpi.first.units.Units.Degrees;
+
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.units.measure.Angle;
@@ -54,14 +57,7 @@ public class RobotContainer {
   private final GenericHID m_operatorController = new GenericHID(
       OperatorConstants.kOperatorControllerPort);
 
-  private final IntakeIOTalonFX intakeIO = new IntakeIOTalonFX();
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(intakeIO);
-
-  private final ArmIOTalonFX armIO = new ArmIOTalonFX();
-  private final ArmSubsystem armSubsystem = new ArmSubsystem(armIO);
-
-   // private final SendableChooser<Command> autoChooser;
-
+  // private final SendableChooser<Command> autoChooser;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -72,6 +68,7 @@ public class RobotContainer {
     // autoChooser = AutoBuilder.buildAutoChooser();
     // SmartDashboard.putData("Auto Mode", autoChooser);
 
+    SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     configureBindings();
   }
 
@@ -111,12 +108,12 @@ public class RobotContainer {
 
 
 
+    // Regenerate tuner constants before doing anything with swerve
+
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(new RunIntakeCommand(intakeSubsystem));
-    m_driverController.povUp().onTrue(new ArmOutCommand(armSubsystem, ArmConstants.ARM_REST_ANGLE.in(Degrees)));
-    m_driverController.povDown().onTrue(new ArmOutCommand(armSubsystem, ArmConstants.ARM_DEPLOY_ANGLE.in(Degrees)));
+
   }
 
   /**
@@ -125,7 +122,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   // public Command getAutonomousCommand() {
-  //   // An example command will be run in autonomous
-  //   return autoChooser.getSelected();
+  // // An example command will be run in autonomous
+  // return autoChooser.getSelected();
   // }
 }

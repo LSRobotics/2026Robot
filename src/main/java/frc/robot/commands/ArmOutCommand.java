@@ -10,6 +10,7 @@ import frc.robot.subsystems.arm.ArmSubsystem;
 
 import static edu.wpi.first.units.Units.Degrees;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
@@ -51,13 +52,14 @@ public class ArmOutCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     m_arm.runArm(0);
+    m_arm.setAngle(Angle.ofBaseUnits(0, Degrees));
   }
 
   // Returns true when the command should end.
   @SuppressWarnings("unlikely-arg-type")
   @Override
   public boolean isFinished() {
-    return m_arm.getArmEncoder().in(Degrees) == (angle - tolerance);
+    return m_arm.getArmEncoder().in(Degrees) == (angle - tolerance) || m_arm.getLimitSwitch();
   }
 }
 

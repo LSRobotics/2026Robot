@@ -7,8 +7,8 @@ public interface ArmLimitSwitchIO {
     
     @AutoLog
     public static class ArmLimitSwitchIOInputs {
-        public static boolean activity = false;
+        public boolean activity = false;
     }
 
-    
+    public default void updateInputs(ArmLimitSwitchIOInputs inputs) {}
 }

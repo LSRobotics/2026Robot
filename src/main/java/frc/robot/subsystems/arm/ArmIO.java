@@ -26,5 +26,7 @@ public interface ArmIO {
 
     public default void setVoltage(Voltage voltage) {}
 
+    public default void setArmAngle(Angle angle) {}
+
     public default void stop() {}
 }

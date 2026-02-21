@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;;
@@ -40,6 +41,11 @@ public class ArmIOTalonFX implements ArmIO {
     @Override
     public void setVoltage(Voltage voltage) {
         armMotor.setVoltage(voltage.in(Volts));
+    }
+
+    @Override
+    public void setArmAngle(Angle angle) {
+        armMotor.getConfigurator().setPosition(angle);
     }
 
     @Override

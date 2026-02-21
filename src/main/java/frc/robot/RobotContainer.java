@@ -12,7 +12,9 @@ import frc.robot.commands.Autos;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
-import frc.robot.subsystems.arm.ArmIOTalonFX; 
+import frc.robot.subsystems.arm.ArmIOSparkMax;
+import frc.robot.subsystems.arm.ArmIOTalonFX;
+import frc.robot.subsystems.arm.ArmLimitSwitchIOLimitSwitch;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.RunIntakeCommand;
@@ -57,8 +59,9 @@ public class RobotContainer {
   private final IntakeIOTalonFX intakeIO = new IntakeIOTalonFX();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(intakeIO);
 
-  private final ArmIOTalonFX armIO = new ArmIOTalonFX();
-  private final ArmSubsystem armSubsystem = new ArmSubsystem(armIO);
+  private final ArmIOSparkMax armIO = new ArmIOSparkMax();
+  private final ArmLimitSwitchIOLimitSwitch limitSwitchIO = new ArmLimitSwitchIOLimitSwitch();
+  private final ArmSubsystem armSubsystem = new ArmSubsystem(armIO, limitSwitchIO);
 
    // private final SendableChooser<Command> autoChooser;
 

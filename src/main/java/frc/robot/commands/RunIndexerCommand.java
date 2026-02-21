@@ -46,7 +46,7 @@ public class RunIndexerCommand extends Command {
   @Override
   public void execute() {
     kicker.runKicker(KickerConstants.KICKER_SPEED);
-    if (kicker.getKickerSpeed().gte(AngularVelocity.ofBaseUnits(KickerConstants.KICKER_SPEED, RPM))) {
+    if (kicker.getKickerSpeed() >= KickerConstants.KICKER_SPEED) {
        spindexer.runSpindexer(SpindexerConstants.SPINDEXER_SPEED);
     }
   }

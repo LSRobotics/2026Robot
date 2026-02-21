@@ -16,7 +16,8 @@ public interface KickerIO {
 
     @AutoLog
     public static class KickerIOInputs {
-        public AngularVelocity kickerSpeed = DegreesPerSecond.of(0);
+        public AngularVelocity kickerVelocity = DegreesPerSecond.of(0);
+        public double kickerSpeed = 0;
     }
 
     public default void updateInputs(KickerIOInputs inputs) {}

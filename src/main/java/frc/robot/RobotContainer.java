@@ -9,13 +9,11 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 //import frc.robot.commands.RunIntakeCommand;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.kicker.KickerIOTalonFX;
-import frc.robot.subsystems.kicker.KickerSubsystem;
 import frc.robot.subsystems.spindexer.SpindexerIOSparkFlex;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 //import frc.robot.subsystems.intake.IntakeIOMotor;
 //import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.kicker.KickerSubsystem;
+
 import frc.robot.subsystems.spindexer.SpindexerIOSparkFlex;
 
 import frc.robot.commands.RunIndexerCommand;
@@ -46,8 +44,7 @@ public class RobotContainer {
   private final SpindexerIOSparkFlex SpinIO = new SpindexerIOSparkFlex();
   private final SpindexerSubsystem spindexer = new SpindexerSubsystem(SpinIO);
   
-  private final KickerIOTalonFX KickIO = new KickerIOTalonFX();
-  private final KickerSubsystem kicker = new KickerSubsystem(KickIO);
+
 
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -99,7 +96,7 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    m_driverController.x().whileTrue(new RunIndexerCommand(spindexer, kicker));
+    //m_driverController.x().whileTrue(new RunIndexerCommand(spindexer, kicker));
     
   }
 

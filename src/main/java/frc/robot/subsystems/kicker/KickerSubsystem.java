@@ -5,7 +5,6 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.AutoLog;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.subsystems.kicker.KickerIO;
-import frc.robot.subsystems.kicker.KickerIOInputsAutoLogged;
 
 public class KickerSubsystem extends SubsystemBase {
     private final KickerIO io;

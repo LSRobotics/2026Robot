@@ -9,24 +9,23 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmOutCommand;
 import frc.robot.commands.Autos;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.intake.IntakeIOTalonFX;
+import frc.robot.subsystems.arm.ArmIOTalonFX; 
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.RunIntakeCommand;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.arm.ArmConstants;
-import frc.robot.subsystems.arm.ArmIOTalonFX;
-import frc.robot.subsystems.arm.ArmSubsystem;
-import frc.robot.subsystems.intake.IntakeIOTalonFX;
-import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.util.SendableSupplier;
+import frc.robot.subsystems.arm.ArmConstants;
 
 import static edu.wpi.first.units.Units.Degrees;
 
 import java.time.Instant;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;

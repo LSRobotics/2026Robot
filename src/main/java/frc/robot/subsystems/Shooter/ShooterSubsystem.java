@@ -2,6 +2,8 @@ package frc.robot.subsystems.Shooter;
 
 import static edu.wpi.first.units.Units.RPM;
 
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.units.measure.Angle;
@@ -44,6 +46,10 @@ public class ShooterSubsystem extends SubsystemBase{
 
     public void setHoodPosition(double position) {
         hoodIO.setPosition(position);
+    }
+
+    public void setHoodPosition(DoubleSupplier position) {
+        hoodIO.setPosition(position.getAsDouble());
     }
 
     public void setHoodLength(Distance length) {

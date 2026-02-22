@@ -10,6 +10,9 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmOutCommand;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.kicker.KickerIO;
+import frc.robot.subsystems.kicker.KickerIOTalonFX;
+import frc.robot.subsystems.kicker.KickerSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.arm.ArmIOSparkMax;
@@ -17,12 +20,21 @@ import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.arm.ArmLimitSwitchIOLimitSwitch;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.RunFlywheelCommand;
+import frc.robot.commands.RunFlywheelCommandSpeed;
 import frc.robot.commands.RunIntakeCommand;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Shooter.ShooterFlywheelIOTalonFX;
+import frc.robot.subsystems.Shooter.ShooterHoodIOLinearActuator;
+import frc.robot.subsystems.Shooter.ShooterSubsystem;
+import frc.robot.subsystems.Turret.TurretIO;
+import frc.robot.subsystems.Turret.TurretIOTalon;
+import frc.robot.subsystems.Turret.TurretSubsystem;
 import frc.robot.util.SendableSupplier;
 import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;
 import frc.robot.subsystems.arm.ArmConstants.ArmLimitSwitchConstants;
 import frc.robot.commands.RunSpindexerCommand;
+import frc.robot.commands.TurnTurretCommand;
 import frc.robot.commands.RunIndexerCommand;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import frc.robot.subsystems.spindexer.SpindexerConstants;
@@ -59,6 +71,12 @@ public class RobotContainer {
   
   private final SpindexerIOSparkFlex SpinIO = new SpindexerIOSparkFlex();
   private final SpindexerSubsystem spindexer = new SpindexerSubsystem(SpinIO);
+  private final KickerIO kickerIO = new KickerIOTalonFX();
+  private final KickerSubsystem m_kicker = new KickerSubsystem(kickerIO); 
+  private final TurretIO turretIO = new TurretIOTalon();
+  private final TurretSubsystem m_turret = new TurretSubsystem(turretIO);
+
+  private final ShooterSubsystem m_shooter = new ShooterSubsystem(new ShooterFlywheelIOTalonFX(), new ShooterHoodIOLinearActuator(0));
   
 
 
@@ -121,11 +139,12 @@ public class RobotContainer {
     SmartDashboard.putData("Pitch",new SendableSupplier<Double>("Pitch", operatorPitch));
     SmartDashboard.putData("Roll",new SendableSupplier<Double>("Roll", operatorRoll));
 
-    SmartDashboard.putNumber("SpindexerSpeed", 0);
-    DoubleSupplier spindexerSpeedSupplier = () -> SmartDashboard.getNumber("SpindexerSpeed", 0);
+    SmartDashboard.putNumber("speed", 0);
+    DoubleSupplier speedSupplier = () -> SmartDashboard.getNumber("speed", 0);
 
 
 
+    
 // Regenerate tuner constants before doing anything with swerve
 
 
@@ -133,11 +152,11 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(new RunIntakeCommand(intakeSubsystem));
-    m_driverController.povUp().onTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE.in(Degrees)));
-    m_driverController.povDown().onTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE.in(Degrees)));
-    m_driverController.x().whileTrue(new InstantCommand(()->spindexer.runSpindexer(spindexerSpeedSupplier))).onFalse(new InstantCommand(()->spindexer.runSpindexer(0)));
-    m_driverController.y().whileTrue(new InstantCommand(()->spindexer.runSpindexer(() -> -spindexerSpeedSupplier.getAsDouble()))).onFalse(new InstantCommand(()->spindexer.runSpindexer(0)));
+    m_driverController.b().whileTrue(new RunFlywheelCommandSpeed(m_shooter,speedSupplier));
+    m_driverController.a().onTrue(new InstantCommand(()->m_shooter.setHoodPosition(speedSupplier)));
+
+    m_driverController.povUp().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
+    m_driverController.povDown().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE));
   }
 
     

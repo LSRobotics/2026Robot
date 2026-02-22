@@ -2,6 +2,9 @@ package frc.robot.subsystems.kicker;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
+
+import java.util.function.DoubleSupplier;
+
 import org.littletonrobotics.junction.AutoLog;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.subsystems.kicker.KickerIO;
@@ -16,6 +19,9 @@ public class KickerSubsystem extends SubsystemBase {
 
     public void runKicker(double speed) {
         io.setKickerSpeed(speed);
+    }
+      public void runKicker(DoubleSupplier speed) {
+        io.setKickerSpeed(speed.getAsDouble());
     }
 
     @Override

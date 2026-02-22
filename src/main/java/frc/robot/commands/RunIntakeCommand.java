@@ -7,6 +7,9 @@ package frc.robot.commands;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 
 /** An example command that uses an example subsystem. */
@@ -14,13 +17,23 @@ public class RunIntakeCommand extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final IntakeSubsystem m_intakeSubsystem;
 
+  private final DoubleSupplier speed;
+
   /**
    * Creates a new RunIntakeCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public RunIntakeCommand(IntakeSubsystem intake) {
+  public RunIntakeCommand(IntakeSubsystem intake, double speed) {
     m_intakeSubsystem = intake;
+    this.speed = () -> speed;
+
+    addRequirements(intake);
+  }
+
+  public RunIntakeCommand(IntakeSubsystem intake, DoubleSupplier speed) {
+    m_intakeSubsystem = intake;
+    this.speed = speed;
 
     addRequirements(intake);
   }
@@ -32,7 +45,7 @@ public class RunIntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_intakeSubsystem.runIntake(IntakeConstants.INTAKE_SPEED);
+    m_intakeSubsystem.runIntake(speed.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.

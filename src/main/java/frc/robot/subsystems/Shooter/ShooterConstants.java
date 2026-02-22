@@ -20,7 +20,7 @@ import edu.wpi.first.units.measure.Voltage;
 
 public class ShooterConstants {
     public static class FlywheelConstants {
-        public static final AngularVelocity maxSpeed = RPM.of(-1);// TODO
+        public static final AngularVelocity maxSpeed = RPM.of(100);// TODO
         public static final AngularVelocity holdSpeed = RPM.of(1); // TODO
         public static final int flywheelMotor1ID = 53;
         public static final Current statorCurrentLimit = Amps.of(40);

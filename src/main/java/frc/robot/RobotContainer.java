@@ -25,6 +25,7 @@ import frc.robot.subsystems.arm.ArmConstants.ArmLimitSwitchConstants;
 import frc.robot.commands.RunSpindexerCommand;
 import frc.robot.commands.RunIndexerCommand;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
+import frc.robot.subsystems.spindexer.SpindexerConstants;
 import frc.robot.subsystems.spindexer.SpindexerIOSparkFlex;
 
 
@@ -120,6 +121,9 @@ public class RobotContainer {
     SmartDashboard.putData("Pitch",new SendableSupplier<Double>("Pitch", operatorPitch));
     SmartDashboard.putData("Roll",new SendableSupplier<Double>("Roll", operatorRoll));
 
+    SmartDashboard.putNumber("SpindexerSpeed", 0);
+    DoubleSupplier spindexerSpeedSupplier = () -> SmartDashboard.getNumber("SpindexerSpeed", 0);
+
 
 
 // Regenerate tuner constants before doing anything with swerve
@@ -132,6 +136,8 @@ public class RobotContainer {
     m_driverController.b().whileTrue(new RunIntakeCommand(intakeSubsystem));
     m_driverController.povUp().onTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE.in(Degrees)));
     m_driverController.povDown().onTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE.in(Degrees)));
+    m_driverController.x().whileTrue(new InstantCommand(()->spindexer.runSpindexer(spindexerSpeedSupplier))).onFalse(new InstantCommand(()->spindexer.runSpindexer(0)));
+    m_driverController.y().whileTrue(new InstantCommand(()->spindexer.runSpindexer(() -> -spindexerSpeedSupplier.getAsDouble()))).onFalse(new InstantCommand(()->spindexer.runSpindexer(0)));
   }
 
     

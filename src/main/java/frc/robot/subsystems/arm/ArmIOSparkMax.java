@@ -22,6 +22,7 @@ import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;;
 
 public class ArmIOSparkMax implements ArmIO {
     private final SparkMax armMotor = new SparkMax(ArmMotorConstants.ARM_MOTOR_ID, MotorType.kBrushless);
+    private final SparkMax armMotorFollower = new SparkMax(ArmMotorConstants.ARM_MOTOR_FOLLOWER_ID, MotorType.kBrushless);
 
     public ArmIOSparkMax() {
         SparkMaxConfig config = new SparkMaxConfig();
@@ -31,6 +32,10 @@ public class ArmIOSparkMax implements ArmIO {
             .idleMode(IdleMode.kBrake);
 
         armMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+        config.follow(ArmMotorConstants.ARM_MOTOR_ID);
+
+        armMotorFollower.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     @Override

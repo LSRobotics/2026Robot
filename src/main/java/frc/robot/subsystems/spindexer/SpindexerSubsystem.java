@@ -2,6 +2,10 @@ package frc.robot.subsystems.spindexer;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
+
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.AutoLog;
 import frc.robot.subsystems.spindexer.SpindexerIO;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -17,6 +21,14 @@ public class SpindexerSubsystem extends SubsystemBase {
 
     public void runSpindexer(double speed) {
         io.setSpindexerSpeed(speed);
+    }
+
+    public void runSpindexer(DoubleSupplier speed){
+        io.setSpindexerSpeed(speed.getAsDouble());
+    }
+
+    public void runSpindexer(Supplier<Double> speed){
+        io.setSpindexerSpeed(speed.get());
     }
 
     @Override

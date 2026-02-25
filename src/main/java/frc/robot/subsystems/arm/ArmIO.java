@@ -28,5 +28,7 @@ public interface ArmIO {
 
     public default void setArmAngle(Angle angle) {}
 
+    public default void setBrakeOnNeutral(boolean brake){}
+
     public default void stop() {}
 }

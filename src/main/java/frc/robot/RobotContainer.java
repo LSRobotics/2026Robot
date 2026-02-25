@@ -10,10 +10,12 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmOutCommand;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.kicker.KickerIO;
 import frc.robot.subsystems.kicker.KickerIOTalonFX;
 import frc.robot.subsystems.kicker.KickerSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.arm.ArmIOSparkMax;
 import frc.robot.subsystems.arm.ArmIOTalonFX;
@@ -35,12 +37,13 @@ import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;
 import frc.robot.subsystems.arm.ArmConstants.ArmLimitSwitchConstants;
 import frc.robot.commands.RunSpindexerCommand;
 import frc.robot.commands.TurnTurretCommand;
+import frc.robot.commands.TurnTurretToAngleCommand;
 import frc.robot.commands.RunIndexerCommand;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import frc.robot.subsystems.spindexer.SpindexerConstants;
 import frc.robot.subsystems.spindexer.SpindexerIOSparkFlex;
 
-
+import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Degrees;
 
 import java.time.Instant;
@@ -151,10 +154,9 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(new RunFlywheelCommandSpeed(m_shooter,speedSupplier));
-    m_driverController.a().onTrue(new InstantCommand(()->m_shooter.setHoodPosition(speedSupplier)));
-
+    // cancelling on relea[]\se.
+    m_driverController.a().onTrue(new TurnTurretToAngleCommand(m_turret, ()->Degree.of(speedSupplier.getAsDouble())));
+   
     m_driverController.povUp().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
     m_driverController.povDown().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE));
   }

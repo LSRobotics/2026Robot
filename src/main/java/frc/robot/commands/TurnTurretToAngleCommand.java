@@ -35,6 +35,7 @@ public class TurnTurretToAngleCommand extends Command {
     m_turret = subsystem;
     this.angle = ()->angle;
     SmartDashboard.putData(pid);
+    pid.setTolerance(TurretConstants.tolerance);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(subsystem);
   }
@@ -61,6 +62,7 @@ public TurnTurretToAngleCommand(TurretSubsystem subsystem, Supplier<Angle> angle
     m_turret.setSpeed(speed);
     Logger.recordOutput("Turret/PID_Error", pid.getError());
     Logger.recordOutput("Turret/PID_Setpoint", pid.getSetpoint());
+    Logger.recordOutput("Turret/Speed", speed);
   }
 
   // Called once the command ends or is interrupted.
@@ -70,6 +72,6 @@ public TurnTurretToAngleCommand(TurretSubsystem subsystem, Supplier<Angle> angle
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return pid.atSetpoint();
   }
 }

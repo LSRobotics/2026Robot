@@ -25,7 +25,7 @@ public class AimAtHubCommand extends Command {
     private final TurretSubsystem turret;
     private final Supplier<Pose2d> robotPoseSupplier;
     private final Supplier<ChassisSpeeds> chassisSpeedSupplier;
-    private PIDController pid = new PIDController(0.008, 0, 0.0001);
+    private PIDController pid = new PIDController(TurretConstants.kP, 0, TurretConstants.kD);
 
     public AimAtHubCommand(TurretSubsystem turret, Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> chassisSpeedSupplier) {
         this.turret = turret;
@@ -36,7 +36,7 @@ public class AimAtHubCommand extends Command {
 
     @Override
     public void initialize() {
-        pid.setTolerance(0.2);
+        pid.setTolerance(TurretConstants.tolerance);
     }
 
     @Override

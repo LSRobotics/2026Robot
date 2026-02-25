@@ -17,7 +17,7 @@ import edu.wpi.first.units.measure.Time;
 
 public class TurretConstants {
     public static final Translation2d turretOffset = new Translation2d(0.0, 0.0); //From center
-    public static final double turretGearRatio =10d/144.01d;
+    public static final double turretGearRatio = 10d;
     public static final Angle turretTolerance = Degrees.of(0.5);
     public static final AngularVelocity maxSpeed = DegreesPerSecond.of(50);
     public static final Pose2d hubBlue = new Pose2d(Meters.of(4.5), Meters.of(4.204), new Rotation2d());
@@ -29,5 +29,6 @@ public class TurretConstants {
     //new PIDController(0.008, 0, 0.0001);
     public static final double kP = 0.008;
     public static final double kD = 0.0001;
+    public static final double tolerance = 0.2;
 
 }

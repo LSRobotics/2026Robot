@@ -3,20 +3,19 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "Left to Depot",
-    "Left to Sweep",
-    "Left Cycle",
-    "Right Cycle",
-    "Right to Outpost",
-    "Right to Sweep"
+    "Left",
+    "Right"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "Left",
+    "Right"
+  ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,
-  "robotMass": 40.0,
+  "robotMass": 74.088,
   "robotMOI": 6.883,
   "robotTrackwidth": 0.546,
   "driveWheelRadius": 0.048,

@@ -7,12 +7,6 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Depot to Trench"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "Left Trench to Start of Balls"
           }
         },
@@ -26,6 +20,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Left",
   "choreoAuto": false
 }

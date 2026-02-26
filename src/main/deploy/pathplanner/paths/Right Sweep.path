@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 89.97336067163428
+    "rotation": 89.9733606716343
   },
   "reversed": false,
-  "folder": "Right to Sweep",
+  "folder": "Right",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 89.41971643350206

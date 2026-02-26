@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.7763100834216115,
-        "y": 6.717609297757768
+        "x": 8.06299877025463,
+        "y": 3.5522377025462966
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.785836298932384,
-        "y": 6.256773428232503
+        "x": 7.386094907407408,
+        "y": 1.058184534143519
       },
       "isLocked": false,
-      "linkedName": "LeftStartOfBalls"
+      "linkedName": "RightCutCenter"
     },
     {
       "anchor": {
-        "x": 7.7763100834216115,
-        "y": 5.299205219454329
+        "x": 3.4283629893238445,
+        "y": 0.6297153024911029
       },
       "prevControl": {
-        "x": 7.764317912218269,
-        "y": 5.6112218268090155
+        "x": 5.426439525462963,
+        "y": 0.3153420862268525
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Left Cycle Collect"
+      "linkedName": "RotatedRightTrench"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -88.77262414648243
+    "rotation": 71.22410345521826
   },
   "reversed": false,
-  "folder": "Left",
+  "folder": "Right",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.60476632344506
+    "rotation": 67.068955770709
   },
   "useDefaultConstraints": true
 }

@@ -7,31 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Trench to Start of Balls"
+            "pathName": "Right Trench to Center Cut"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left Cycle Collect"
+            "pathName": "Right Trench From Cut Center"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Balls to Left Hub"
+            "pathName": "Right Trench to Second Cut Cycle"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Hub to Left Trench"
+            "pathName": "Right Trench From Second Cut"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Left",
+  "folder": "Right",
   "choreoAuto": false
 }

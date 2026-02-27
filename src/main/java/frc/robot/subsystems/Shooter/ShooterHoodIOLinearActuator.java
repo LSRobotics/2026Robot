@@ -32,7 +32,7 @@ public class ShooterHoodIOLinearActuator implements ShooterHoodIO {
         System.out.println("Position: " + position);
         position = MathUtils.clamp(-1d, 1d, position);
         actuator.setSpeed(position);
-        actuator2.setSpeed(-position);
+        actuator2.setSpeed(position);
     }
 
     public void setLength(Distance length) {
@@ -51,32 +51,30 @@ public class ShooterHoodIOLinearActuator implements ShooterHoodIO {
     @Override
     public void updateInputs(ShooterHoodIOInputs inputs) {
 
-        double normalizedPosition = actuator.getPosition(); // 0 to 1
+        double normalizedPosition = actuator.getSpeed(); // -1 to 1
 
         double actuatorLength = ShooterConstants.HoodConstants.actuatorLengthRetracted.in(Meter)
-                + normalizedPosition *
-                        ShooterConstants.HoodConstants.actuatorLengthExtended.in(Meter);
-
+                + (normalizedPosition + 1) / 2 * (ShooterConstants.HoodConstants.actuatorLengthExtended.in(Meter) - ShooterConstants.HoodConstants.actuatorLengthRetracted.in(Meter));
         double a = ShooterConstants.HoodConstants.hoodPivotToActuatorMount.in(Meter);
         double b = ShooterConstants.HoodConstants.hoodPivotToHoodEdge.in(Meter);
 
         double cosTheta = (a * a + b * b - actuatorLength * actuatorLength) / (2 * a * b);
 
-        cosTheta = MathUtils.clamp(-1.0, 1.0, cosTheta); // prevent NaN
+        cosTheta = MathUtils.clamp(-1.0, 1.0, cosTheta); // prevent Nan
 
         double theta = Math.acos(cosTheta);
 
-        theta -= ShooterConstants.HoodConstants.angleOffset.in(Radian);
+        theta += ShooterConstants.HoodConstants.angleOffset.in(Radian);
 
-        inputs.angle = Radian.of(theta);
+        inputs.angle = Radian.of(theta); // Ground relative
         inputs.position = normalizedPosition;
     }
 
     @Override
-    public void setAngle(Angle a) {
+    public void setAngle(Angle a) { //Absolute from ground
 
         double theta = a.in(Radian)
-                + ShooterConstants.HoodConstants.angleOffset.in(Radian);
+                - ShooterConstants.HoodConstants.angleOffset.in(Radian);
 
         theta = MathUtils.clamp(
                 ShooterConstants.HoodConstants.minAngle.in(Radian),

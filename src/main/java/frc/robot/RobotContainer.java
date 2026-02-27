@@ -186,7 +186,6 @@ public class RobotContainer {
     m_driverController.b().whileTrue(new RunFlywheelCommand(m_shooter, ()-> RotationsPerSecond.of(speedSupplier.getAsDouble()))).onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
 
 
-
   }
 
   /**

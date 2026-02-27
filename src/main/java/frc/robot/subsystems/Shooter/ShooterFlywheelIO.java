@@ -2,9 +2,12 @@ package frc.robot.subsystems.Shooter;
 
 import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Volts;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
@@ -15,6 +18,8 @@ public interface ShooterFlywheelIO {
         public AngularVelocity velocity = RPM.of(0);
         public Current motor1Current = Amps.of(0);
         public Current motor2Current = Amps.of(0);
+        public Angle position = Rotations.of(0);
+        public Voltage appliedVoltage = Volts.of(0);
     }
 
     public default void setVelocity(AngularVelocity velocity) {}

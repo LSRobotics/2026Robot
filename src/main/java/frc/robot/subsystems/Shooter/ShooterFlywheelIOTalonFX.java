@@ -2,7 +2,6 @@ package frc.robot.subsystems.Shooter;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -11,8 +10,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
-import frc.robot.subsystems.Shooter.ShooterConstants;
-import frc.robot.subsystems.Shooter.ShooterFlywheelIO;
 
 public class ShooterFlywheelIOTalonFX implements ShooterFlywheelIO {
     private final TalonFX flywheelMotor1 = new TalonFX(ShooterConstants.FlywheelConstants.flywheelMotor1ID);
@@ -48,6 +45,8 @@ public class ShooterFlywheelIOTalonFX implements ShooterFlywheelIO {
         inputs.velocity = flywheelMotor1.getVelocity().getValue();
         inputs.motor1Current = flywheelMotor1.getStatorCurrent().getValue();
         inputs.motor2Current = flywheelMotor2.getStatorCurrent().getValue();
+        inputs.position = flywheelMotor1.getPosition().getValue();
+        inputs.appliedVoltage = flywheelMotor1.getMotorVoltage().getValue();
     }
 
 }

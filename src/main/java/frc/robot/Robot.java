@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import frc.robot.BuildConstants;
 import frc.robot.util.GameTimers;
@@ -38,7 +40,7 @@ public class Robot extends LoggedRobot {
    */
   public Robot() {
 
-    // Logger.addDataReceiver(new WPILOGWriter()); // Log to usb (crashes id not
+    Logger.addDataReceiver(new WPILOGWriter()); // Log to usb (crashes id not
     // present)
     Logger.addDataReceiver(new NT4Publisher());
 

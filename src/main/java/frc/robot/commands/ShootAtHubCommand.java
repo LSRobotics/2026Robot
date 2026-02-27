@@ -2,11 +2,13 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volt;
+import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.Supplier;
 
@@ -49,8 +51,8 @@ public class ShootAtHubCommand extends Command {
     private BangBangController flywheelController = new BangBangController();
     //@SuppressWarnings("unchecked")
     private SimpleMotorFeedforward flywheelFeedforward = new SimpleMotorFeedforward(
-        ((Measure<PerUnit<VoltageUnit, AngularVelocityUnit>>) ShooterConstants.FlywheelConstants.kS).in(ShooterConstants.FlywheelConstants.VoltsPerRotationsPerSecond), 
-        ((Measure<PerUnit<VoltageUnit, AngularVelocityUnit>>) ShooterConstants.FlywheelConstants.kV).in(ShooterConstants.FlywheelConstants.VoltsPerRotationsPerSecond)); //Safe //
+        ShooterConstants.FlywheelConstants.kS.in(Volts), 
+        ShooterConstants.FlywheelConstants.kV); //Safe //
     private final Pose2d targetHubPose;
 
     public ShootAtHubCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem,
@@ -214,20 +216,27 @@ public class ShootAtHubCommand extends Command {
         public static final double ToFtolerance = 0.05; // seconds
         public static final InterpolatingDoubleTreeMap flywheelSpeedMap = new InterpolatingDoubleTreeMap(); // Meters to  RPM at best hood angle
         public static final InterpolatingDoubleTreeMap flywheelTOFMap = new InterpolatingDoubleTreeMap(); // Meters toseconds in air at best hood angle
-        public static final InterpolatingDoubleTreeMap hoodAngleMap = new InterpolatingDoubleTreeMap(); // Meters to hood angle in degrees
+        public static final InterpolatingDoubleTreeMap hoodAngleMap = new InterpolatingDoubleTreeMap(); // Meters to hood position as percent from center
         public static final double maxRPMChange = 1000; // RPM per second TODO: tune this
 
        // public static final double hoodTestRPM = 3000; //TODO: RPM for hood table
 
         public static void initialize() { //TODO: fill out once bot is done
             // Meters to RPM
-            flywheelSpeedMap.put(Meters.of(0).in(Meters), RPM.of(0).in(RPM));
+            flywheelSpeedMap.put(Meters.convertFrom(44, Inches), RPM.convertFrom(45, RotationsPerSecond));
+
+            flywheelSpeedMap.put(Meters.convertFrom(150, Inches), RPM.convertFrom(45, RotationsPerSecond));
+
 
             // Meters to tof
-            flywheelTOFMap.put(Meters.of(0).in(Meters), Seconds.of(0).in(Seconds));
+            flywheelTOFMap.put(Meters.convertFrom(44, Inches), Seconds.of(3).in(Seconds));
+
+            flywheelTOFMap.put(Meters.convertFrom(150, Inches), Seconds.of(3).in(Seconds));
 
             // Meters to hood angle at hoodTestRPM
-            hoodAngleMap.put(Meters.of(0).in(Meters), Degrees.of(0).in(Degrees));
+            hoodAngleMap.put(Meters.convertFrom(44, Inches), -1d);
+            
+            hoodAngleMap.put(Meters.convertFrom(150, Inches), Degrees.of(11).in(Degrees));
         }
 
         public AimingConstants() throws Exception {

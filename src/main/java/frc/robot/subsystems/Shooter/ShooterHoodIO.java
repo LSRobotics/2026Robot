@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Shooter;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.units.measure.Angle;
@@ -9,6 +11,7 @@ public interface ShooterHoodIO {
     @AutoLog
     public class ShooterHoodIOInputs {
         public double position = 0;
+        public Angle angle = ShooterConstants.HoodConstants.angleOffset;
     }
 
     public default void setPosition(double position) {}

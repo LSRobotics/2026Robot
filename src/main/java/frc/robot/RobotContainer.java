@@ -6,9 +6,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ArmOutCommand;
-import frc.robot.commands.Autos;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.kicker.KickerIO;
@@ -18,14 +18,18 @@ import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.arm.ArmIOSparkMax;
-import frc.robot.subsystems.arm.ArmIOTalonFX;
 import frc.robot.subsystems.arm.ArmLimitSwitchIOLimitSwitch;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.RunFlywheelCommand;
-import frc.robot.commands.RunFlywheelCommandSpeed;
 import frc.robot.commands.RunIntakeCommand;
+import frc.robot.commands.RunSpindexerCommand;
+import frc.robot.commands.SetHoodAngleCommand;
+
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Shooter.ShooterConstants;
 import frc.robot.subsystems.Shooter.ShooterFlywheelIOTalonFX;
 import frc.robot.subsystems.Shooter.ShooterHoodIOLinearActuator;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
@@ -34,30 +38,30 @@ import frc.robot.subsystems.Turret.TurretIOTalon;
 import frc.robot.subsystems.Turret.TurretSubsystem;
 import frc.robot.util.SendableSupplier;
 import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;
-import frc.robot.subsystems.arm.ArmConstants.ArmLimitSwitchConstants;
-import frc.robot.commands.RunSpindexerCommand;
-import frc.robot.commands.TurnTurretCommand;
 import frc.robot.commands.TurnTurretToAngleCommand;
-import frc.robot.commands.RunIndexerCommand;
+import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import frc.robot.subsystems.spindexer.SpindexerConstants;
 import frc.robot.subsystems.spindexer.SpindexerIOSparkFlex;
+import frc.robot.subsystems.Shooter.ShooterConstants.FlywheelConstants;
 
 import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import java.time.Instant;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 
+import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -71,24 +75,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  
+
   private final SpindexerIOSparkFlex SpinIO = new SpindexerIOSparkFlex();
   private final SpindexerSubsystem spindexer = new SpindexerSubsystem(SpinIO);
   private final KickerIO kickerIO = new KickerIOTalonFX();
-  private final KickerSubsystem m_kicker = new KickerSubsystem(kickerIO); 
+  private final KickerSubsystem m_kicker = new KickerSubsystem(kickerIO);
   private final TurretIO turretIO = new TurretIOTalon();
   private final TurretSubsystem m_turret = new TurretSubsystem(turretIO);
 
-  private final ShooterSubsystem m_shooter = new ShooterSubsystem(new ShooterFlywheelIOTalonFX(), new ShooterHoodIOLinearActuator(0));
-  
+  private final ShooterSubsystem m_shooter = new ShooterSubsystem(new ShooterFlywheelIOTalonFX(),
+      new ShooterHoodIOLinearActuator(ShooterConstants.HoodConstants.hoodLinearActuatorPWMID,
+          ShooterConstants.HoodConstants.hoodLinearActuatorPWMID2));
 
-
-
-  // Replace with CommandPS4Controller or CommandJoystick if needed
+  // Replace with CommandPS4Controller or Commandm_driverController if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
-  private final GenericHID m_operatorController = new GenericHID(
-      OperatorConstants.kOperatorControllerPort);
+  private final GenericHID m_operatorController = new GenericHID(OperatorConstants.kOperatorControllerPort);
 
   private final IntakeIOTalonFX intakeIO = new IntakeIOTalonFX();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(intakeIO);
@@ -97,8 +99,21 @@ public class RobotContainer {
   private final ArmLimitSwitchIOLimitSwitch limitSwitchIO = new ArmLimitSwitchIOLimitSwitch();
   private final ArmSubsystem armSubsystem = new ArmSubsystem(armIO, limitSwitchIO);
 
-   // private final SendableChooser<Command> autoChooser;
+      private double MaxSpeed = 4d;
+    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
+                                                                                      // max angular velocity
 
+    /* Setting up bindings for necessary control of the swerve drive platform */
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+
+
+  private final CommandSwerveDrivetrain m_Swerve = TunerConstants.createDrivetrain();
+
+  // private final SendableChooser<Command> autoChooser;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -110,58 +125,69 @@ public class RobotContainer {
     // SmartDashboard.putData("Auto Mode", autoChooser);
 
     configureBindings();
+
+    SmartDashboard.putData("SysId/Flywheel Quasistatic Forward",
+        m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("SysId/Flywheel Quasistatic Reverse",
+        m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData("SysId/Flywheel Dynamic Forward",
+        m_shooter.sysIdFlywheelDynamic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("SysId/Flywheel Dynamic Reverse",
+        m_shooter.sysIdFlywheelDynamic(SysIdRoutine.Direction.kReverse));
+
+    SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
+
+    SmartDashboard.putData("Start logger", new InstantCommand(() -> SignalLogger.start()));
+    SmartDashboard.putData("Stop logger", new InstantCommand(() -> SignalLogger.stop()));
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be
-   * created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
-   * an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-   * {@link
-   * CommandXboxController
-   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
 
+    m_Swerve.setDefaultCommand(
+            // m_Swerve will execute this command periodically
+            m_Swerve.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed) // Drive forward with
+                    .withVelocityY(-m_driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with
+                                                                                // negative X (left)
+            ));
+
     Supplier<Double> sliderInput = () -> m_operatorController.getRawAxis(OperatorConstants.slider);
     Supplier<Double> operatorYaw = () -> m_operatorController.getRawAxis(OperatorConstants.yaw);
     Supplier<Double> operatorPitch = () -> m_operatorController.getRawAxis(OperatorConstants.pitch);
     Supplier<Double> operatorRoll = () -> m_operatorController.getRawAxis(OperatorConstants.roll);
-    m_driverController.a().onTrue(new InstantCommand(() -> m_driverController.setRumble(RumbleType.kBothRumble, 1)).andThen(new InstantCommand(()-> m_driverController.setRumble(RumbleType.kBothRumble, 0))));
 
-    SmartDashboard.putData("Slider",new SendableSupplier<Double>("Slider", sliderInput));
-    SmartDashboard.putData("Yaw",new SendableSupplier<Double>("Yaw", operatorYaw));
-    SmartDashboard.putData("Pitch",new SendableSupplier<Double>("Pitch", operatorPitch));
-    SmartDashboard.putData("Roll",new SendableSupplier<Double>("Roll", operatorRoll));
+
+    SmartDashboard.putData("Slider", new SendableSupplier<Double>("Slider", sliderInput));
+    SmartDashboard.putData("Yaw", new SendableSupplier<Double>("Yaw", operatorYaw));
+    SmartDashboard.putData("Pitch", new SendableSupplier<Double>("Pitch", operatorPitch));
+    SmartDashboard.putData("Roll", new SendableSupplier<Double>("Roll", operatorRoll));
 
     SmartDashboard.putNumber("speed", 0);
+    SmartDashboard.putNumber("Angle", 0);
     DoubleSupplier speedSupplier = () -> SmartDashboard.getNumber("speed", 0);
+    DoubleSupplier angleSupplier = () -> SmartDashboard.getNumber("Angle",0);
 
-
-
-    
-// Regenerate tuner constants before doing anything with swerve
-
-
+    // Regenerate tuner constants before doing anything with swerve
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
     // cancelling on relea[]\se.
-    m_driverController.a().onTrue(new TurnTurretToAngleCommand(m_turret, ()->Degree.of(speedSupplier.getAsDouble())));
-   
+    //m_driverController.a().onTrue(new TurnTurretToAngleCommand(m_turret, () -> Degree.of(speedSupplier.getAsDouble())));
+    m_driverController.x().whileTrue(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED));
+    m_driverController.y().whileTrue(new InstantCommand(()->m_kicker.runKicker(KickerConstants.KICKER_SPEED))).whileFalse(new InstantCommand(()->m_kicker.runKicker(0)));
     m_driverController.povUp().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
     m_driverController.povDown().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE));
-  }
+    m_driverController.a().whileTrue(new RunIntakeCommand(intakeSubsystem, IntakeConstants.INTAKE_IN_SPEED));
+    m_driverController.leftBumper().onTrue(new InstantCommand((()->m_shooter.setHoodPosition(angleSupplier))));
 
-    
+    m_driverController.b().whileTrue(new RunFlywheelCommand(m_shooter, ()-> RotationsPerSecond.of(speedSupplier.getAsDouble()))).onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
+
+
+
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -169,7 +195,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   // public Command getAutonomousCommand() {
-  //   // An example command will be run in autonomous
-  //   return autoChooser.getSelected();
+  // // An example command will be run in autonomous
+  // return autoChooser.getSelected();
   // }
 }

@@ -1,6 +1,5 @@
 package frc.robot.subsystems.Shooter;
 
-import static edu.wpi.first.units.Units.RPM;
 
 import java.util.function.DoubleSupplier;
 
@@ -10,7 +9,9 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class ShooterSubsystem extends SubsystemBase{
     private final ShooterFlywheelIO flywheelIO;
@@ -19,9 +20,23 @@ public class ShooterSubsystem extends SubsystemBase{
     private final ShooterFlywheelIOInputsAutoLogged flywheelInputs = new ShooterFlywheelIOInputsAutoLogged();
     private final ShooterHoodIOInputsAutoLogged hoodInputs = new ShooterHoodIOInputsAutoLogged();
 
+    private final SysIdRoutine flywheelSysIdRoutine;
+
     public ShooterSubsystem(ShooterFlywheelIO flywheelIO, ShooterHoodIO hoodIO) {
         this.flywheelIO = flywheelIO;
         this.hoodIO = hoodIO;
+
+    flywheelSysIdRoutine = new SysIdRoutine(
+        new SysIdRoutine.Config(
+            null,
+            null,
+            null,
+            state -> Logger.recordOutput("Shooter/FlywheelSysIdState", state.toString())
+        ),
+        new SysIdRoutine.Mechanism(
+            this::setFlywheelVoltage,
+            null,
+            this));
     }
 
     @Override
@@ -61,7 +76,15 @@ public class ShooterSubsystem extends SubsystemBase{
     }
 
     public AngularVelocity getFlywheelVelocity() {
-        return RPM.of(0);
+        return flywheelInputs.velocity;
+    }
+
+    public Command sysIdFlywheelQuasistatic(SysIdRoutine.Direction direction) {
+        return flywheelSysIdRoutine.quasistatic(direction);
+    }
+
+    public Command sysIdFlywheelDynamic(SysIdRoutine.Direction direction) {
+        return flywheelSysIdRoutine.dynamic(direction);
     }
 
 }

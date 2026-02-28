@@ -13,7 +13,6 @@ public interface IntakeIO {
     @AutoLog
     public static class IntakeIOInputs {
         public Current intakeRollerMotorCurrent = Amps.of(0);
-        public boolean hasGamePiece = false;
         public AngularVelocity intakeRollerSpeed = RPM.of(0);
     }
 

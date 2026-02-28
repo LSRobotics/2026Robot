@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.478271846064815,
-        "y": 8.058369068287037
+        "x": 5.6656555266203705,
+        "y": 7.843232132523148
       },
       "isLocked": false,
       "linkedName": "LeftTrench"
     },
     {
       "anchor": {
-        "x": 8.068969328703703,
-        "y": 4.635730034722222
+        "x": 8.263045283564814,
+        "y": 4.3431070601851856
       },
       "prevControl": {
-        "x": 7.832771412037038,
-        "y": 6.207364728009258
+        "x": 8.870926866319444,
+        "y": 7.403510344328704
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -66.14720640050159
+    "rotation": -123.9970358952736
   },
   "reversed": false,
   "folder": "Left",

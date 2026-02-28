@@ -4,10 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AimAtHubCommand;
 import frc.robot.commands.ArmOutCommand;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.kicker.KickerConstants;
@@ -23,10 +25,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.RunFlywheelCommand;
 import frc.robot.commands.RunIntakeCommand;
+import frc.robot.commands.RunKickerCommand;
 import frc.robot.commands.RunSpindexerCommand;
 import frc.robot.commands.SetHoodAngleCommand;
+import frc.robot.commands.ShootAtHubCommand;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Shooter.ShooterConstants;
@@ -53,13 +59,17 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -113,6 +123,8 @@ public class RobotContainer {
 
   private final CommandSwerveDrivetrain m_Swerve = TunerConstants.createDrivetrain();
 
+  private Trigger flywheelAtSpeed = new Trigger(() -> m_shooter.getFlywheelVelocity() != Logger.getLogger("Aiming/Flywheel/TargetRPM"));
+
   // private final SendableChooser<Command> autoChooser;
 
   /**
@@ -139,6 +151,18 @@ public class RobotContainer {
 
     SmartDashboard.putData("Start logger", new InstantCommand(() -> SignalLogger.start()));
     SmartDashboard.putData("Stop logger", new InstantCommand(() -> SignalLogger.stop()));
+    
+
+    NamedCommands.registerCommand("ArmOut", new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE));
+    NamedCommands.registerCommand("ArmIn", new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
+    NamedCommands.registerCommand("Intake", new RunIntakeCommand(intakeSubsystem, IntakeConstants.INTAKE_IN_SPEED));
+    
+    NamedCommands.registerCommand("Shoot", 
+        Commands.parallel(new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds), 
+                          new ConditionalCommand(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).andThen(
+                                                 new WaitCommand(0.75).andThen(
+                                                 new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))), null, flywheelAtSpeed)).withTimeout(3));
+
   }
 
   private void configureBindings() {

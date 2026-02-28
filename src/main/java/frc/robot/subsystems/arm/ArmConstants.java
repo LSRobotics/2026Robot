@@ -13,7 +13,7 @@ public class ArmConstants {
         public static final int ARM_MOTOR_FOLLOWER_ID = 51;
         public static final double ARM_SPEED = 0.2;
         public static final Angle ARM_REST_ANGLE = Degrees.of(0);
-        public static final Angle ARM_DEPLOY_ANGLE = Degrees.of(-15);
+        public static final Angle ARM_DEPLOY_ANGLE = Degrees.of(-25.143);
         public static final Current STATOR_CURRENT_LIMIT = Amps.of(10);
         public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(15);
         public static final double ARM_TOLERANCE = 1;

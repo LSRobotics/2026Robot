@@ -28,16 +28,19 @@ public class ShooterConstants {
         public static final Current statorCurrentLimit = Amps.of(80);//TODO
         public static final int flywheelMotor2ID = 54;
         public static final Voltage maxVoltage = Volts.of(11);
-        public static final Voltage bangBangVolts = Volts.of(5); // TODO
+        public static final Voltage bangBangVolts = Volts.of(4); // TODO
         public static final double gearRatio = 1d/1d;
-        public static final AngularVelocity flywheelTolerance = RPM.of(50); // TODO
+        public static final AngularVelocity flywheelTolerance = RotationsPerSecond.of(5); // TODO
 
         //From sysid
         public static final Per<VoltageUnit, AngularVelocityUnit> kVVoltSecondsPerRadian = VoltsPerRadianPerSecond.ofNative(0.018378); 
+        public static final Per<VoltageUnit, AngularVelocityUnit> kAVoltSecondsPerRadian = VoltsPerRadianPerSecond.ofNative(0.0013998); 
+
         public static final Voltage kS = Volts.of(0.089568);
         //derived from sysid (kVVoltSecondsPerRadian)
-        public static final PerUnit<VoltageUnit, AngularVelocityUnit> VoltsPerRotationsPerSecond = Volts.per(RotationsPerSecond) ;
+        public static final PerUnit<VoltageUnit, AngularVelocityUnit> VoltsPerRotationsPerSecond = Volts.per(RotationsPerSecond);
         public static final double kV = VoltsPerRotationsPerSecond.convertFrom(kVVoltSecondsPerRadian.in(VoltsPerRadianPerSecond), VoltsPerRadianPerSecond);
+        public static final double kA = VoltsPerRotationsPerSecond.convertFrom(kAVoltSecondsPerRadian.in(VoltsPerRadianPerSecond), VoltsPerRadianPerSecond);
     }
 
     public static class HoodConstants {

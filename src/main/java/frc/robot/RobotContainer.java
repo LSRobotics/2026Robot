@@ -170,7 +170,7 @@ public class RobotContainer {
     DoubleSupplier speedSupplier = () -> SmartDashboard.getNumber("speed", 0);
     DoubleSupplier angleSupplier = () -> SmartDashboard.getNumber("Angle",0);
 
-    // Regenerate tuner constants before doing anything with swerve
+    // Regenerate tuner constants b[]\efore doing anything with swerve
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
@@ -184,7 +184,7 @@ public class RobotContainer {
     m_driverController.leftBumper().onTrue(new InstantCommand((()->m_shooter.setHoodPosition(angleSupplier))));
 
     m_driverController.b().whileTrue(new RunFlywheelCommand(m_shooter, ()-> RotationsPerSecond.of(speedSupplier.getAsDouble()))).onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
-
+   
 
   }
 

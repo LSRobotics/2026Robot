@@ -1,4 +1,5 @@
 package frc.robot.commands;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volt;
 import static edu.wpi.first.units.Units.Volts;
@@ -25,7 +26,8 @@ public class RunFlywheelCommand extends Command {
     private BangBangController flywheelController = new BangBangController();
     private SimpleMotorFeedforward flywheelFeedforward = new SimpleMotorFeedforward(
         ShooterConstants.FlywheelConstants.kS.in(Volts),
-        ShooterConstants.FlywheelConstants.kV); //Safe
+        ShooterConstants.FlywheelConstants.kV, 
+        ShooterConstants.FlywheelConstants.kA); //Safe
 
     public RunFlywheelCommand(ShooterSubsystem shooter, AngularVelocity speed) {
         m_Shooter = shooter;
@@ -53,11 +55,10 @@ public class RunFlywheelCommand extends Command {
     public void execute(){
         double targetRPS = m_Speed.get().in(RotationsPerSecond) / ShooterConstants.FlywheelConstants.gearRatio; 
         double feedforwardVoltage = flywheelFeedforward.calculate(targetRPS); //Tuned in V per rot/s
-        //double controlOutput = flywheelController.calculate( //TODO
-                //m_Shooter.getFlywheelVelocity().times(ShooterConstants.FlywheelConstants.gearRatio).in(RotationsPerSecond), targetRPS)
-                //* ShooterConstants.FlywheelConstants.bangBangVolts.in(Volt);
-        double controlOutput = 0;
-        double totalVoltage = feedforwardVoltage + controlOutput;
+        double controlOutput = flywheelController.calculate( 
+                m_Shooter.getFlywheelVelocity().times(ShooterConstants.FlywheelConstants.gearRatio).in(RotationsPerSecond), targetRPS)
+                * ShooterConstants.FlywheelConstants.bangBangVolts.in(Volt);
+        double totalVoltage = feedforwardVoltage + controlOutput*0.25;//TODO; DIsabel temp
         totalVoltage = MathUtil.clamp(totalVoltage, -ShooterConstants.FlywheelConstants.maxVoltage.in(Volt),
                 ShooterConstants.FlywheelConstants.maxVoltage.in(Volt));
 
@@ -67,6 +68,11 @@ public class RunFlywheelCommand extends Command {
     @Override
     public boolean isFinished() {
         return false;
+    }
+
+    @Override
+    public void end(boolean interrupted){
+        m_Shooter.setFlywheelSpeed(0);
     }
     
 }

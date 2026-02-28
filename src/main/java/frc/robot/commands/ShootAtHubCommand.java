@@ -224,20 +224,44 @@ public class ShootAtHubCommand extends Command {
 
         public static void initialize() { //TODO: fill out once bot is done
             // Meters to RPM
-            flywheelSpeedMap.put(Meters.convertFrom(44, Inches), RPM.convertFrom(45, RotationsPerSecond));
+            flywheelSpeedMap.put(Meters.convertFrom(44, Inches), RPM.convertFrom(40, RotationsPerSecond));
 
-            flywheelSpeedMap.put(Meters.convertFrom(150, Inches), RPM.convertFrom(45, RotationsPerSecond));
+            flywheelSpeedMap.put(Meters.convertFrom(78, Inches), RPM.convertFrom(45, RotationsPerSecond));
+
+            flywheelSpeedMap.put(Meters.convertFrom(139, Inches), RPM.convertFrom(52, RotationsPerSecond));
+
+            flywheelSpeedMap.put(Meters.convertFrom(154, Inches), RPM.convertFrom(52, RotationsPerSecond)); //TODO: Deal with points of inflection
+
+            flywheelSpeedMap.put(Meters.convertFrom(208, Inches), RPM.convertFrom(52, RotationsPerSecond));
+
+
 
 
             // Meters to tof
-            flywheelTOFMap.put(Meters.convertFrom(44, Inches), Seconds.of(3).in(Seconds));
+            flywheelTOFMap.put(Meters.convertFrom(44, Inches), Seconds.of(1.14).in(Seconds));
 
-            flywheelTOFMap.put(Meters.convertFrom(150, Inches), Seconds.of(3).in(Seconds));
+            flywheelTOFMap.put(Meters.convertFrom(78, Inches), Seconds.of(1.34).in(Seconds));
+
+            flywheelTOFMap.put(Meters.convertFrom(139, Inches), Seconds.of(1.56).in(Seconds));
+
+            flywheelTOFMap.put(Meters.convertFrom(154, Inches), Seconds.of(1.52).in(Seconds));
+
+            flywheelTOFMap.put(Meters.convertFrom(208, Inches), Seconds.of(1.38).in(Seconds));
+
+
 
             // Meters to hood angle at hoodTestRPM
             hoodAngleMap.put(Meters.convertFrom(44, Inches), -1d);
             
-            hoodAngleMap.put(Meters.convertFrom(150, Inches), Degrees.of(11).in(Degrees));
+            hoodAngleMap.put(Meters.convertFrom(78, Inches), -1d);
+
+            hoodAngleMap.put(Meters.convertFrom(139, Inches), -1d);
+
+            hoodAngleMap.put(Meters.convertFrom(154, Inches), -1d);
+
+            hoodAngleMap.put(Meters.convertFrom(208, Inches), -0.2);
+
+
         }
 
         public AimingConstants() throws Exception {

@@ -133,7 +133,7 @@ public class RobotContainer {
 
   private Trigger flywheelAtSpeed = new Trigger(() -> m_shooter.getFlywheelVelocity() != Logger.getLogger("Aiming/Flywheel/TargetRPM"));
 
-  private DoubleSupplier opRightX = () -> m_operatorController.getRightX();
+private DoubleSupplier opRightX = () -> m_operatorController.getRightX();
   private Trigger opRJoystickX = new Trigger(() -> opRightX.getAsDouble() != 0);
 
   // private final SendableChooser<Command> autoChooser;
@@ -218,10 +218,13 @@ public class RobotContainer {
     m_driverController.a().whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
     m_driverController.leftBumper().onTrue(new InstantCommand((()->m_shooter.setHoodPosition(angleSupplier))));
     
-    
-
+    m_driverController.povLeft().whileTrue(Commands.parallel(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED), new WaitCommand(0.75).andThen(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))));
+   
     m_driverController.b().whileTrue(new RunFlywheelCommand(m_shooter, ()-> RotationsPerSecond.of(speedSupplier.getAsDouble()))).onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
-    
+
+    m_operatorController.rightTrigger().whileTrue(new ShootAtHubCommand(m_turret, m_shooter, ledSubsystem, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
+
+    m_operatorController.start().whileTrue(Commands.parallel(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).andThen(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED)).andThen(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE))));
 
     m_operatorController.rightBumper().onTrue(new ArmOutCommand(armSubsystem, nextArmAngle()));
   }

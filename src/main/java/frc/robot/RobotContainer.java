@@ -133,6 +133,9 @@ public class RobotContainer {
 
   private Trigger flywheelAtSpeed = new Trigger(() -> m_shooter.getFlywheelVelocity() != Logger.getLogger("Aiming/Flywheel/TargetRPM"));
 
+  private DoubleSupplier opRightX = () -> m_operatorController.getRightX();
+  private Trigger opRJoystickX = new Trigger(() -> opRightX.getAsDouble() != 0);
+
   // private final SendableChooser<Command> autoChooser;
 
   /**

@@ -33,6 +33,7 @@ import frc.robot.commands.RunKickerCommand;
 import frc.robot.commands.RunSpindexerCommand;
 import frc.robot.commands.SetHoodAngleCommand;
 import frc.robot.commands.ShootAtHubCommand;
+import frc.robot.commands.TurnTurretCommand;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -217,11 +218,10 @@ public class RobotContainer {
     m_driverController.povDown().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE));
     m_driverController.a().whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
     m_driverController.leftBumper().onTrue(new InstantCommand((()->m_shooter.setHoodPosition(angleSupplier))));
-    
-    
 
     m_driverController.b().whileTrue(new RunFlywheelCommand(m_shooter, ()-> RotationsPerSecond.of(speedSupplier.getAsDouble()))).onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
     
+    opRJoystickX.whileTrue(new TurnTurretCommand(m_turret, opRightX));
 
     m_operatorController.rightBumper().onTrue(new ArmOutCommand(armSubsystem, nextArmAngle()));
   }

@@ -47,6 +47,7 @@ public class RunFlywheelCommand extends Command {
 
     @Override
     public void initialize() {
+        
     }
 
     public void execute(){

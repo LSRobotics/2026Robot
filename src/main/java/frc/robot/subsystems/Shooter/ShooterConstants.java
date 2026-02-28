@@ -46,11 +46,11 @@ public class ShooterConstants {
         public static final Distance actuatorLengthExtended = Inches.of(9);
         public static final Distance actuatorLengthRetracted = Inches.of(6.75);
 
-        public static final Distance hoodPivotToActuatorMount = Inches.of(5.5); //From retracted position
-        public static final Distance hoodPivotToHoodEdge = Inches.of(5.5);
-        public static final Angle maxAngle = Degrees.of(35);
-        public static final Angle angleOffset = Degrees.of(11); // mechanical zero offset
-        public static final Angle minAngle = angleOffset;//TODO
+        public static final Distance hoodPivotToActuatorMount = Inches.of(9.5); //From retracted position
+        public static final Distance hoodPivotToHoodEdge = Inches.of(5.3);
+        public static final Angle maxAngle = Degrees.of(25);
+        public static final Angle angleOffset = Degrees.of(0); // mechanical zero offset
+        public static final Angle minAngle = Degrees.of(0);
 
 
     }

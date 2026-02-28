@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.068969328703703,
-        "y": 4.635730034722222
+        "x": 8.263045283564814,
+        "y": 4.3431070601851856
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.696796513310186,
-        "y": 6.316737485532408
+        "x": 8.890872468171297,
+        "y": 6.024114510995371
       },
       "isLocked": false,
       "linkedName": "CutCenter"
@@ -48,7 +48,7 @@
   "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -66.14720640050159
+    "rotation": -123.9970358952736
   },
   "useDefaultConstraints": true
 }

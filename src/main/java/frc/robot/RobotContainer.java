@@ -224,6 +224,9 @@ public class RobotContainer {
     
 
     m_operatorController.rightBumper().onTrue(new ArmOutCommand(armSubsystem, nextArmAngle()));
+
+    m_operatorController.povUp().whileTrue(new InstantCommand(() -> armSubsystem.runArm(ArmMotorConstants.ARM_SPEED)));
+    m_operatorController.povDown().whileTrue(new InstantCommand(() -> armSubsystem.runArm(-ArmMotorConstants.ARM_SPEED)));
   }
 
   public Angle nextArmAngle() {

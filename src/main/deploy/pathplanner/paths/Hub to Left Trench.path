@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.642336892052195,
-        "y": 6.020071174377224
+        "x": 0.5843166232569077,
+        "y": 7.51052112269268
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.668481731909846,
-        "y": 6.852832740213524
+        "x": 0.6104614631145586,
+        "y": 8.343282688528978
       },
       "isLocked": false,
       "linkedName": "LeftHub"
@@ -48,7 +48,7 @@
   "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 138.59671707762848
+    "rotation": -90.04912820190476
   },
   "useDefaultConstraints": true
 }

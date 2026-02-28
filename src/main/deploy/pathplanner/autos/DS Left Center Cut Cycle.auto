@@ -7,25 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Trench to Start of Balls"
+            "pathName": "Left Trench to Cut Center"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left Cycle Collect"
+            "pathName": "Cut Center to Left Trench"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Balls to Left Hub"
+            "pathName": "DS Left Trench to Second Cut Cycle"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left Cycle to Depot"
+            "pathName": "DS Trench From Second Cut"
           }
         }
       ]

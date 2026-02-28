@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.586,
-        "y": 5.213131672597865
+        "x": 5.941088541666667,
+        "y": 7.3434519572953745
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.49902069619521844,
-        "y": 4.969631827217792
+        "x": 4.319196209761824,
+        "y": 7.335072903805226
       },
       "isLocked": false,
-      "linkedName": "Depot Point End"
+      "linkedName": "DSIntoTrench"
     },
     {
       "anchor": {
-        "x": 0.586,
-        "y": 5.213131672597865
+        "x": 3.417603795966786,
+        "y": 7.3434519572953745
       },
       "prevControl": {
-        "x": 0.8217751346900843,
-        "y": 5.296258598812376
+        "x": 4.275040292245371,
+        "y": 7.361519603587962
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Depot Loop 2 Start"
+      "linkedName": "DSOutOfTrench"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 89.52254622269041
+    "rotation": 179.7564875804505
   },
   "reversed": false,
   "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.35586983062188
+    "rotation": 179.7372487692836
   },
   "useDefaultConstraints": true
 }

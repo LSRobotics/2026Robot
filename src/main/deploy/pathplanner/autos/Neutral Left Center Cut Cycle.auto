@@ -19,13 +19,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Trench to Second Cut Cycle"
+            "pathName": "Neutral Left Trench to Second Cut Cycle"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Trench From Second Cut"
+            "pathName": "Neutral Trench From Second Cut"
           }
         }
       ]

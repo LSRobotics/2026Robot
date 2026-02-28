@@ -217,6 +217,8 @@ public class RobotContainer {
     m_driverController.povDown().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE));
     m_driverController.a().whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
     m_driverController.leftBumper().onTrue(new InstantCommand((()->m_shooter.setHoodPosition(angleSupplier))));
+    
+    
 
     m_driverController.b().whileTrue(new RunFlywheelCommand(m_shooter, ()-> RotationsPerSecond.of(speedSupplier.getAsDouble()))).onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
     

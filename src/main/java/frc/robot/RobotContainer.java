@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
@@ -16,6 +17,9 @@ import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.kicker.KickerIO;
 import frc.robot.subsystems.kicker.KickerIOTalonFX;
 import frc.robot.subsystems.kicker.KickerSubsystem;
+import frc.robot.subsystems.leds.LedSubsystem;
+import frc.robot.subsystems.leds.LedsIO;
+import frc.robot.subsystems.leds.LedsIOBlinkin;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
@@ -100,7 +104,8 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or Commandm_driverController if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
-  private final GenericHID m_operatorController = new GenericHID(OperatorConstants.kOperatorControllerPort);
+  // private final GenericHID m_operatorController = new GenericHID(OperatorConstants.kOperatorControllerPort);
+  private final CommandXboxController m_operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
 
   private final IntakeIOTalonFX intakeIO = new IntakeIOTalonFX();
   private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(intakeIO);
@@ -108,6 +113,9 @@ public class RobotContainer {
   private final ArmIOSparkMax armIO = new ArmIOSparkMax();
   private final ArmLimitSwitchIOLimitSwitch limitSwitchIO = new ArmLimitSwitchIOLimitSwitch();
   private final ArmSubsystem armSubsystem = new ArmSubsystem(armIO, limitSwitchIO);
+
+  private final LedsIOBlinkin ledIO = new LedsIOBlinkin();
+  private final LedSubsystem ledSubsystem = new LedSubsystem(ledIO);
 
       private double MaxSpeed = 4d;
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
@@ -155,13 +163,13 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("ArmOut", new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE));
     NamedCommands.registerCommand("ArmIn", new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
-    NamedCommands.registerCommand("Intake", new RunIntakeCommand(intakeSubsystem, IntakeConstants.INTAKE_IN_SPEED));
+    NamedCommands.registerCommand("Intake", new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
     
     NamedCommands.registerCommand("Shoot", 
-        Commands.parallel(new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds), 
+        Commands.parallel(new ShootAtHubCommand(m_turret, m_shooter, ledSubsystem, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds), 
                           new ConditionalCommand(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).andThen(
                                                  new WaitCommand(0.75).andThen(
-                                                 new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))), null, flywheelAtSpeed)).withTimeout(3));
+                                                 new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))), new InstantCommand(), flywheelAtSpeed)).withTimeout(3));
 
   }
 
@@ -204,12 +212,20 @@ public class RobotContainer {
     m_driverController.y().whileTrue(new InstantCommand(()->m_kicker.runKicker(KickerConstants.KICKER_SPEED))).whileFalse(new InstantCommand(()->m_kicker.runKicker(0)));
     m_driverController.povUp().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
     m_driverController.povDown().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE));
-    m_driverController.a().whileTrue(new RunIntakeCommand(intakeSubsystem, IntakeConstants.INTAKE_IN_SPEED));
+    m_driverController.a().whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
     m_driverController.leftBumper().onTrue(new InstantCommand((()->m_shooter.setHoodPosition(angleSupplier))));
 
     m_driverController.b().whileTrue(new RunFlywheelCommand(m_shooter, ()-> RotationsPerSecond.of(speedSupplier.getAsDouble()))).onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
-   
+    
 
+    m_operatorController.rightBumper().onTrue(new ArmOutCommand(armSubsystem, nextArmAngle()));
+  }
+
+  public Angle nextArmAngle() {
+    if (Math.abs(armSubsystem.getArmEncoder().minus(ArmMotorConstants.ARM_DEPLOY_ANGLE).in(Degrees)) < Math.abs(armSubsystem.getArmEncoder().minus(ArmMotorConstants.ARM_REST_ANGLE).in(Degrees))) {
+      return ArmMotorConstants.ARM_REST_ANGLE;
+    }
+    return ArmMotorConstants.ARM_DEPLOY_ANGLE;
   }
 
   /**

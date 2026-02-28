@@ -37,12 +37,15 @@ import frc.robot.subsystems.Shooter.ShooterConstants;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.subsystems.Turret.TurretConstants;
 import frc.robot.subsystems.Turret.TurretSubsystem;
+import frc.robot.subsystems.leds.LEDConstants;
+import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.util.MathUtils;
 
 public class ShootAtHubCommand extends Command {
     @SuppressWarnings("PMD.UnusedPrivateField")
     private final TurretSubsystem m_Turret;
     private final ShooterSubsystem m_Shooter;
+    private final LedSubsystem m_Leds;
     private final Supplier<Pose2d> robotPoseSupplier;
     private final Supplier<ChassisSpeeds> chassisSpeedSupplier;
 
@@ -55,10 +58,10 @@ public class ShootAtHubCommand extends Command {
         ShooterConstants.FlywheelConstants.kV); //Safe //
     private final Pose2d targetHubPose;
 
-    public ShootAtHubCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem,
-            Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> chassisSpeedSupplier) {
+    public ShootAtHubCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem, LedSubsystem ledSubsystem, Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> chassisSpeedSupplier) {
         this.m_Turret = turretSubsystem;
         this.m_Shooter = shooterSubsystem;
+        this.m_Leds = ledSubsystem;
         this.robotPoseSupplier = robotPoseSupplier;
         this.chassisSpeedSupplier = chassisSpeedSupplier;
         this.targetHubPose = DriverStation.getAlliance().orElse(Alliance.Blue) == DriverStation.Alliance.Blue ? TurretConstants.hubBlue: TurretConstants.hubRed;
@@ -144,6 +147,7 @@ public class ShootAtHubCommand extends Command {
 
     public void spinUpFlywheel(double targetRPM) {
         double targetRPS = targetRPM / 60.0;
+        double rpmTolerance = 15;
         double feedforwardVoltage = flywheelFeedforward.calculate(targetRPS); //Tuned in V per rot/s
         // double controlOutput = flywheelController.calculate(
         //         m_Shooter.getFlywheelVelocity().times(ShooterConstants.FlywheelConstants.gearRatio).in(RotationsPerSecond), targetRPS)
@@ -152,6 +156,14 @@ public class ShootAtHubCommand extends Command {
         double totalVoltage = feedforwardVoltage + controlOutput;
         totalVoltage = MathUtil.clamp(totalVoltage, -ShooterConstants.FlywheelConstants.maxVoltage.in(Volt),
                 ShooterConstants.FlywheelConstants.maxVoltage.in(Volt));
+
+        while (m_Shooter.getFlywheelVelocity().in(RPM) <= targetRPM + rpmTolerance || m_Shooter.getFlywheelVelocity().in(RPM) >= targetRPM - rpmTolerance) {
+            m_Leds.setColor(LEDConstants.colorSkyBlue);
+            if (m_Shooter.getFlywheelVelocity().in(RPM) >= targetRPM + rpmTolerance && m_Shooter.getFlywheelVelocity().in(RPM) <= targetRPM - rpmTolerance) {
+                m_Leds.setColor(LEDConstants.colorLawnGreen);
+                break;
+            }
+        } 
 
         Logger.recordOutput("Aiming/Flywheel/TargetRPM", targetRPM);
         Logger.recordOutput("Aiming/Flywheel/FeedforwardVoltage", feedforwardVoltage);

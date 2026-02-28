@@ -7,6 +7,8 @@ package frc.robot.commands;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.leds.LEDConstants;
+import frc.robot.subsystems.leds.LedSubsystem;
 
 import java.util.function.DoubleSupplier;
 
@@ -16,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RunIntakeCommand extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final IntakeSubsystem m_intakeSubsystem;
+  private final LedSubsystem m_Leds;
 
   private final DoubleSupplier speed;
 
@@ -24,16 +27,19 @@ public class RunIntakeCommand extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public RunIntakeCommand(IntakeSubsystem intake, double speed) {
+  public RunIntakeCommand(IntakeSubsystem intake, LedSubsystem led, double speed) {
     m_intakeSubsystem = intake;
+    m_Leds = led;
     this.speed = () -> speed;
 
     addRequirements(intake);
   }
 
-  public RunIntakeCommand(IntakeSubsystem intake, DoubleSupplier speed) {
+  public RunIntakeCommand(IntakeSubsystem intake, LedSubsystem led, DoubleSupplier speed) {
     m_intakeSubsystem = intake;
+    m_Leds = led;
     this.speed = speed;
+
 
     addRequirements(intake);
   }
@@ -46,6 +52,11 @@ public class RunIntakeCommand extends Command {
   @Override
   public void execute() {
     m_intakeSubsystem.runIntake(speed.getAsDouble());
+    if (speed.getAsDouble() < 0){
+      m_Leds.setColor(LEDConstants.colorWhite);
+    } else if (speed.getAsDouble() > 0) {
+      m_Leds.setColor(LEDConstants.colorOrange);
+    }
   }
 
   // Called once the command ends or is interrupted.

@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volt;
 import static edu.wpi.first.units.Units.Volts;
@@ -113,6 +114,6 @@ public class TakeShotCommand extends Command {
     }
 
     public static final class ShotData{
-        public static final ShotSolution leftBump = new ShotSolution(Degrees.of(10), 3000, Degrees.of(-10));
+        public static final ShotSolution leftBump = new ShotSolution(-1,RPM.convertFrom(0, RotationsPerSecond),-1);
     }
 }

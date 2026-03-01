@@ -190,7 +190,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake",
         new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
     
-    NamedCommands.registerCommand("ShotFromLeftBump", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump));
+    NamedCommands.registerCommand("ShootFromLeftBump", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump));
 
     NamedCommands.registerCommand("Shoot3sec",
         Commands.parallel(

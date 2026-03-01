@@ -13,25 +13,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left Auto 2 Start"
+            "name": "Shoot"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left Auto 2 to Cycle"
+            "name": "Intake"
           }
         },
         {

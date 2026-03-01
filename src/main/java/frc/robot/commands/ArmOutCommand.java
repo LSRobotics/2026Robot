@@ -45,28 +45,28 @@ public class ArmOutCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-  double motorDegrees = m_arm.getArmEncoder().in(Degrees);
-  double armDegrees = motorDegrees / ArmMotorConstants.gearRatio;
-  double armErrorDegrees = targetArmDegrees - armDegrees;
-  double motorErrorDegrees = targetMotorDegrees - motorDegrees;
+    double motorDegrees = m_arm.getArmEncoder().in(Degrees);
+    double armDegrees = motorDegrees / ArmMotorConstants.gearRatio;
+    double armErrorDegrees = targetArmDegrees - armDegrees;
+    double motorErrorDegrees = targetMotorDegrees - motorDegrees;
 
-  Logger.recordOutput("Arm/MotorAngleDegrees", motorDegrees);
-  Logger.recordOutput("Arm/ArmAngleDegrees", armDegrees);
-  Logger.recordOutput("Arm/TargetArmDegrees", targetArmDegrees);
-  Logger.recordOutput("Arm/TargetMotorDegrees", targetMotorDegrees);
-  Logger.recordOutput("Arm/ArmErrorDegrees", armErrorDegrees);
-  Logger.recordOutput("Arm/MotorErrorDegrees", motorErrorDegrees);
+    Logger.recordOutput("Arm/MotorAngleDegrees", motorDegrees);
+    Logger.recordOutput("Arm/ArmAngleDegrees", armDegrees);
+    Logger.recordOutput("Arm/TargetArmDegrees", targetArmDegrees);
+    Logger.recordOutput("Arm/TargetMotorDegrees", targetMotorDegrees);
+    Logger.recordOutput("Arm/ArmErrorDegrees", armErrorDegrees);
+    Logger.recordOutput("Arm/MotorErrorDegrees", motorErrorDegrees);
 
-  if (Math.abs(armErrorDegrees) <= ArmMotorConstants.ARM_TOLERANCE) {
-        m_arm.runArm(0);
-        return;
+    if (Math.abs(armErrorDegrees) <= ArmMotorConstants.ARM_TOLERANCE) {
+      m_arm.runArm(0);
+      return;
     }
 
-  double direction = Math.signum(motorErrorDegrees);
+    double direction = Math.signum(motorErrorDegrees);
 
     // if (direction > 0 && m_arm.getLimitSwitch()) {
-    //     m_arm.runArm(0);
-    //     return;
+    // m_arm.runArm(0);
+    // return;
     // }
 
     m_arm.runArm(direction * ArmMotorConstants.ARM_SPEED);
@@ -85,4 +85,3 @@ public class ArmOutCommand extends Command {
     return Math.abs(targetArmDegrees - armDegrees) <= ArmMotorConstants.ARM_TOLERANCE;
   }
 }
-

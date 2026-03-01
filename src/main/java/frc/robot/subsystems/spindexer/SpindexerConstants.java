@@ -15,6 +15,6 @@ public class SpindexerConstants {
 
     public static final Current spindexerJamThreshold = Amps.of(45); // TODO: Tune
     public static final Time jamRecoveryTime = Seconds.of(0.01);
-    public static final double jamRecoverySpeed = -0.1; // TODO
+    public static final double jamRecoverySpeed = -0.15; // TODO
     
 }

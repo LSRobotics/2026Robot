@@ -47,6 +47,9 @@ import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.subsystems.Turret.TurretIO;
 import frc.robot.subsystems.Turret.TurretIOTalon;
 import frc.robot.subsystems.Turret.TurretSubsystem;
+import frc.robot.subsystems.Vision.VisionConstants;
+import frc.robot.subsystems.Vision.VisionIOPhoton;
+import frc.robot.subsystems.Vision.VisionSubsystem;
 import frc.robot.util.SendableSupplier;
 import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;
 import frc.robot.commands.TurnTurretToAngleCommand;
@@ -132,12 +135,16 @@ public class RobotContainer {
 
   private final CommandSwerveDrivetrain m_Swerve = TunerConstants.createDrivetrain();
 
+  private final VisionSubsystem m_Vision1 = new VisionSubsystem(new VisionIOPhoton("Arducam_OV9281_USB_Camera", m_Swerve::addVisionMeasurement, VisionConstants.cameraToRobot1));
+  private final VisionSubsystem m_Vision2 = new VisionSubsystem(new VisionIOPhoton("Arducam_OV9281_USB_Camera (1)", m_Swerve::addVisionMeasurement, VisionConstants.cameraToRobot2));
+
   private Trigger flywheelAtSpeed = new Trigger(() -> m_shooter.getFlywheelVelocity() != Logger.getLogger("Aiming/Flywheel/TargetRPM"));
 
 private DoubleSupplier opRightX = () -> m_operatorController.getRightX();
   private Trigger opRJoystickX = new Trigger(() -> opRightX.getAsDouble() != 0);
 
   // private final SendableChooser<Command> autoChooser;
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -170,7 +177,7 @@ private DoubleSupplier opRightX = () -> m_operatorController.getRightX();
     NamedCommands.registerCommand("Intake", new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
     
     NamedCommands.registerCommand("Shoot", 
-        Commands.parallel(new ShootAtHubCommand(m_turret, m_shooter, ledSubsystem, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds), 
+        Commands.parallel(new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds), 
                           new ConditionalCommand(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).andThen(
                                                  new WaitCommand(0.75).andThen(
                                                  new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))), new InstantCommand(), flywheelAtSpeed)).withTimeout(3));
@@ -218,6 +225,7 @@ private DoubleSupplier opRightX = () -> m_operatorController.getRightX();
     m_driverController.povDown().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE));
     m_driverController.a().whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
     m_driverController.leftBumper().onTrue(new InstantCommand((()->m_shooter.setHoodPosition(angleSupplier))));
+    m_driverController.rightBumper().whileTrue(new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
 
     m_driverController.b().whileTrue(new RunFlywheelCommand(m_shooter, ()-> RotationsPerSecond.of(speedSupplier.getAsDouble()))).onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
     
@@ -227,7 +235,8 @@ private DoubleSupplier opRightX = () -> m_operatorController.getRightX();
    
     m_driverController.b().whileTrue(new RunFlywheelCommand(m_shooter, ()-> RotationsPerSecond.of(speedSupplier.getAsDouble()))).onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
 
-    m_operatorController.rightTrigger().whileTrue(new ShootAtHubCommand(m_turret, m_shooter, ledSubsystem, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
+
+    m_operatorController.rightTrigger().whileTrue(new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
 
     m_operatorController.start().whileTrue(Commands.parallel(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).andThen(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED)).andThen(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE))));
 

@@ -13,7 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Shoot3Sec"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "Shoot6Sec"
           }
         }
       ]

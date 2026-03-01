@@ -32,6 +32,8 @@ public class ShooterConstants {
         public static final double gearRatio = 1d/1d;
         public static final AngularVelocity flywheelTolerance = RotationsPerSecond.of(5); // TODO
 
+        public static final double bangBangCoefficient = 0.3
+
         //From sysid
         public static final Per<VoltageUnit, AngularVelocityUnit> kVVoltSecondsPerRadian = VoltsPerRadianPerSecond.ofNative(0.018378); 
         public static final Per<VoltageUnit, AngularVelocityUnit> kAVoltSecondsPerRadian = VoltsPerRadianPerSecond.ofNative(0.0013998); 

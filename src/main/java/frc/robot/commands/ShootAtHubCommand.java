@@ -37,15 +37,12 @@ import frc.robot.subsystems.Shooter.ShooterConstants;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.subsystems.Turret.TurretConstants;
 import frc.robot.subsystems.Turret.TurretSubsystem;
-import frc.robot.subsystems.leds.LEDConstants;
-import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.util.MathUtils;
 
 public class ShootAtHubCommand extends Command {
     @SuppressWarnings("PMD.UnusedPrivateField")
     private final TurretSubsystem m_Turret;
     private final ShooterSubsystem m_Shooter;
-    private final LedSubsystem m_Leds;
     private final Supplier<Pose2d> robotPoseSupplier;
     private final Supplier<ChassisSpeeds> chassisSpeedSupplier;
 
@@ -54,14 +51,15 @@ public class ShootAtHubCommand extends Command {
     private BangBangController flywheelController = new BangBangController();
     //@SuppressWarnings("unchecked")
     private SimpleMotorFeedforward flywheelFeedforward = new SimpleMotorFeedforward(
-        ShooterConstants.FlywheelConstants.kS.in(Volts), 
-        ShooterConstants.FlywheelConstants.kV); //Safe //
+        ShooterConstants.FlywheelConstants.kS.in(Volts),
+        ShooterConstants.FlywheelConstants.kV, 
+        ShooterConstants.FlywheelConstants.kA);
     private final Pose2d targetHubPose;
 
-    public ShootAtHubCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem, LedSubsystem ledSubsystem, Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> chassisSpeedSupplier) {
+    public ShootAtHubCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem,
+            Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> chassisSpeedSupplier) {
         this.m_Turret = turretSubsystem;
         this.m_Shooter = shooterSubsystem;
-        this.m_Leds = ledSubsystem;
         this.robotPoseSupplier = robotPoseSupplier;
         this.chassisSpeedSupplier = chassisSpeedSupplier;
         this.targetHubPose = DriverStation.getAlliance().orElse(Alliance.Blue) == DriverStation.Alliance.Blue ? TurretConstants.hubBlue: TurretConstants.hubRed;
@@ -140,30 +138,22 @@ public class ShootAtHubCommand extends Command {
 
                         double hoodAngleDeg = AimingConstants.hoodAngleMap.get(predictedDistance);
 
-        setHoodAngle(Degrees.of(hoodAngleDeg));
+        setHoodAngle(hoodAngleDeg);
         aimTurret(predictedRobotPose, targetHubPose);
         spinUpFlywheel(targetRPM);
     }
 
     public void spinUpFlywheel(double targetRPM) {
         double targetRPS = targetRPM / 60.0;
-        double rpmTolerance = 15;
+
+
         double feedforwardVoltage = flywheelFeedforward.calculate(targetRPS); //Tuned in V per rot/s
-        // double controlOutput = flywheelController.calculate(
-        //         m_Shooter.getFlywheelVelocity().times(ShooterConstants.FlywheelConstants.gearRatio).in(RotationsPerSecond), targetRPS)
-        //         * ShooterConstants.FlywheelConstants.bangBangVolts.in(Volt);
-        double controlOutput = 0;
-        double totalVoltage = feedforwardVoltage + controlOutput;
+        double controlOutput = flywheelController.calculate( 
+                m_Shooter.getFlywheelVelocity().times(ShooterConstants.FlywheelConstants.gearRatio).in(RotationsPerSecond), targetRPS)
+                * ShooterConstants.FlywheelConstants.bangBangVolts.in(Volt);
+        double totalVoltage = feedforwardVoltage + controlOutput*0.25;
         totalVoltage = MathUtil.clamp(totalVoltage, -ShooterConstants.FlywheelConstants.maxVoltage.in(Volt),
                 ShooterConstants.FlywheelConstants.maxVoltage.in(Volt));
-
-        while (m_Shooter.getFlywheelVelocity().in(RPM) <= targetRPM + rpmTolerance || m_Shooter.getFlywheelVelocity().in(RPM) >= targetRPM - rpmTolerance) {
-            m_Leds.setColor(LEDConstants.colorSkyBlue);
-            if (m_Shooter.getFlywheelVelocity().in(RPM) >= targetRPM + rpmTolerance && m_Shooter.getFlywheelVelocity().in(RPM) <= targetRPM - rpmTolerance) {
-                m_Leds.setColor(LEDConstants.colorLawnGreen);
-                break;
-            }
-        } 
 
         Logger.recordOutput("Aiming/Flywheel/TargetRPM", targetRPM);
         Logger.recordOutput("Aiming/Flywheel/FeedforwardVoltage", feedforwardVoltage);
@@ -191,8 +181,8 @@ public class ShootAtHubCommand extends Command {
         Logger.recordOutput("Aiming/Turret/PID_Setpoint", turretPID.getSetpoint());
     }
 
-    public void setHoodAngle(Angle a) {
-        m_Shooter.setHoodAngle(a);
+    public void setHoodAngle(double a) {
+        m_Shooter.setHoodPosition(a);
         Logger.recordOutput("Aiming/Hood/Angle", a);
     }
 
@@ -200,6 +190,7 @@ public class ShootAtHubCommand extends Command {
     public void end(boolean interrupted) {
         m_Turret.setSpeed(0);
         m_Shooter.setFlywheelVoltage(Volt.of(0));
+        m_Shooter.setHoodPosition(-1d);
     }
 
     @Override
@@ -238,13 +229,24 @@ public class ShootAtHubCommand extends Command {
             // Meters to RPM
             flywheelSpeedMap.put(Meters.convertFrom(44, Inches), RPM.convertFrom(40, RotationsPerSecond));
 
+            flywheelSpeedMap.put(Meters.convertFrom(48, Inches), RPM.convertFrom(35, RotationsPerSecond));
+
             flywheelSpeedMap.put(Meters.convertFrom(78, Inches), RPM.convertFrom(45, RotationsPerSecond));
+
+            flywheelSpeedMap.put(Meters.convertFrom(105, Inches), RPM.convertFrom(44, RotationsPerSecond));
+
+            flywheelSpeedMap.put(Meters.convertFrom(132, Inches), RPM.convertFrom(50, RotationsPerSecond));
 
             flywheelSpeedMap.put(Meters.convertFrom(139, Inches), RPM.convertFrom(52, RotationsPerSecond));
 
             flywheelSpeedMap.put(Meters.convertFrom(154, Inches), RPM.convertFrom(52, RotationsPerSecond)); //TODO: Deal with points of inflection
 
+            flywheelSpeedMap.put(Meters.convertFrom(168, Inches), RPM.convertFrom(52, RotationsPerSecond));
+
             flywheelSpeedMap.put(Meters.convertFrom(208, Inches), RPM.convertFrom(52, RotationsPerSecond));
+
+            flywheelSpeedMap.put(Meters.convertFrom(236, Inches), RPM.convertFrom(54, RotationsPerSecond));
+
 
 
 
@@ -252,26 +254,48 @@ public class ShootAtHubCommand extends Command {
             // Meters to tof
             flywheelTOFMap.put(Meters.convertFrom(44, Inches), Seconds.of(1.14).in(Seconds));
 
+            flywheelTOFMap.put(Meters.convertFrom(48, Inches), Seconds.of(0.89).in(Seconds));
+
             flywheelTOFMap.put(Meters.convertFrom(78, Inches), Seconds.of(1.34).in(Seconds));
+
+            flywheelTOFMap.put(Meters.convertFrom(105, Inches), Seconds.of(1.28).in(Seconds));
+
+            flywheelTOFMap.put(Meters.convertFrom(132, Inches), Seconds.of(1.52).in(Seconds));
 
             flywheelTOFMap.put(Meters.convertFrom(139, Inches), Seconds.of(1.56).in(Seconds));
 
             flywheelTOFMap.put(Meters.convertFrom(154, Inches), Seconds.of(1.52).in(Seconds));
 
+            flywheelTOFMap.put(Meters.convertFrom(168, Inches), Seconds.of(1.37).in(Seconds));
+
             flywheelTOFMap.put(Meters.convertFrom(208, Inches), Seconds.of(1.38).in(Seconds));
+
+            flywheelTOFMap.put(Meters.convertFrom(236, Inches), Seconds.of(1.15).in(Seconds));
+
 
 
 
             // Meters to hood angle at hoodTestRPM
             hoodAngleMap.put(Meters.convertFrom(44, Inches), -1d);
-            
+
+            hoodAngleMap.put(Meters.convertFrom(48, Inches), -1d);
+
             hoodAngleMap.put(Meters.convertFrom(78, Inches), -1d);
+
+            hoodAngleMap.put(Meters.convertFrom(105, Inches), -1d);
+
+            hoodAngleMap.put(Meters.convertFrom(139, Inches), -1d);
 
             hoodAngleMap.put(Meters.convertFrom(139, Inches), -1d);
 
             hoodAngleMap.put(Meters.convertFrom(154, Inches), -1d);
 
+            hoodAngleMap.put(Meters.convertFrom(208, Inches), -0.45090180360721444);
+
             hoodAngleMap.put(Meters.convertFrom(208, Inches), -0.2);
+
+            hoodAngleMap.put(Meters.convertFrom(236, Inches), 0.20040080160320642);
+
 
 
         }

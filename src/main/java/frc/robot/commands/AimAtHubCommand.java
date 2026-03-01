@@ -81,7 +81,7 @@ public class AimAtHubCommand extends Command {
         });
 
         //turret.pointAtAngle(Degrees.of(angleToHub.getDegrees()));
-        pid.setSetpoint(angleToHub.getDegrees());
+        pid.setSetpoint(MathUtils.clamp(-TurretConstants.turretRangeOneWay.in(Degrees), TurretConstants.turretRangeOneWay.in(Degrees), angleToHub.getDegrees()));
         double speed = pid.calculate(turret.inputs.turretAngle.in(Degrees));
         SmartDashboard.putNumber("Angle2", angleToHub.getDegrees());
         speed = MathUtils.clamp(-TurretConstants.maxControlSpeed, TurretConstants.maxControlSpeed, speed);

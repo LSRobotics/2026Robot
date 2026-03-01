@@ -14,12 +14,12 @@ import edu.wpi.first.math.Matrix;
 
 public class VisionConstants {
      public final static Transform3d cameraToRobot1 = new Transform3d(
-        new Translation3d(Inches.of(1.5),Inches.of(6),Inches.of(18.5)), 
-        new Rotation3d(0,0,0));
+        new Translation3d(Inches.of(-13),Inches.of(5.5),Inches.of(19.5)), 
+        new Rotation3d(Degrees.of(0),Degrees.of(0),Degrees.of(180))); //Back camera
     public final static Transform3d cameraToRobot2 = new Transform3d(
-        new Translation3d(Inches.of(-1.5),Inches.of(-3.25),Inches.of(18.5)), 
-        new Rotation3d(Degrees.of(0),Degrees.of(0),Degrees.of(180)));
+        new Translation3d(Inches.of(12.5),Inches.of(13),Inches.of(18)), 
+        new Rotation3d(Degrees.of(0),Degrees.of(0),Degrees.of(0))); //INtake camera
 
-        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(9, 9, 25);
-        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(1, 1, 2.5);
+        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(8, 8, Integer.MAX_VALUE);
+        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(1.5, 1.5, Integer.MAX_VALUE);
 }

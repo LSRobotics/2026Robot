@@ -8,27 +8,32 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.215599051008305,
-        "y": 7.870652431791221
+        "x": 7.841563223376667,
+        "y": 7.980817418983937
       },
       "isLocked": false,
       "linkedName": "Left Cycle Collect"
     },
     {
       "anchor": {
-        "x": 1.642336892052195,
-        "y": 6.020071174377224
+        "x": 0.5843166232569077,
+        "y": 7.51052112269268
       },
       "prevControl": {
-        "x": 2.2986476868327417,
-        "y": 8.354816132858836
+        "x": 2.210211226851852,
+        "y": 7.233316623263888
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "LeftHub"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6343441611842108,
+      "rotationDegrees": -0.17251209223922756
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,7 +47,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 138.59671707762848
+    "rotation": -90.04912820190476
   },
   "reversed": false,
   "folder": "Left",

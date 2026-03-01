@@ -3,37 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.941088541666667,
-        "y": 7.3434519572953745
+        "x": 3.4730171440972226,
+        "y": 6.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.319196180555556,
-        "y": 7.335078559027778
+        "x": 4.473017144097223,
+        "y": 6.0
       },
       "isLocked": false,
-      "linkedName": "LeftPostSecondCut"
+      "linkedName": "Left Trench Start"
     },
     {
       "anchor": {
-        "x": 3.417603795966786,
-        "y": 7.3434519572953745
+        "x": 2.0,
+        "y": 6.0
       },
       "prevControl": {
-        "x": 4.275040292245371,
-        "y": 7.361519603587962
+        "x": 1.0,
+        "y": 6.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "RotatedLeftTrench"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.927405427631579,
-      "rotationDegrees": -179.82847381397394
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -47,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -65.97868839636016
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 168.70091930310554
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

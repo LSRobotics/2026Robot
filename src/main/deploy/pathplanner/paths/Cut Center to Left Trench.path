@@ -20,15 +20,20 @@
         "y": 7.3434519572953745
       },
       "prevControl": {
-        "x": 5.63075072337963,
-        "y": 7.962380859375001
+        "x": 6.158193793402778,
+        "y": 8.195560691550925
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "RotatedLeftTrench"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 177.75363772116614
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,7 +47,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -65.97868839636016
+    "rotation": 179.6917193867401
   },
   "reversed": false,
   "folder": "Left",

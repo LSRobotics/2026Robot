@@ -25,22 +25,22 @@ import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;;
 public class ArmIOSparkMax implements ArmIO {
     private final SparkMax armMotor = new SparkMax(ArmMotorConstants.ARM_MOTOR_ID, MotorType.kBrushless);
     private final SparkBaseConfig leaderConfig = new SparkMaxConfig().smartCurrentLimit((int) ArmMotorConstants.STATOR_CURRENT_LIMIT.in(Amps)).secondaryCurrentLimit(ArmMotorConstants.SUPPLY_CURRENT_LIMIT.in(Amps)).idleMode(IdleMode.kBrake);
-    private final SparkMax armMotorFollower = new SparkMax(ArmMotorConstants.ARM_MOTOR_FOLLOWER_ID, MotorType.kBrushless);
+    //private final SparkMax armMotorFollower = new SparkMax(ArmMotorConstants.ARM_MOTOR_FOLLOWER_ID, MotorType.kBrushless);
     private final SparkBaseConfig followerConfig = new SparkMaxConfig().smartCurrentLimit((int) ArmMotorConstants.STATOR_CURRENT_LIMIT.in(Amps)).secondaryCurrentLimit(ArmMotorConstants.SUPPLY_CURRENT_LIMIT.in(Amps)).idleMode(IdleMode.kBrake);
 
 
     public ArmIOSparkMax() {
-        SparkMaxConfig config = new SparkMaxConfig();
-        config
+        SparkBaseConfig config = new SparkMaxConfig();
+        config = config
             .smartCurrentLimit((int) ArmMotorConstants.STATOR_CURRENT_LIMIT.in(Amps))
             .secondaryCurrentLimit(ArmMotorConstants.SUPPLY_CURRENT_LIMIT.in(Amps))
             .idleMode(IdleMode.kBrake);
 
-        armMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+        armMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        config.follow(ArmMotorConstants.ARM_MOTOR_ID);
+        //config.follow(ArmMotorConstants.ARM_MOTOR_ID);
 
-        armMotorFollower.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+        //armMotorFollower.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     @Override
@@ -71,17 +71,17 @@ public class ArmIOSparkMax implements ArmIO {
         armMotor.stopMotor();
     }
 
-    @Override 
-    public void setBrakeOnNeutral(boolean brake){
-        if (brake){
-            armMotor.configure(leaderConfig.idleMode(IdleMode.kBrake),ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-            armMotorFollower.configure(followerConfig.idleMode(IdleMode.kBrake),ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        }
-        else{
-            armMotor.configure(leaderConfig.idleMode(IdleMode.kBrake),ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-            armMotorFollower.configure(followerConfig.idleMode(IdleMode.kBrake),ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        }
-    }
+    // @Override 
+    // public void setBrakeOnNeutral(boolean brake){
+    //     if (brake){
+    //         armMotor.configure(leaderConfig.idleMode(IdleMode.kBrake),ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    //         armMotorFollower.configure(followerConfig.idleMode(IdleMode.kBrake),ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    //     }
+    //     else{
+    //         armMotor.configure(leaderConfig.idleMode(IdleMode.kBrake),ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    //         armMotorFollower.configure(followerConfig.idleMode(IdleMode.kBrake),ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+    //     }
+    // }
     
     // public AngularVelocity getArmSpeed() {
     //     return RPM.of(armMotor.getRotorVelocity().getValueAsDouble());

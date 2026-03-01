@@ -20,7 +20,7 @@
         "y": 2.017651245551601
       },
       "prevControl": {
-        "x": 3.50367734282325,
+        "x": 3.5036773428232495,
         "y": -0.6936654804270463
       },
       "nextControl": null,
@@ -28,7 +28,16 @@
       "linkedName": "RightHub"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5311574835526314,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 0.7486739309210527,
+      "rotationDegrees": -13.390267292332435
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,7 +51,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -145.4914770123316
+    "rotation": 34.008949286085084
   },
   "reversed": false,
   "folder": "Right",

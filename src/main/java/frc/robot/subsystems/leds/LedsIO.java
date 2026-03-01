@@ -1,6 +1,5 @@
 package frc.robot.subsystems.leds;
 
-import java.security.PublicKey;
 
 import org.littletonrobotics.junction.AutoLog;
 

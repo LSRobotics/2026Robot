@@ -34,6 +34,7 @@ public class TakeShotCommand extends Command {
     private final ShooterSubsystem m_Shooter;
     private final ShotSolution m_Shot;
 
+    //private PIDController turretPID = new PIDController(0.008, 0, 0.0001);
     private PIDController turretPID = new PIDController(TurretConstants.kP, 0, TurretConstants.kD);
     private BangBangController flywheelController = new BangBangController();
     //@SuppressWarnings("unchecked")
@@ -109,5 +110,9 @@ public class TakeShotCommand extends Command {
     @Override
     public boolean isFinished() {
         return false;
+    }
+
+    public static final class ShotData{
+        public static final ShotSolution leftBump = new ShotSolution(Degrees.of(10), 3000, Degrees.of(-10));
     }
 }

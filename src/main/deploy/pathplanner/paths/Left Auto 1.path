@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.5,
-        "y": 6.0
+        "y": 5.5
       },
       "prevControl": null,
       "nextControl": {
         "x": 3.75,
-        "y": 6.0
+        "y": 5.5
       },
       "isLocked": false,
       "linkedName": "Left Trench Start"
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 3.5,
-        "y": 6.0
+        "y": 5.5
       },
       "prevControl": {
         "x": 3.25,
-        "y": 6.0
+        "y": 5.5
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.59163422119917
   },
   "reversed": false,
   "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.64013809705466
   },
   "useDefaultConstraints": true
 }

@@ -33,9 +33,11 @@ import frc.robot.commands.RunKickerCommand;
 import frc.robot.commands.RunSpindexerCommand;
 import frc.robot.commands.SetHoodAngleCommand;
 import frc.robot.commands.ShootAtHubCommand;
+import frc.robot.commands.TakeShotCommand;
 import frc.robot.commands.TurnTurretCommand;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -187,8 +189,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("ArmIn", new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
     NamedCommands.registerCommand("Intake",
         new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
+    
+    NamedCommands.registerCommand("ShotFromLeftBump", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump));
 
-    NamedCommands.registerCommand("Shoot",
+    NamedCommands.registerCommand("Shoot3sec",
         Commands.parallel(
             new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose,
                 () -> m_Swerve.getState().Speeds),
@@ -197,6 +201,16 @@ public class RobotContainer {
                     new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))),
                 new InstantCommand(), flywheelAtSpeed))
             .withTimeout(3));
+
+    NamedCommands.registerCommand("Shoot6sec",
+    Commands.parallel(
+        new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose,
+            () -> m_Swerve.getState().Speeds),
+        new ConditionalCommand(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).andThen(
+            new WaitCommand(0.75).andThen(
+                new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))),
+            new InstantCommand(), flywheelAtSpeed))
+        .withTimeout(6.5));
 
   }
 
@@ -230,9 +244,9 @@ public class RobotContainer {
 
     // Regenerate tuner constants b[]\efore doing anything with swerve
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
+    // Schedule `exampleMethodCommand` when the Xbox controller's B []\button is
     // pressed,
-    // cancelling on relea[]\se.
+    // []\cancelling on relea[]\se.
     // m_driverController.a().onTrue(new TurnTurretToAngleCommand(m_turret, () ->
     // Degree.of(speedSupplier.getAsDouble())));
     m_driverController.x().whileTrue(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED));

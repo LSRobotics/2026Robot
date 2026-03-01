@@ -13,37 +13,51 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot3sec"
+            "name": "Shoot3Sec"
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left Trench to Start of Balls"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left Cycle Collect"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Balls to Left Hub"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot6Sec"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Left Trench to Start of Balls"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Left Cycle Collect"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Balls to Left Hub"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Shoot6Sec"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -7,13 +7,13 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmOut"
+            "name": "Print"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake"
+            "name": "ArmOut"
           }
         },
         {
@@ -23,9 +23,54 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "ShootFromLeftBump"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootFromLeftBump"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
+                      "type": "parallel",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Spindexer"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Kicker"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "Intake"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

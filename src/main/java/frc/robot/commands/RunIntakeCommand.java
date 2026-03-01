@@ -40,7 +40,6 @@ public class RunIntakeCommand extends Command {
     m_Leds = led;
     this.speed = speed;
 
-
     addRequirements(intake);
   }
 

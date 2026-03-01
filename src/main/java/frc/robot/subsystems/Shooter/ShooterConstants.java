@@ -30,7 +30,7 @@ public class ShooterConstants {
         public static final Voltage maxVoltage = Volts.of(11);
         public static final Voltage bangBangVolts = Volts.of(4); // TODO
         public static final double gearRatio = 1d/1d;
-        public static final AngularVelocity flywheelTolerance = RotationsPerSecond.of(5); // TODO
+        public static final AngularVelocity flywheelTolerance = RotationsPerSecond.of(3); // TODO
 
         public static final double bangBangCoefficient = 0.3;
 

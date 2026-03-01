@@ -1,6 +1,8 @@
 package frc.robot.subsystems.Shooter;
 
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
@@ -21,6 +23,8 @@ public class ShooterSubsystem extends SubsystemBase{
     private final ShooterHoodIOInputsAutoLogged hoodInputs = new ShooterHoodIOInputsAutoLogged();
 
     private final SysIdRoutine flywheelSysIdRoutine;
+
+    public AngularVelocity targetSpeed = DegreesPerSecond.zero();
 
     public ShooterSubsystem(ShooterFlywheelIO flywheelIO, ShooterHoodIO hoodIO) {
         this.flywheelIO = flywheelIO;

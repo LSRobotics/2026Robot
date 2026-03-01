@@ -64,8 +64,10 @@ import frc.robot.subsystems.Shooter.ShooterConstants.FlywheelConstants;
 
 import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import java.util.function.DoubleSupplier;
@@ -82,7 +84,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -151,7 +155,7 @@ public class RobotContainer {
       m_Swerve::addVisionMeasurement, VisionConstants.cameraToRobot2));
 
   private Trigger flywheelAtSpeed = new Trigger(
-      () -> m_shooter.getFlywheelVelocity() != Logger.getLogger("Aiming/Flywheel/TargetRPM"));
+      () -> (m_shooter.getFlywheelVelocity().minus(m_shooter.targetSpeed).abs(RotationsPerSecond))<=(ShooterConstants.FlywheelConstants.flywheelTolerance.in(RotationsPerSecond)));
 
   private DoubleSupplier opRightX = () -> m_operatorController.getRightX();
   private Trigger opRJoystickX = new Trigger(() -> opRightX.getAsDouble() != 0);
@@ -162,8 +166,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auton Chooser", autoChooser);
+   
     // Configure the trigger bindings
 
     // autoChooser = AutoBuilder.buildAutoChooser();
@@ -185,12 +188,16 @@ public class RobotContainer {
     SmartDashboard.putData("Start logger", new InstantCommand(() -> SignalLogger.start()));
     SmartDashboard.putData("Stop logger", new InstantCommand(() -> SignalLogger.stop()));
 
-    NamedCommands.registerCommand("ArmOut", new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE));
+    NamedCommands.registerCommand("ArmOut", new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE).withTimeout(Seconds.of(20)));
     NamedCommands.registerCommand("ArmIn", new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
-    NamedCommands.registerCommand("Intake",
-        new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
+    NamedCommands.registerCommand("Intake",new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(10));
+
+    NamedCommands.registerCommand("Spindexer", new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED));
+    NamedCommands.registerCommand("Kicker", new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED));
+
+    NamedCommands.registerCommand("Print", new PrintCommand("Print"));
     
-    NamedCommands.registerCommand("ShootFromLeftBump", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump));
+    NamedCommands.registerCommand("ShootFromLeftBump", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump).withTimeout(12));
 
     NamedCommands.registerCommand("Shoot3sec",
         Commands.parallel(
@@ -203,14 +210,14 @@ public class RobotContainer {
             .withTimeout(3));
 
     NamedCommands.registerCommand("Shoot6sec",
-    Commands.parallel(
-        new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose,
-            () -> m_Swerve.getState().Speeds),
-        new ConditionalCommand(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).andThen(
-            new WaitCommand(0.75).andThen(
-                new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))),
-            new InstantCommand(), flywheelAtSpeed))
-        .withTimeout(6.5));
+        Commands.parallel(
+            new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose,() -> m_Swerve.getState().Speeds),
+            new RunSpindexerCommand(spindexer,SpindexerConstants.SPINDEXER_SPEED).alongWith(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED))
+        ).withTimeout(6)
+    );
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auton Chooser", autoChooser);
 
   }
 

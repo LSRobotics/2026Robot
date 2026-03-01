@@ -144,6 +144,7 @@ public class ShootAtHubCommand extends Command {
     }
 
     public void spinUpFlywheel(double targetRPM) {
+        
         double targetRPS = targetRPM / 60.0;
 
 
@@ -158,6 +159,8 @@ public class ShootAtHubCommand extends Command {
         Logger.recordOutput("Aiming/Flywheel/TargetRPM", targetRPM);
         Logger.recordOutput("Aiming/Flywheel/FeedforwardVoltage", feedforwardVoltage);
         Logger.recordOutput("Aiming/Flywheel/TotalVoltage", totalVoltage);
+
+        m_Shooter.targetSpeed = RPM.of(targetRPM);
 
         m_Shooter.setFlywheelVoltage(Volt.of(totalVoltage));
     }

@@ -4,6 +4,7 @@ import frc.robot.subsystems.Vision.VisionIO.VisionIOInputs;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,6 +28,10 @@ public class VisionSubsystem extends SubsystemBase{
         //field.setRobotPose(pose.toPose2d());
         //SmartDashboard.putData("Field",field);
     
+    }
+
+    public Pose2d getPose(){
+        return inputs.pose.toPose2d();
     }
     
 }

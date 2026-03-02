@@ -47,7 +47,7 @@ public class ShooterConstants {
 
     public static class HoodConstants {
         public static final int hoodLinearActuatorPWMID = 0;
-        public static final int hoodLinearActuatorPWMID2 = 1;
+        public static final int hoodLinearActuatorPWMID2 = 2;
         public static final Distance actuatorLengthExtended = Inches.of(9);
         public static final Distance actuatorLengthRetracted = Inches.of(6.75);
 

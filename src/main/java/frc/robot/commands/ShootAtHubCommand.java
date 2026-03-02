@@ -287,13 +287,15 @@ public class ShootAtHubCommand extends Command {
 
             hoodAngleMap.put(Meters.convertFrom(105, Inches), -1d);
 
-            hoodAngleMap.put(Meters.convertFrom(132, Inches), -1d);
+            hoodAngleMap.put(Meters.convertFrom(139, Inches), -1d);
 
             hoodAngleMap.put(Meters.convertFrom(139, Inches), -1d);
 
             hoodAngleMap.put(Meters.convertFrom(154, Inches), -1d);
 
             hoodAngleMap.put(Meters.convertFrom(208, Inches), -0.45090180360721444);
+
+            hoodAngleMap.put(Meters.convertFrom(208, Inches), -0.2);
 
             hoodAngleMap.put(Meters.convertFrom(236, Inches), 0.20040080160320642);
 

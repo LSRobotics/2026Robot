@@ -15,7 +15,7 @@ We are screwed.
 ### Operator
 - **Joy X** = Turn Turret
 - **Right Trigger** = Shoot At Hub (Vision)
-  #### Flywheel Speed
+#### Flywheel Speed
 - **Low Speed** = DPad Up
 - **Medium Speed** = DPad Left
 - **Almost High Speed** = DPad Right

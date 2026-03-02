@@ -152,8 +152,8 @@ public class RobotContainer {
 
   private final CommandSwerveDrivetrain m_Swerve = TunerConstants.createDrivetrain();
 
-  private final VisionSubsystem m_Vision1 = new VisionSubsystem(
-      new VisionIOPhoton("Arducam_OV9281_USB_Camera", m_Swerve::addVisionMeasurement, VisionConstants.cameraToRobot1));
+  //private final VisionSubsystem m_Vision1 = new VisionSubsystem(
+    //  new VisionIOPhoton("Arducam_OV9281_USB_Camera", m_Swerve::addVisionMeasurement, VisionConstants.cameraToRobot1));
   private final VisionSubsystem m_Vision2 = new VisionSubsystem(new VisionIOPhoton("Arducam_OV9281_USB_Camera (1)",
       m_Swerve::addVisionMeasurement, VisionConstants.cameraToRobot2));
 
@@ -273,6 +273,7 @@ public class RobotContainer {
     m_driverController.b()
         .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
         .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
+    m_driverController.leftTrigger().onTrue(new InstantCommand(()->m_Swerve.resetPose(m_Vision2.getPose())));
 
     opRJoystickX.whileTrue(new TurnTurretCommand(m_turret, opRightX));
 

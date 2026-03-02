@@ -13,6 +13,8 @@ import static edu.wpi.first.units.Units.Degrees;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -55,9 +57,13 @@ public TurnTurretToAngleCommand(TurretSubsystem subsystem, Supplier<Angle> angle
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pid.setSetpoint(angle.get().in(Degrees));
+    double setpoint = MathUtil.clamp(
+        angle.get().in(Degrees),
+        -TurretConstants.turretRangeOneWay.in(Degrees),
+          TurretConstants.turretRangeOneWay.in(Degrees)
+    );
+    pid.setSetpoint(setpoint);
     double speed = pid.calculate(m_turret.inputs.turretAngle.in(Degrees));
-    
     speed = MathUtils.clamp(-TurretConstants.maxControlSpeed, TurretConstants.maxControlSpeed, speed);
     m_turret.setSpeed(speed);
     Logger.recordOutput("Turret/PID_Error", pid.getError());

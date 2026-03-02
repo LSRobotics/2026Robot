@@ -304,15 +304,15 @@ public class RobotContainer {
     m_operatorController.povLeft().onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed3)));
     m_operatorController.povDown().onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed4)));
 
-    m_operatorController.y().whileTrue(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle1).andThen(
-                                        Commands.parallel(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(ManualFlywheelSpeed.getSpeed())), 
-                                                          new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED))));
-    m_operatorController.b().whileTrue(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle2).andThen(
-                                        Commands.parallel(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(ManualFlywheelSpeed.getSpeed())), 
-                                                          new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED))));
-    m_operatorController.x().whileTrue(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle3).andThen(
-                                        Commands.parallel(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(ManualFlywheelSpeed.getSpeed())), 
-                                                          new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)))); 
+    m_operatorController.y().whileTrue(Commands.parallel(new WaitCommand(0.5).andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle1)), 
+                                        new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed()), 
+                                        new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)));
+    m_operatorController.b().whileTrue(Commands.parallel(new WaitCommand(0.5).andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle2)), 
+                                        new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed()), 
+                                        new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)));
+    m_operatorController.x().whileTrue(Commands.parallel(new WaitCommand(0.5).andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle3)), 
+                                        new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed()), 
+                                        new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)));                                                      
                                                           
     m_operatorController.leftBumper().whileTrue(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED));
   }

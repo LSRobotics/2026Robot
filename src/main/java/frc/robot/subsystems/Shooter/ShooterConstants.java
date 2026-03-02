@@ -44,10 +44,10 @@ public class ShooterConstants {
         public static final double kV = VoltsPerRotationsPerSecond.convertFrom(kVVoltSecondsPerRadian.in(VoltsPerRadianPerSecond), VoltsPerRadianPerSecond);
         public static final double kA = VoltsPerRotationsPerSecond.convertFrom(kAVoltSecondsPerRadian.in(VoltsPerRadianPerSecond), VoltsPerRadianPerSecond);
 
-        public static final double manualSpeed1 = 40;
-        public static final double manualSpeed2 = 45;
-        public static final double manualSpeed3 = 52;
-        public static final double manualSpeed4 = 65;
+        public static final AngularVelocity manualSpeed1 = RotationsPerSecond.of(40);
+        public static final AngularVelocity manualSpeed2 = RotationsPerSecond.of(45);
+        public static final AngularVelocity manualSpeed3 = RotationsPerSecond.of(52);
+        public static final AngularVelocity manualSpeed4 = RotationsPerSecond.of(65);
     }
 
     public static class HoodConstants {

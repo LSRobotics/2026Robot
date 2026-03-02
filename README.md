@@ -13,7 +13,7 @@ We are screwed.
 - **Run Flywheel** = B Button
 
 ### Operator
-- **Joy X** = Turn Turret
+- **Right Joy X** = Turn Turret
 - **Right Trigger** = Shoot At Hub (Vision)
 #### Flywheel Speed
 - **Low Speed** = DPad Up
@@ -24,5 +24,5 @@ We are screwed.
 - **90° Right** = X Button
 - **90° Left** = B Button
 - **Straight** = Y Button
-
+####
 - **Run Spindexer** = Left Bumper

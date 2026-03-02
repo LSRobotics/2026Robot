@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter.ShooterConstants;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
+import frc.robot.util.ManualFlywheelSpeed;
 
 public class RunFlywheelCommand extends Command {
     private ShooterSubsystem m_Shooter;

@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
@@ -47,12 +48,14 @@ import frc.robot.subsystems.Shooter.ShooterConstants;
 import frc.robot.subsystems.Shooter.ShooterFlywheelIOTalonFX;
 import frc.robot.subsystems.Shooter.ShooterHoodIOLinearActuator;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
+import frc.robot.subsystems.Turret.TurretConstants;
 import frc.robot.subsystems.Turret.TurretIO;
 import frc.robot.subsystems.Turret.TurretIOTalon;
 import frc.robot.subsystems.Turret.TurretSubsystem;
 import frc.robot.subsystems.Vision.VisionConstants;
 import frc.robot.subsystems.Vision.VisionIOPhoton;
 import frc.robot.subsystems.Vision.VisionSubsystem;
+import frc.robot.util.ManualFlywheelSpeed;
 import frc.robot.util.SendableSupplier;
 import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;
 import frc.robot.commands.TurnTurretToAngleCommand;
@@ -291,14 +294,31 @@ public class RobotContainer {
 
     m_operatorController.rightBumper().onTrue(new ArmOutCommand(armSubsystem, nextArmAngle()));
 
-    m_operatorController.povUp().whileTrue(new InstantCommand(() -> armSubsystem.runArm(ArmMotorConstants.ARM_SPEED)));
-    m_operatorController.povDown()
-        .whileTrue(new InstantCommand(() -> armSubsystem.runArm(-ArmMotorConstants.ARM_SPEED)));
+    // m_operatorController.povUp().whileTrue(new InstantCommand(() -> armSubsystem.runArm(ArmMotorConstants.ARM_SPEED)));
+    // m_operatorController.povDown()
+    //     .whileTrue(new InstantCommand(() -> armSubsystem.runArm(-ArmMotorConstants.ARM_SPEED)));
+
+    m_operatorController.povUp().onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed1)));
+    m_operatorController.povRight().onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed2)));
+    m_operatorController.povLeft().onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed3)));
+    m_operatorController.povDown().onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed4)));
+
+    m_operatorController.y().whileTrue(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle1).andThen(
+                                        Commands.parallel(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(ManualFlywheelSpeed.getSpeed())), 
+                                                          new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED))));
+    m_operatorController.b().whileTrue(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle2).andThen(
+                                        Commands.parallel(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(ManualFlywheelSpeed.getSpeed())), 
+                                                          new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED))));
+    m_operatorController.x().whileTrue(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle3).andThen(
+                                        Commands.parallel(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(ManualFlywheelSpeed.getSpeed())), 
+                                                          new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)))); 
+                                                          
+    m_operatorController.leftBumper().whileTrue(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED));
   }
 
   public Angle nextArmAngle() {
-    if (Math.abs(armSubsystem.getArmEncoder().minus(ArmMotorConstants.ARM_DEPLOY_ANGLE).in(Degrees)) < Math
-        .abs(armSubsystem.getArmEncoder().minus(ArmMotorConstants.ARM_REST_ANGLE).in(Degrees))) {
+    if (Math.abs(armSubsystem.getArmEncoder().minus(ArmMotorConstants.ARM_DEPLOY_ANGLE).in(Degrees)) < 
+        Math.abs(armSubsystem.getArmEncoder().minus(ArmMotorConstants.ARM_REST_ANGLE).in(Degrees))) {
       return ArmMotorConstants.ARM_REST_ANGLE;
     }
     return ArmMotorConstants.ARM_DEPLOY_ANGLE;

@@ -32,4 +32,7 @@ public class TurretConstants {
     public static final double kD = 0.0001;
     public static final double tolerance = 0.2;
 
+    public static final Angle manualAngle1 = Degrees.of(0);
+    public static final Angle manualAngle2 = Degrees.of(-90);
+    public static final Angle manualAngle3 = Degrees.of(90);
 }

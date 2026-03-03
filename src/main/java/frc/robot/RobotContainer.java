@@ -193,14 +193,16 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("ArmOut", new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE).withTimeout(Seconds.of(20)));
     NamedCommands.registerCommand("ArmIn", new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
-    NamedCommands.registerCommand("Intake",new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(10));
+    NamedCommands.registerCommand("Intake",new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(3));
 
-    NamedCommands.registerCommand("Spindexer", new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED));
-    NamedCommands.registerCommand("Kicker", new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED));
+    NamedCommands.registerCommand("Spindexer", new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED).withTimeout(6));
+    NamedCommands.registerCommand("Kicker", new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).withTimeout(8));
 
     NamedCommands.registerCommand("Print", new PrintCommand("Print"));
     
-    NamedCommands.registerCommand("ShootFromLeftBump", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump).withTimeout(12));
+    NamedCommands.registerCommand("ShootFromLeftBump", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump).withTimeout(7));
+
+    NamedCommands.registerCommand("ShootFromLeftTrench", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(7));
 
     NamedCommands.registerCommand("Shoot3sec",
         Commands.parallel(

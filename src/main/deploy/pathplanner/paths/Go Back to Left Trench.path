@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4730171440972226,
-        "y": 7.380284215856482
+        "x": 7.7763100834216115,
+        "y": 5.299205219454329
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.131485498905062,
-        "y": 7.97294207074876
+        "x": 8.151966652199075,
+        "y": 5.665290509259259
       },
       "isLocked": false,
-      "linkedName": "StartLeft"
+      "linkedName": "Left Cycle Collect"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 7.3434519572953745
       },
       "prevControl": {
-        "x": 3.1463874894906585,
-        "y": 6.469532747538965
+        "x": 6.148877097800927,
+        "y": 8.155997540509258
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -88.773
   },
   "useDefaultConstraints": true
 }

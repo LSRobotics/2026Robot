@@ -116,5 +116,6 @@ public class TakeShotCommand extends Command {
     public static final class ShotData{
         public static final ShotSolution leftBump = new ShotSolution(-1,RPM.convertFrom(37, RotationsPerSecond),35);
         public static final ShotSolution feed = new ShotSolution(0.3,RPM.convertFrom(52, RotationsPerSecond),0);
+        public static final ShotSolution leftTrench = new ShotSolution(-1, RPM.convertFrom(45, RotationsPerSecond), 74);
     }
 }

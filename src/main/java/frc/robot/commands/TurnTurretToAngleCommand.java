@@ -13,8 +13,11 @@ import static edu.wpi.first.units.Units.Degrees;
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Turret.TurretConstants;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -55,10 +58,13 @@ public TurnTurretToAngleCommand(TurretSubsystem subsystem, Supplier<Angle> angle
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pid.setSetpoint(angle.get().in(Degrees));
+
+    double setpoint = MathUtil.clamp(angle.get().in(Degrees), -TurretConstants.turretRangeOneWay.in(Degrees), TurretConstants.turretRangeOneWay.in(Degrees));
+
+    pid.setSetpoint(setpoint);
     double speed = pid.calculate(m_turret.inputs.turretAngle.in(Degrees));
     
-    speed = MathUtils.clamp(-TurretConstants.maxControlSpeed, TurretConstants.maxControlSpeed, speed);
+    speed = MathUtil.clamp(speed, -TurretConstants.maxControlSpeed, TurretConstants.maxControlSpeed);
     m_turret.setSpeed(speed);
     Logger.recordOutput("Turret/PID_Error", pid.getError());
     Logger.recordOutput("Turret/PID_Setpoint", pid.getSetpoint());
@@ -67,11 +73,13 @@ public TurnTurretToAngleCommand(TurretSubsystem subsystem, Supplier<Angle> angle
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_turret.setSpeed(0);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pid.atSetpoint();
+    return pid.atSetpoint() || DriverStation.isDisabled();
   }
 }

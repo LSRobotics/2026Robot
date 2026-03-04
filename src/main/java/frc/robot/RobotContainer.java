@@ -78,8 +78,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
-
+import org.littletonrobotics.junction.Logger;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -140,13 +139,13 @@ public class RobotContainer {
   private final LedsIOBlinkin ledIO = new LedsIOBlinkin();
   private final LedSubsystem ledSubsystem = new LedSubsystem(ledIO);
 
-  private double MaxSpeed = 4d;
+  private Supplier<Double> MaxSpeed =() -> Constants.maxSpeedSlow;
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
                                                                                     // max angular velocity
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDeadband(MaxSpeed.get() * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage); // Use open-loop
                                                                                                      // control for
                                                                                                      // drive motors
@@ -174,6 +173,11 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    Logger.recordOutput("Swerve/BrakeMode", false);
+    Logger.recordOutput("Swerve/BrakeModeColor", "#000000");
+    Logger.recordOutput("Swerve/MaxSpeed", MaxSpeed.get());
+
+    ManualFlywheelSpeed.init();
    
     // Configure the trigger bindings
 
@@ -238,8 +242,8 @@ public class RobotContainer {
 
     m_Swerve.setDefaultCommand(
         // m_Swerve will execute this command periodically
-        m_Swerve.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed) // Drive forward with
-            .withVelocityY(-m_driverController.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+        m_Swerve.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed.get()) // Drive forward with
+            .withVelocityY(-m_driverController.getLeftX() * MaxSpeed.get()) // Drive left with negative X (left)
             .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with
         // negative X (left)
         ));
@@ -276,6 +280,7 @@ public class RobotContainer {
     // m_driverController.leftBumper().onTrue(new InstantCommand((() -> m_shooter.setHoodPosition(angleSupplier))));
     m_driverController.rightBumper().whileTrue(
         new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
+    m_driverController.leftTrigger().whileTrue(new InstantCommand(()->this.changeMaxSpeed(Constants.maxSpeedFast))).onFalse(new InstantCommand(()->this.changeMaxSpeed(Constants.maxSpeedSlow)));
 
     // m_driverController.b()
     //     .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
@@ -295,7 +300,7 @@ public class RobotContainer {
     
     
 
-    m_driverController.leftBumper().whileTrue(m_Swerve.applyRequest(()->new SwerveRequest.SwerveDriveBrake()));
+    m_driverController.leftBumper().whileTrue(m_Swerve.applyRequest(()->new SwerveRequest.SwerveDriveBrake()).andThen(new InstantCommand(()->this.brakeMode(true)))).onFalse(new InstantCommand(()->this.brakeMode(false)));
 
     m_operatorController.rightTrigger().whileTrue(
         new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
@@ -345,4 +350,25 @@ public class RobotContainer {
     // // An example command will be run in autonomous
     return autoChooser.getSelected();
   }
+
+  public void changeMaxSpeed(double newMaxSpeed) {
+    Logger.recordOutput("Swerve/MaxSpeed", newMaxSpeed);
+    MaxSpeed = () -> newMaxSpeed;
+  }
+
+  public void brakeMode(boolean enable){
+    if ( enable ) {
+      Logger.recordOutput("Swerve/BrakeMode", true);
+      Logger.recordOutput("Swerve/BrakeModeColor", "#15ff00ff");
+    } else {
+      Logger.recordOutput("Swerve/BrakeMode", false);
+      Logger.recordOutput("Swerve/BrakeModeColor", "#0a00d0ff");
+    }
+
+
+  }
+
+    public void periodic(){
+        SmartDashboard.putBoolean("FlywheelAtSpeed", flywheelAtSpeed.getAsBoolean());
+    }
 }

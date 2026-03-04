@@ -35,7 +35,11 @@ public class ArmSubsystem extends SubsystemBase {
         armIO.updateInputs(armInputs);
         limitSwitchIO.updateInputs(limitSwitchInputs);
         Logger.processInputs("Arm", armInputs);
-        Logger.processInputs("LimitSwitch", limitSwitchInputs);
+        if (armInputs.armAngle.isNear(ArmConstants.ArmMotorConstants.ARM_DEPLOY_ANGLE, ArmConstants.ArmMotorConstants.ARM_TOLERANCE)) {
+            Logger.recordOutput("Arm/AtDeployAngle", true);
+        } else {
+            Logger.recordOutput("Arm/AtDeployAngle", false);
+        }
     }
 
     public AngularVelocity getArmSpeed() {

@@ -17,6 +17,10 @@ public class ManualFlywheelSpeed {
         Logger.recordOutput("Manual/speed", speed);
     }
 
+    public static void init(){
+        Logger.recordOutput("Manual/speed", speed);
+    }
+
     public static AngularVelocity getSpeed() {
         return speed;
     }

@@ -55,7 +55,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Left Trench to Start of Balls"
+                  "pathName": "Right Trench to Start of Balls"
                 }
               },
               {
@@ -74,7 +74,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Left Cycle Collect"
+                  "pathName": "Right Cycle Collect"
                 }
               },
               {
@@ -89,7 +89,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Go Back to Left Trench"
+            "pathName": "Right Balls to Trench"
           }
         },
         {
@@ -146,6 +146,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Left",
+  "folder": "Right",
   "choreoAuto": false
 }

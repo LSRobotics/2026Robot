@@ -25,6 +25,7 @@ import frc.robot.subsystems.leds.LedsIOBlinkin;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
+import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.ArmIOSparkMax;
 import frc.robot.subsystems.arm.ArmLimitSwitchIOLimitSwitch;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -162,8 +163,10 @@ public class RobotContainer {
   private Trigger flywheelAtSpeed = new Trigger(
       () -> (m_shooter.getFlywheelVelocity().minus(m_shooter.targetSpeed).abs(RotationsPerSecond))<=(ShooterConstants.FlywheelConstants.flywheelTolerance.in(RotationsPerSecond)));
 
-  private DoubleSupplier opRightX = () -> m_operatorController.getRightX();
-  private Trigger opRJoystickX = new Trigger(() -> opRightX.getAsDouble() != 0);
+  DoubleSupplier opRightX = () -> m_operatorController.getRightX();
+  DoubleSupplier opLeftY = () -> m_operatorController.getLeftY();
+  Trigger opRJoystickX = new Trigger(() -> opRightX.getAsDouble() != 0);
+  Trigger opLJoystickY = new Trigger(() -> opLeftY.getAsDouble() != 0);
 
   // private final SendableChooser<Command> autoChooser;
 
@@ -279,6 +282,8 @@ public class RobotContainer {
     //     .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
 
     opRJoystickX.whileTrue(new TurnTurretCommand(m_turret, opRightX));
+    opLJoystickY.whileTrue(new InstantCommand(() -> armSubsystem.runArm(opLeftY.getAsDouble())).onlyWhile(
+      () -> (armSubsystem.getArmEncoder().gte(ArmMotorConstants.ARM_REST_ANGLE) || armSubsystem.getArmEncoder().lte(ArmMotorConstants.ARM_DEPLOY_ANGLE))));
 
     m_driverController.povLeft()
         .whileTrue(Commands.parallel(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED),
@@ -319,6 +324,8 @@ public class RobotContainer {
                                         new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)));                                                      
                                                            
     m_operatorController.leftBumper().whileTrue(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED));
+
+    m_operatorController.leftTrigger().whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.OUTTAKE_SPEED));
   }
    
   public Angle nextArmAngle() {

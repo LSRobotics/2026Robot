@@ -200,9 +200,9 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Print", new PrintCommand("Print"));
     
-    NamedCommands.registerCommand("ShootFromLeftBump", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump).withTimeout(7));
+    NamedCommands.registerCommand("ShootFromLeftBump", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump).withTimeout(4));
 
-    NamedCommands.registerCommand("ShootFromLeftTrench", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(7));
+    NamedCommands.registerCommand("ShootFromLeftTrench", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(4));
 
     NamedCommands.registerCommand("Shoot3sec",
         Commands.parallel(
@@ -285,6 +285,10 @@ public class RobotContainer {
     m_driverController.b()
         .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
         .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
+    
+    
+
+    m_driverController.leftBumper().whileTrue(m_Swerve.applyRequest(()->new SwerveRequest.SwerveDriveBrake()));
 
     m_operatorController.rightTrigger().whileTrue(
         new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
@@ -299,12 +303,12 @@ public class RobotContainer {
     // m_operatorController.povUp().whileTrue(new InstantCommand(() -> armSubsystem.runArm(ArmMotorConstants.ARM_SPEED)));
     // m_operatorController.povDown()
     //     .whileTrue(new InstantCommand(() -> armSubsystem.runArm(-ArmMotorConstants.ARM_SPEED)));
-
+    
     m_operatorController.povUp().onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed1)));
     m_operatorController.povRight().onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed2)));
     m_operatorController.povLeft().onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed3)));
     m_operatorController.povDown().onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed4)));
-
+    
     m_operatorController.y().whileTrue(Commands.parallel(new WaitCommand(0.5).andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle1)), 
                                         new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed()), 
                                         new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)));
@@ -314,10 +318,10 @@ public class RobotContainer {
     m_operatorController.x().whileTrue(Commands.parallel(new WaitCommand(0.5).andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle3)), 
                                         new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed()), 
                                         new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)));                                                      
-                                                          
+                                                           
     m_operatorController.leftBumper().whileTrue(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED));
   }
-
+   
   public Angle nextArmAngle() {
     if (Math.abs(armSubsystem.getArmEncoder().minus(ArmMotorConstants.ARM_DEPLOY_ANGLE).in(Degrees)) < 
         Math.abs(armSubsystem.getArmEncoder().minus(ArmMotorConstants.ARM_REST_ANGLE).in(Degrees))) {

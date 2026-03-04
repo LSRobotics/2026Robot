@@ -20,6 +20,7 @@ public class TurretSubsystem extends SubsystemBase{
 
     public TurretSubsystem(TurretIO io){
         this.io = io;
+        io.zeroEncoder();
     }
 
     public void periodic(){

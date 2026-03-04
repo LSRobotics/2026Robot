@@ -1,7 +1,9 @@
 package frc.robot.subsystems.intake;
 
 import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Hertz;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -15,6 +17,8 @@ import static edu.wpi.first.units.Units.Volts;
 
 public class IntakeIOTalonFX implements IntakeIO {
     private final TalonFX intakeMotor = new TalonFX(IntakeConstants.INTAKE_MOTOR_ID);
+    private final StatusSignal<Current> intakeCurrent = intakeMotor.getSupplyCurrent();
+    private final StatusSignal<AngularVelocity> intakeSpeed = intakeMotor.getRotorVelocity();
 
     public IntakeIOTalonFX() {
         intakeMotor.setNeutralMode(NeutralModeValue.Coast);
@@ -23,12 +27,18 @@ public class IntakeIOTalonFX implements IntakeIO {
             .withStatorCurrentLimitEnable(true)
             .withSupplyCurrentLimit(IntakeConstants.SUPPLY_CURRENT_LIMIT)
             .withSupplyCurrentLimitEnable(true));
+
+        intakeCurrent.setUpdateFrequency(Hertz.of(50));
+        intakeSpeed.setUpdateFrequency(Hertz.of(50));
+        intakeMotor.optimizeBusUtilization();
     }
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
-        inputs.intakeRollerMotorCurrent = Amps.of(intakeMotor.getSupplyCurrent().getValueAsDouble());
-        inputs.intakeRollerSpeed = intakeMotor.getRotorVelocity().getValue();
+        intakeCurrent.refresh();
+        intakeSpeed.refresh();
+        inputs.intakeRollerMotorCurrent = intakeCurrent.getValue();
+        inputs.intakeRollerSpeed = intakeSpeed.getValue();
     }
 
     @Override

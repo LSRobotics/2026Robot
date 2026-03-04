@@ -1,6 +1,7 @@
 package frc.robot.subsystems.Turret;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Rotation;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -14,6 +15,7 @@ public class TurretIOTalon implements TurretIO {
     private TalonFX turretMotor = new TalonFX(TurretConstants.turretMotorID);
     public TurretIOTalon(){
         turretMotor.getConfigurator().apply(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake).withInverted(InvertedValue.CounterClockwise_Positive));
+        turretMotor.setPosition(Degrees.of(0));
     }
     @Override
     public void updateInputs(TurretIOInputs inputs) {

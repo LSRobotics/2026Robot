@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -63,6 +64,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import frc.robot.subsystems.spindexer.SpindexerConstants;
 import frc.robot.subsystems.spindexer.SpindexerIOSparkFlex;
+import frc.robot.subsystems.spindexer.SpindexerIOTalonFX;
 import frc.robot.subsystems.Shooter.ShooterConstants.FlywheelConstants;
 
 import static edu.wpi.first.units.Units.Degree;
@@ -106,7 +108,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  private final SpindexerIOSparkFlex SpinIO = new SpindexerIOSparkFlex();
+  private final SpindexerIOTalonFX SpinIO = new SpindexerIOTalonFX();
   private final SpindexerSubsystem spindexer = new SpindexerSubsystem(SpinIO);
   private final KickerIO kickerIO = new KickerIOTalonFX();
   private final KickerSubsystem m_kicker = new KickerSubsystem(kickerIO);
@@ -239,15 +241,15 @@ public class RobotContainer {
         // negative X (left)
         ));
 
-    Supplier<Double> sliderInput = () -> m_operatorController.getRawAxis(OperatorConstants.slider);
-    Supplier<Double> operatorYaw = () -> m_operatorController.getRawAxis(OperatorConstants.yaw);
-    Supplier<Double> operatorPitch = () -> m_operatorController.getRawAxis(OperatorConstants.pitch);
-    Supplier<Double> operatorRoll = () -> m_operatorController.getRawAxis(OperatorConstants.roll);
+    // Supplier<Double> sliderInput = () -> m_operatorController.getRawAxis(OperatorConstants.slider);
+    // Supplier<Double> operatorYaw = () -> m_operatorController.getRawAxis(OperatorConstants.yaw);
+    // Supplier<Double> operatorPitch = () -> m_operatorController.getRawAxis(OperatorConstants.pitch);
+    // Supplier<Double> operatorRoll = () -> m_operatorController.getRawAxis(OperatorConstants.roll);
 
-    SmartDashboard.putData("Slider", new SendableSupplier<Double>("Slider", sliderInput));
-    SmartDashboard.putData("Yaw", new SendableSupplier<Double>("Yaw", operatorYaw));
-    SmartDashboard.putData("Pitch", new SendableSupplier<Double>("Pitch", operatorPitch));
-    SmartDashboard.putData("Roll", new SendableSupplier<Double>("Roll", operatorRoll));
+    // SmartDashboard.putData("Slider", new SendableSupplier<Double>("Slider", sliderInput));
+    // SmartDashboard.putData("Yaw", new SendableSupplier<Double>("Yaw", operatorYaw));
+    // SmartDashboard.putData("Pitch", new SendableSupplier<Double>("Pitch", operatorPitch));
+    // SmartDashboard.putData("Roll", new SendableSupplier<Double>("Roll", operatorRoll));
 
     SmartDashboard.putNumber("speed", 0);
     SmartDashboard.putNumber("Angle", 0);
@@ -262,19 +264,19 @@ public class RobotContainer {
     // m_driverController.a().onTrue(new TurnTurretToAngleCommand(m_turret, () ->
     // Degree.of(speedSupplier.getAsDouble())));
     m_driverController.x().whileTrue(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED));
-    m_driverController.y().whileTrue(new InstantCommand(() -> m_kicker.runKicker(KickerConstants.KICKER_SPEED)))
-        .whileFalse(new InstantCommand(() -> m_kicker.runKicker(0)));
+    // m_driverController.y().whileTrue(new InstantCommand(() -> m_kicker.runKicker(KickerConstants.KICKER_SPEED)))
+    //     .whileFalse(new InstantCommand(() -> m_kicker.runKicker(0)));
     m_driverController.povUp().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
     m_driverController.povDown().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE));
     m_driverController.a()
         .whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
-    m_driverController.leftBumper().onTrue(new InstantCommand((() -> m_shooter.setHoodPosition(angleSupplier))));
+    // m_driverController.leftBumper().onTrue(new InstantCommand((() -> m_shooter.setHoodPosition(angleSupplier))));
     m_driverController.rightBumper().whileTrue(
         new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
 
-    m_driverController.b()
-        .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
-        .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
+    // m_driverController.b()
+    //     .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
+    //     .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
 
     opRJoystickX.whileTrue(new TurnTurretCommand(m_turret, opRightX));
 
@@ -282,9 +284,9 @@ public class RobotContainer {
         .whileTrue(Commands.parallel(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED),
             new WaitCommand(0.75).andThen(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))));
 
-    m_driverController.b()
-        .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
-        .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
+    // m_driverController.b()
+    //     .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
+    //     .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
     
     
 
@@ -293,10 +295,7 @@ public class RobotContainer {
     m_operatorController.rightTrigger().whileTrue(
         new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
 
-    m_operatorController.start()
-        .whileTrue(Commands.parallel(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)
-            .andThen(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))
-            .andThen(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE))));
+    m_operatorController.start().onTrue(new InstantCommand(() -> m_Swerve.resetRotation(Rotation2d.fromDegrees(0))));
 
     m_operatorController.rightBumper().onTrue(new ArmOutCommand(armSubsystem, nextArmAngle()));
 

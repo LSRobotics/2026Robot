@@ -11,12 +11,12 @@ public class ArmConstants {
     public static class ArmMotorConstants {
         public static final int ARM_MOTOR_ID = 50;
         public static final int ARM_MOTOR_FOLLOWER_ID = 51;
-        public static final double ARM_SPEED = 0.1;
+        public static final double ARM_SPEED = 0.2;
         public static final Angle ARM_REST_ANGLE = Degrees.of(0);
         public static final Angle ARM_DEPLOY_ANGLE = Degrees.of(-17.2);
-        public static final Current STATOR_CURRENT_LIMIT = Amps.of(40);
-        public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(40);
-        public static final double ARM_TOLERANCE = 1;
+        public static final Current STATOR_CURRENT_LIMIT = Amps.of(30);
+        public static final Current SUPPLY_CURRENT_LIMIT = Amps.of(35);
+        public static final double ARM_TOLERANCE = 0.5;
         public static final double gearRatio = 86.4;
     }
 

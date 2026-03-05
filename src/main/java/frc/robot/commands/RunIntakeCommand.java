@@ -50,12 +50,9 @@ public class RunIntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    
     m_intakeSubsystem.runIntake(speed.getAsDouble());
-    if (speed.getAsDouble() < 0){
-      m_Leds.setColor(LEDConstants.colorWhite);
-    } else if (speed.getAsDouble() > 0) {
-      m_Leds.setColor(LEDConstants.colorOrange);
-    }
+
   }
 
   // Called once the command ends or is interrupted.

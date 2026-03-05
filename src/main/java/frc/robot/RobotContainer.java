@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
@@ -278,17 +279,17 @@ public class RobotContainer {
     m_driverController.a()
         .whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
     // m_driverController.leftBumper().onTrue(new InstantCommand((() -> m_shooter.setHoodPosition(angleSupplier))));
-    m_driverController.rightBumper().whileTrue(
+    m_driverController.rightTrigger().whileTrue(
         new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
-    m_driverController.leftTrigger().whileTrue(new InstantCommand(()->this.changeMaxSpeed(Constants.maxSpeedFast))).onFalse(new InstantCommand(()->this.changeMaxSpeed(Constants.maxSpeedSlow)));
+    m_driverController.leftBumper().whileTrue(new InstantCommand(()->this.changeMaxSpeed(Constants.maxSpeedFast))).onFalse(new InstantCommand(()->this.changeMaxSpeed(Constants.maxSpeedSlow)));
 
     // m_driverController.b()
     //     .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
     //     .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
 
     opRJoystickX.whileTrue(new TurnTurretCommand(m_turret, opRightX));
-    opLJoystickY.whileTrue(new InstantCommand(() -> armSubsystem.runArm(opLeftY.getAsDouble())).onlyWhile(
-      () -> (armSubsystem.getArmEncoder().gte(ArmMotorConstants.ARM_REST_ANGLE) || armSubsystem.getArmEncoder().lte(ArmMotorConstants.ARM_DEPLOY_ANGLE))));
+    opLJoystickY.whileTrue(new InstantCommand(() -> armSubsystem.runArm(opLeftY.getAsDouble()*0.5)).onlyWhile(
+      () -> (armSubsystem.getArmEncoder().lte(ArmMotorConstants.ARM_REST_ANGLE) || armSubsystem.getArmEncoder().gte(ArmMotorConstants.ARM_DEPLOY_ANGLE))));
 
     m_driverController.povLeft()
         .whileTrue(Commands.parallel(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED),
@@ -300,12 +301,12 @@ public class RobotContainer {
     
     
 
-    m_driverController.leftBumper().whileTrue(m_Swerve.applyRequest(()->new SwerveRequest.SwerveDriveBrake()).andThen(new InstantCommand(()->this.brakeMode(true)))).onFalse(new InstantCommand(()->this.brakeMode(false)));
+    m_driverController.rightBumper().whileTrue(m_Swerve.applyRequest(()->new SwerveRequest.SwerveDriveBrake()).andThen(new InstantCommand(()->this.brakeMode(true)))).onFalse(new InstantCommand(()->this.brakeMode(false)));
 
     m_operatorController.rightTrigger().whileTrue(
         new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
 
-    m_operatorController.start().onTrue(new InstantCommand(() -> m_Swerve.resetRotation(Rotation2d.fromDegrees(0))));
+    m_driverController.start().onTrue(new InstantCommand(() -> m_Swerve.resetRotation(DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? Rotation2d.fromDegrees(180) : Rotation2d.fromDegrees(0))));
 
     m_operatorController.rightBumper().onTrue(new ArmOutCommand(armSubsystem, nextArmAngle()));
 
@@ -321,13 +322,16 @@ public class RobotContainer {
     m_operatorController.y().whileTrue(Commands.parallel(new WaitCommand(0.5).andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle1)), 
                                         new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed()), 
                                         new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)));
-    m_operatorController.b().whileTrue(Commands.parallel(new WaitCommand(0.5).andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle2)), 
+    m_operatorController.x().whileTrue(Commands.parallel(new WaitCommand(0.5).andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle2)), 
                                         new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed()), 
                                         new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)));
-    m_operatorController.x().whileTrue(Commands.parallel(new WaitCommand(0.5).andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle3)), 
+    m_operatorController.b().whileTrue(Commands.parallel(new WaitCommand(0.5).andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle3)), 
                                         new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed()), 
+                                        new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)));    
+                                        
+    m_operatorController.rightBumper().whileTrue(Commands.parallel(new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed()), 
                                         new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)));                                                      
-                                                           
+
     m_operatorController.leftBumper().whileTrue(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED));
 
     m_operatorController.leftTrigger().whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.OUTTAKE_SPEED));

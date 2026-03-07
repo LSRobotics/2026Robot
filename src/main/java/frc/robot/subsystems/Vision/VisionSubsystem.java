@@ -10,9 +10,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase{
-    private final VisionIO io;
+    public  final VisionIO io;
     //Field2d field = new Field2d();
-    VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
+    public VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
     public VisionSubsystem(VisionIO io) {
         this.io = io;
     }

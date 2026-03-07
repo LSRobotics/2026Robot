@@ -6,6 +6,8 @@ package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Degrees;
 
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.units.measure.Angle;
@@ -17,20 +19,29 @@ import frc.robot.subsystems.arm.ArmSubsystem;
 public class ArmOutCommand extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
   private final ArmSubsystem m_arm;
-  private final Angle targetAngle;
-  private double targetArmDegrees;
-  private double targetMotorDegrees;
+  private final Supplier<Angle> targetAngle;
+  private final Supplier<Double> targetArmDegrees;
+  private final Supplier<Double> targetMotorDegrees;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ArmOutCommand(ArmSubsystem arm, Angle angle) {
+
+    public ArmOutCommand(ArmSubsystem arm, Supplier<Angle> angle) {
     m_arm = arm;
     this.targetAngle = angle;
-    this.targetArmDegrees = angle.in(Degrees);
-    this.targetMotorDegrees = targetArmDegrees * ArmMotorConstants.gearRatio;
+    this.targetArmDegrees = ()->angle.get().in(Degrees);
+    this.targetMotorDegrees = ()->targetArmDegrees.get() * ArmMotorConstants.gearRatio;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(arm);
+  }
+  public ArmOutCommand(ArmSubsystem arm, Angle angle) {
+    m_arm = arm;
+    this.targetAngle = ()->angle;
+    this.targetArmDegrees = ()->angle.in(Degrees);
+    this.targetMotorDegrees = ()->targetArmDegrees.get() * ArmMotorConstants.gearRatio;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(arm);
   }
@@ -38,8 +49,8 @@ public class ArmOutCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Logger.recordOutput("Arm/TargetArmDegrees", targetArmDegrees);
-    Logger.recordOutput("Arm/TargetMotorDegrees", targetMotorDegrees);
+    Logger.recordOutput("Arm/TargetArmDegrees", targetArmDegrees.get());
+    Logger.recordOutput("Arm/TargetMotorDegrees", targetMotorDegrees.get());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,13 +58,13 @@ public class ArmOutCommand extends Command {
   public void execute() {
     double motorDegrees = m_arm.getArmEncoder().in(Degrees);
     double armDegrees = motorDegrees / ArmMotorConstants.gearRatio;
-    double armErrorDegrees = targetArmDegrees - armDegrees;
-    double motorErrorDegrees = targetMotorDegrees - motorDegrees;
+    double armErrorDegrees = targetArmDegrees.get() - armDegrees;
+    double motorErrorDegrees = targetMotorDegrees.get() - motorDegrees;
 
     Logger.recordOutput("Arm/MotorAngleDegrees", motorDegrees);
     Logger.recordOutput("Arm/ArmAngleDegrees", armDegrees);
-    Logger.recordOutput("Arm/TargetArmDegrees", targetArmDegrees);
-    Logger.recordOutput("Arm/TargetMotorDegrees", targetMotorDegrees);
+    Logger.recordOutput("Arm/TargetArmDegrees", targetArmDegrees.get());
+    Logger.recordOutput("Arm/TargetMotorDegrees", targetMotorDegrees.get());
     Logger.recordOutput("Arm/ArmErrorDegrees", armErrorDegrees);
     Logger.recordOutput("Arm/MotorErrorDegrees", motorErrorDegrees);
 
@@ -82,6 +93,6 @@ public class ArmOutCommand extends Command {
   @Override
   public boolean isFinished() {
     double armDegrees = m_arm.getArmEncoder().in(Degrees) / ArmMotorConstants.gearRatio;
-    return Math.abs(targetArmDegrees - armDegrees) <= ArmMotorConstants.ARM_TOLERANCE;
+    return Math.abs(targetArmDegrees.get() - armDegrees) <= ArmMotorConstants.ARM_TOLERANCE;
   }
 }

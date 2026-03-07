@@ -246,9 +246,9 @@ public class ShootAtHubCommand extends Command {
 
             flywheelSpeedMap.put(Meters.convertFrom(139, Inches), RPM.convertFrom(52, RotationsPerSecond));
 
-            flywheelSpeedMap.put(Meters.convertFrom(154, Inches), RPM.convertFrom(52, RotationsPerSecond)); //TODO: Deal with points of inflection
+            flywheelSpeedMap.put(Meters.convertFrom(153, Inches), RPM.convertFrom(55, RotationsPerSecond)); //TODO: Deal with points of inflection
 
-            flywheelSpeedMap.put(Meters.convertFrom(168, Inches), RPM.convertFrom(52, RotationsPerSecond));
+            flywheelSpeedMap.put(Meters.convertFrom(168, Inches), RPM.convertFrom(95, RotationsPerSecond));
 
             flywheelSpeedMap.put(Meters.convertFrom(208, Inches), RPM.convertFrom(52, RotationsPerSecond));
 
@@ -271,7 +271,7 @@ public class ShootAtHubCommand extends Command {
 
             flywheelTOFMap.put(Meters.convertFrom(139, Inches), Seconds.of(1.56).in(Seconds));
 
-            flywheelTOFMap.put(Meters.convertFrom(154, Inches), Seconds.of(1.52).in(Seconds));
+            flywheelTOFMap.put(Meters.convertFrom(153, Inches), Seconds.of(1.52).in(Seconds));
 
             flywheelTOFMap.put(Meters.convertFrom(168, Inches), Seconds.of(1.37).in(Seconds));
 
@@ -295,11 +295,11 @@ public class ShootAtHubCommand extends Command {
 
             hoodAngleMap.put(Meters.convertFrom(139, Inches), -1d);
 
-            hoodAngleMap.put(Meters.convertFrom(154, Inches), -1d);
+            hoodAngleMap.put(Meters.convertFrom(153, Inches), -1d);
+
+            hoodAngleMap.put(Meters.convertFrom(168, Inches), -1d);
 
             hoodAngleMap.put(Meters.convertFrom(208, Inches), -0.45090180360721444);
-
-            hoodAngleMap.put(Meters.convertFrom(208, Inches), -0.2);
 
             hoodAngleMap.put(Meters.convertFrom(236, Inches), 0.20040080160320642);
 

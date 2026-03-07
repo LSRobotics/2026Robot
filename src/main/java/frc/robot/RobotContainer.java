@@ -274,7 +274,7 @@ public class RobotContainer {
     // []\cancelling on relea[]\se.
     // m_driverController.a().onTrue(new TurnTurretToAngleCommand(m_turret, () ->
     // Degree.of(speedSupplier.getAsDouble())));
-    m_driverController.x().whileTrue(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).andThen(new WaitCommand(0.5).andThen(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))));
+    m_driverController.x().whileTrue(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).alongWith(new WaitCommand(0.5).andThen(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))));
     // m_driverController.y().whileTrue(new InstantCommand(() -> m_kicker.runKicker(KickerConstants.KICKER_SPEED)))
     //     .whileFalse(new InstantCommand(() -> m_kicker.runKicker(0)));
     m_driverController.povUp().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
@@ -286,9 +286,7 @@ public class RobotContainer {
         new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds).andThen(new RunKickerCommand(m_kicker,KickerConstants.KICKER_SPEED)));
     m_driverController.leftBumper().whileTrue(new InstantCommand(()->this.changeMaxSpeed(Constants.maxSpeedFast))).onFalse(new InstantCommand(()->this.changeMaxSpeed(Constants.maxSpeedSlow)));
 
-    // m_driverController.b()
-    //     .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
-    //     .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
+
 
     opRJoystickX.whileTrue(new TurnTurretCommand(m_turret, opRightX));
     opLJoystickY.whileTrue(new InstantCommand(() -> armSubsystem.runArm(opLeftY.getAsDouble()*0.5)).onlyWhile(
@@ -298,9 +296,9 @@ public class RobotContainer {
     //     .whileTrue(Commands.parallel(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED),
     //         new WaitCommand(0.75).andThen(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))));
 
-    // m_driverController.b()
-    //     .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
-    //     .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
+     m_driverController.b()
+         .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
+         .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
     
     
 
@@ -329,7 +327,7 @@ public class RobotContainer {
                                         
     m_operatorController.rightBumper().whileTrue(Commands.parallel(new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed())));                                                      
 
-    m_operatorController.leftBumper().whileTrue(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).andThen(new WaitCommand(0.5).andThen(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))));
+    m_operatorController.leftBumper().whileTrue(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).alongWith(new WaitCommand(0.5).andThen(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))));
 
     m_operatorController.leftTrigger().whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.OUTTAKE_SPEED));
   }

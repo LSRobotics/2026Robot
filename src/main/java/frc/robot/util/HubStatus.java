@@ -46,7 +46,6 @@ public class HubStatus {
 
     public static char getActiveHub() {
         double matchTime = DriverStation.getMatchTime();
-        double time = Timer.getMatchTime();
         char firstInactive = getFirstInactiveAlliance();
 
         if (firstInactive == ' ') {

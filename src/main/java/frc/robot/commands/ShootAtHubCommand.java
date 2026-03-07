@@ -37,6 +37,8 @@ import frc.robot.subsystems.Shooter.ShooterConstants;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.subsystems.Turret.TurretConstants;
 import frc.robot.subsystems.Turret.TurretSubsystem;
+import frc.robot.subsystems.leds.LEDConstants;
+import frc.robot.subsystems.leds.LEDManager;
 import frc.robot.util.MathUtils;
 
 public class ShootAtHubCommand extends Command {
@@ -73,6 +75,7 @@ public class ShootAtHubCommand extends Command {
 
     @Override
     public void initialize() {
+        LEDManager.setColor(LEDConstants.colorWhite);
     }
 
     @Override
@@ -194,6 +197,7 @@ public class ShootAtHubCommand extends Command {
         m_Turret.setSpeed(0);
         m_Shooter.setFlywheelVoltage(Volt.of(0));
         m_Shooter.setHoodPosition(-1d);
+        LEDManager.setDefault();
     }
 
     @Override

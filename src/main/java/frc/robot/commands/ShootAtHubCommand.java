@@ -271,9 +271,9 @@ public class ShootAtHubCommand extends Command {
 
             flywheelTOFMap.put(Meters.convertFrom(139, Inches), Seconds.of(1.56).in(Seconds));
 
-            flywheelTOFMap.put(Meters.convertFrom(153, Inches), Seconds.of(1.52).in(Seconds));
+            flywheelTOFMap.put(Meters.convertFrom(153, Inches), Seconds.of(1.55).in(Seconds));
 
-            flywheelTOFMap.put(Meters.convertFrom(168, Inches), Seconds.of(1.37).in(Seconds));
+            flywheelTOFMap.put(Meters.convertFrom(168, Inches), Seconds.of(1.87).in(Seconds));
 
             flywheelTOFMap.put(Meters.convertFrom(208, Inches), Seconds.of(1.38).in(Seconds));
 

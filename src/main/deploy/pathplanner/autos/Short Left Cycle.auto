@@ -105,19 +105,19 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "ShootFromLeftTrench"
+                  "name": "LongShootFromLeftTrench"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Kicker"
+                  "name": "LongKicker"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake"
+                  "name": "LongIntake"
                 }
               },
               {
@@ -133,7 +133,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Spindexer"
+                        "name": "LongSpindexer"
                       }
                     }
                   ]

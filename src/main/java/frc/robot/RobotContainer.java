@@ -211,11 +211,19 @@ public class RobotContainer {
     NamedCommands.registerCommand("Spindexer", new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED).withTimeout(6));
     NamedCommands.registerCommand("Kicker", new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).withTimeout(8));
 
+    NamedCommands.registerCommand("LongSpindexer", new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED).withTimeout(11));
+    NamedCommands.registerCommand("LongKicker", new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).withTimeout(11));
+
     NamedCommands.registerCommand("Print", new PrintCommand("Print"));
+
+    NamedCommands.registerCommand("LongIntake",new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(10));
+
     
     NamedCommands.registerCommand("ShootFromLeftBump", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump).withTimeout(4));
 
     NamedCommands.registerCommand("ShootFromLeftTrench", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(4));
+
+    NamedCommands.registerCommand("LongShootFromLeftTrench", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(10));
 
     NamedCommands.registerCommand("Shoot3sec",
         Commands.parallel(
@@ -289,8 +297,8 @@ public class RobotContainer {
 
 
     opRJoystickX.whileTrue(new TurnTurretCommand(m_turret, opRightX));
-    opLJoystickY.whileTrue(new InstantCommand(() -> armSubsystem.runArm(opLeftY.getAsDouble()*0.5)).onlyWhile(
-      () -> (armSubsystem.getArmEncoder().lte(ArmMotorConstants.ARM_REST_ANGLE) || armSubsystem.getArmEncoder().gte(ArmMotorConstants.ARM_DEPLOY_ANGLE))));
+    // opLJoystickY.whileTrue(new InstantCommand(() -> armSubsystem.runArm(opLeftY.getAsDouble()*0.5)).onlyWhile(
+    //   () -> (armSubsystem.getArmEncoder().lte(ArmMotorConstants.ARM_REST_ANGLE) || armSubsystem.getArmEncoder().gte(ArmMotorConstants.ARM_DEPLOY_ANGLE))));
 
     // m_driverController.povLeft()
     //     .whileTrue(Commands.parallel(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED),

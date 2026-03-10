@@ -150,7 +150,6 @@ public class ShootAtHubCommand extends Command {
         
         double targetRPS = targetRPM / 60.0;
 
-
         double feedforwardVoltage = flywheelFeedforward.calculate(targetRPS); //Tuned in V per rot/s
         double controlOutput = flywheelController.calculate( 
                 m_Shooter.getFlywheelVelocity().times(ShooterConstants.FlywheelConstants.gearRatio).in(RotationsPerSecond), targetRPS)
@@ -228,7 +227,7 @@ public class ShootAtHubCommand extends Command {
         public static final InterpolatingDoubleTreeMap flywheelSpeedMap = new InterpolatingDoubleTreeMap(); // Meters to  RPM at best hood angle
         public static final InterpolatingDoubleTreeMap flywheelTOFMap = new InterpolatingDoubleTreeMap(); // Meters toseconds in air at best hood angle
         public static final InterpolatingDoubleTreeMap hoodAngleMap = new InterpolatingDoubleTreeMap(); // Meters to hood position as percent from center
-        public static final double maxRPMChange = 1000; // RPM per second TODO: tune this
+        public static final double maxRPMChange = 1500; // RPM per second TODO: tune this
 
        // public static final double hoodTestRPM = 3000; //TODO: RPM for hood table
 

@@ -57,7 +57,7 @@ import frc.robot.subsystems.Turret.TurretIO;
 import frc.robot.subsystems.Turret.TurretIOTalon;
 import frc.robot.subsystems.Turret.TurretSubsystem;
 import frc.robot.subsystems.Vision.VisionConstants;
-import frc.robot.subsystems.Vision.VisionIOPhoton;
+import frc.robot.subsystems.Vision.VisionIOPhotonVision;
 import frc.robot.subsystems.Vision.VisionSubsystem;
 import frc.robot.util.ManualFlywheelSpeed;
 import frc.robot.util.SendableSupplier;
@@ -156,11 +156,8 @@ public class RobotContainer {
 
   private final CommandSwerveDrivetrain m_Swerve = TunerConstants.createDrivetrain();
 
-  private final VisionSubsystem m_Vision1 = new VisionSubsystem(
-      new VisionIOPhoton("Arducam_OV9281_USB_Camera", m_Swerve::addVisionMeasurement, VisionConstants.cameraToRobot1));
-  private final VisionSubsystem m_Vision2 = new VisionSubsystem(new VisionIOPhoton("Arducam_OV9281_USB_Camera (1)",
-      m_Swerve::addVisionMeasurement, VisionConstants.cameraToRobot2));
-
+  private final VisionSubsystem m_Vision1 = new VisionSubsystem(m_Swerve::addVisionMeasurement, new VisionIOPhotonVision(VisionConstants.camera0name, VisionConstants.robotToCamera0), new VisionIOPhotonVision(VisionConstants.camera1name, VisionConstants.robotToCamera1));
+ 
   private Trigger flywheelAtSpeed = new Trigger(
       () -> (m_shooter.getFlywheelVelocity().minus(m_shooter.targetSpeed).abs(RotationsPerSecond))<=(ShooterConstants.FlywheelConstants.flywheelTolerance.in(RotationsPerSecond)));
 
@@ -310,7 +307,7 @@ public class RobotContainer {
     
     
 
-    m_driverController.rightBumper().whileTrue(m_Swerve.applyRequest(()->new SwerveRequest.SwerveDriveBrake()).andThen(new InstantCommand(()->this.brakeMode(true)))).onFalse(new InstantCommand(()->this.brakeMode(false)));
+    m_driverController.rightBumper().whileTrue(m_Swerve.applyRequest(()->brake).alongWith(new InstantCommand(()->this.brakeMode(true)))).onFalse(new InstantCommand(()->this.brakeMode(false)));
 
     m_operatorController.rightTrigger().whileTrue(
         new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));

@@ -17,6 +17,7 @@ public interface VisionIO {
     public boolean connected = false;
     public TargetObservation latestTargetObservation =
         new TargetObservation(Rotation2d.kZero, Rotation2d.kZero);
+    public Pose3d latestEstimation = Pose3d.kZero;
     public PoseObservation[] poseObservations = new PoseObservation[0];
     public int[] tagIds = new int[0];
   }

@@ -1,6 +1,8 @@
 {
   "java.configuration.updateBuildConfiguration": "automatic",
   "java.server.launchMode": "Standard",
+  "java.gradle.wrapper.checksums": [],
+  "gradle.javaHome": null,
   "files.exclude": {
     "**/.git": true,
     "**/.svn": true,
@@ -27,6 +29,8 @@
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
   "java.import.gradle.annotationProcessing.enabled": false,
+  "gradle.nestedProjects": true,
+  "java.jdt.ls.gradle.initScripts": [],
   "java.completion.favoriteStaticMembers": [
     "org.junit.Assert.*",
     "org.junit.Assume.*",

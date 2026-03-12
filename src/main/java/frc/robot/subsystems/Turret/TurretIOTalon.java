@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class TurretIOTalon implements TurretIO {
     private TalonFX turretMotor = new TalonFX(TurretConstants.turretMotorID);
     public TurretIOTalon(){
-        turretMotor.getConfigurator().apply(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake).withInverted(InvertedValue.CounterClockwise_Positive));
+        turretMotor.getConfigurator().apply(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake).withInverted(InvertedValue.Clockwise_Positive));
         turretMotor.setPosition(Degrees.of(0));
     }
     @Override

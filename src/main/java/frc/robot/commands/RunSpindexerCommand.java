@@ -35,7 +35,7 @@ public class RunSpindexerCommand extends Command{
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    spindexer.runSpindexer(SpindexerConstants.SPINDEXER_SPEED);
+    spindexer.runSpindexer(speed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,7 +44,7 @@ public class RunSpindexerCommand extends Command{
     if (spindexer.getSpindexerCurrent().gte(SpindexerConstants.spindexerJamThreshold)) {
       isJammed = true;
       jamTimer.start();
-    }
+    } 
     if (isJammed && jamTimer.hasElapsed(SpindexerConstants.jamRecoveryTime)) {
       isJammed = false;
       jamTimer.stop();
@@ -52,8 +52,8 @@ public class RunSpindexerCommand extends Command{
     }
     
     if (!isJammed) {
-      spindexer.runSpindexer(SpindexerConstants.SPINDEXER_SPEED);
-    } 
+      spindexer.runSpindexer(speed);
+    }
     else {
       spindexer.runSpindexer(SpindexerConstants.jamRecoverySpeed);
     }

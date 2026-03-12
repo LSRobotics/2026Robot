@@ -178,7 +178,7 @@ public class ShootAtHubCommand extends Command {
              TurretConstants.turretRangeOneWay.in(Degrees)
         );
         turretPID.setSetpoint(setpoint);
-        double speed = turretPID.calculate(m_Turret.inputs.turretAngle.in(Degrees));
+        double speed = turretPID.calculate(m_Turret.getAngle().in(Degrees));
         speed = MathUtils.clamp(-TurretConstants.maxControlSpeed, TurretConstants.maxControlSpeed, speed);
         m_Turret.setSpeed(speed);
 

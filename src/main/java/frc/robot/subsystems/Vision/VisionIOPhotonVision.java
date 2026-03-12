@@ -114,6 +114,9 @@ public class VisionIOPhotonVision implements VisionIO {
     for (int i = 0; i < poseObservations.size(); i++) {
       inputs.poseObservations[i] = poseObservations.get(i);
     }
+    if (inputs.poseObservations.length>0){
+      inputs.latestEstimation = inputs.poseObservations[poseObservations.size()-1].pose();
+    }
 
     // Save tag IDs to inputs objects
     inputs.tagIds = new int[tagIds.size()];

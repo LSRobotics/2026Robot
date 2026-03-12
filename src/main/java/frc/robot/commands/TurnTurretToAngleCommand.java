@@ -62,7 +62,7 @@ public TurnTurretToAngleCommand(TurretSubsystem subsystem, Supplier<Angle> angle
     double setpoint = MathUtil.clamp(angle.get().in(Degrees), -TurretConstants.turretRangeOneWay.in(Degrees), TurretConstants.turretRangeOneWay.in(Degrees));
 
     pid.setSetpoint(setpoint);
-    double speed = pid.calculate(m_turret.inputs.turretAngle.in(Degrees));
+    double speed = pid.calculate(m_turret.getAngle().in(Degrees));
     
     speed = MathUtil.clamp(speed, -TurretConstants.maxControlSpeed, TurretConstants.maxControlSpeed);
     m_turret.setSpeed(speed);

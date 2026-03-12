@@ -24,8 +24,8 @@ public class VisionConstants {
             new Translation3d(Inches.of(12.5), Inches.of(13), Inches.of(18)),
             new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(0))); // INtake camera
 
-    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(8, 8, Integer.MAX_VALUE);
-    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(1.5, 1.5, Integer.MAX_VALUE);
+    public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(8, 8, Integer.MAX_VALUE); //TODO: REMOVE
+    public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(1.5, 1.5, Integer.MAX_VALUE); //TODO: REMOVE
 
     // Basic filtering thresholds
     public static double maxAmbiguity = 0.3;

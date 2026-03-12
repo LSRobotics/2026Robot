@@ -15,8 +15,7 @@ import frc.robot.util.MathUtils;
 public class TurretSubsystem extends SubsystemBase{
 
     private final TurretIO io;
-    public TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged(); //TODO: Make private when done debugging
-
+    private TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged(); 
 
     public TurretSubsystem(TurretIO io){
         this.io = io;

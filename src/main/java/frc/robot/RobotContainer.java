@@ -94,6 +94,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -156,7 +157,7 @@ public class RobotContainer {
 
   private final CommandSwerveDrivetrain m_Swerve = TunerConstants.createDrivetrain();
 
-  private final VisionSubsystem m_Vision1 = new VisionSubsystem(m_Swerve::addVisionMeasurement, new VisionIOPhotonVision(VisionConstants.camera0name, VisionConstants.robotToCamera0), new VisionIOPhotonVision(VisionConstants.camera1name, VisionConstants.robotToCamera1));
+  private final VisionSubsystem m_Vision = new VisionSubsystem(m_Swerve::addVisionMeasurement, new VisionIOPhotonVision(VisionConstants.camera0name, VisionConstants.robotToCamera0), new VisionIOPhotonVision(VisionConstants.camera1name, VisionConstants.robotToCamera1));
  
   private Trigger flywheelAtSpeed = new Trigger(
       () -> (m_shooter.getFlywheelVelocity().minus(m_shooter.targetSpeed).abs(RotationsPerSecond))<=(ShooterConstants.FlywheelConstants.flywheelTolerance.in(RotationsPerSecond)));
@@ -279,7 +280,21 @@ public class RobotContainer {
     // []\cancelling on relea[]\se.
     // m_driverController.a().onTrue(new TurnTurretToAngleCommand(m_turret, () ->
     // Degree.of(speedSupplier.getAsDouble())));
-    m_driverController.x().whileTrue(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).alongWith(new WaitCommand(0.5).andThen(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))));
+    m_driverController.x().whileTrue(
+        new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)
+            .alongWith(
+                Commands.sequence(
+                    new RunSpindexerCommand(
+                        spindexer,
+                        SpindexerConstants.jamRecoverySpeed
+                    ).withTimeout(0.5),
+                    new RunSpindexerCommand(
+                        spindexer,
+                        SpindexerConstants.SPINDEXER_SPEED
+                    )
+                )
+            )
+    );
     // m_driverController.y().whileTrue(new InstantCommand(() -> m_kicker.runKicker(KickerConstants.KICKER_SPEED)))
     //     .whileFalse(new InstantCommand(() -> m_kicker.runKicker(0)));
     m_driverController.povUp().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
@@ -290,8 +305,6 @@ public class RobotContainer {
     m_driverController.rightTrigger().whileTrue(
         new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds).andThen(new RunKickerCommand(m_kicker,KickerConstants.KICKER_SPEED)));
     m_driverController.leftBumper().whileTrue(new InstantCommand(()->this.changeMaxSpeed(Constants.maxSpeedFast))).onFalse(new InstantCommand(()->this.changeMaxSpeed(Constants.maxSpeedSlow)));
-
-
 
     opRJoystickX.whileTrue(new TurnTurretCommand(m_turret, opRightX));
     // opLJoystickY.whileTrue(new InstantCommand(() -> armSubsystem.runArm(opLeftY.getAsDouble()*0.5)).onlyWhile(
@@ -304,8 +317,6 @@ public class RobotContainer {
      m_driverController.b()
          .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
          .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
-    
-    
 
     m_driverController.rightBumper().whileTrue(m_Swerve.applyRequest(()->brake).alongWith(new InstantCommand(()->this.brakeMode(true)))).onFalse(new InstantCommand(()->this.brakeMode(false)));
 

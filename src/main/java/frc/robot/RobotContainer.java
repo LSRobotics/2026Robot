@@ -287,7 +287,7 @@ public class RobotContainer {
                     new RunSpindexerCommand(
                         spindexer,
                         SpindexerConstants.jamRecoverySpeed
-                    ).withTimeout(0.5),
+                    ).withTimeout(0.25),
                     new RunSpindexerCommand(
                         spindexer,
                         SpindexerConstants.SPINDEXER_SPEED

@@ -223,6 +223,10 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("LongShootFromLeftTrench", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(10));
 
+    NamedCommands.registerCommand("ShootFromRightTrench", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(4));
+
+    NamedCommands.registerCommand("LongShootFromRightTrench", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(10));
+
     NamedCommands.registerCommand("Shoot3sec",
         Commands.parallel(
             new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose,

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.417603795966786,
-        "y": 7.3434519572953745
+        "x": 3.6199858205331923,
+        "y": 7.490055228195622
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.6656555266203705,
-        "y": 7.843232132523148
+        "x": 6.062500110346045,
+        "y": 7.556296676377119
       },
       "isLocked": false,
       "linkedName": "LeftTrench"
@@ -21,14 +21,19 @@
       },
       "prevControl": {
         "x": 8.870926866319444,
-        "y": 7.403510344328704
+        "y": 7.403510344328705
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "CutCenter"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.3772380417547568,
+      "rotationDegrees": -11.453698508445093
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],

@@ -307,7 +307,7 @@ public class RobotContainer {
         .whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
     // m_driverController.leftBumper().onTrue(new InstantCommand((() -> m_shooter.setHoodPosition(angleSupplier))));
     m_driverController.rightTrigger().whileTrue(
-        new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds).andThen(new RunKickerCommand(m_kicker,KickerConstants.KICKER_SPEED)));
+        new AimAtHubCommand(m_turret, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
     m_driverController.leftBumper().whileTrue(new InstantCommand(()->this.changeMaxSpeed(Constants.maxSpeedFast))).onFalse(new InstantCommand(()->this.changeMaxSpeed(Constants.maxSpeedSlow)));
 
     opRJoystickX.whileTrue(new TurnTurretCommand(m_turret, opRightX));

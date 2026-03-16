@@ -10,7 +10,7 @@ import edu.wpi.first.units.measure.Time;
 
 public class SpindexerConstants {
     public static final int SPINDEXER_MOTOR_ID = 60; // TODO: Set the actual motor ID
-    public static final double SPINDEXER_SPEED = 0.65; //0.575
+    public static final double SPINDEXER_SPEED = 0.65; //0.575, 0.65 (Best)
     public static final double SPINDEXER_MIN_SPEED = 0.35;
 
     public static final Current spindexerJamThreshold = Amps.of(45); // TODO: Tune

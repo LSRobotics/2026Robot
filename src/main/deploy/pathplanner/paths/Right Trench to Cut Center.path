@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.751228206656074,
-        "y": 0.2800437522069207
+        "x": 8.897914735610875,
+        "y": 0.1508511542196322
       },
       "isLocked": false,
       "linkedName": "RightTrench"
@@ -28,13 +28,22 @@
       "linkedName": "RightCutCenter"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.14579479386892177,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 0.4848457320295985,
+      "rotationDegrees": 133.70016181218134
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

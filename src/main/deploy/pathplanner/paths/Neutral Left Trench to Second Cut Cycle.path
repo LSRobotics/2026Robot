@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.417603795966786,
-        "y": 7.3434519572953745
+        "x": 3.6199858205331923,
+        "y": 7.490055228195622
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.640568287037038,
-        "y": 8.273637225115742
+        "x": 8.812899231991526,
+        "y": 7.712731009445623
       },
       "isLocked": false,
-      "linkedName": "RotatedLeftTrench"
+      "linkedName": "LeftTrench"
     },
     {
       "anchor": {
-        "x": 6.163901909722223,
-        "y": 3.949181423611111
+        "x": 5.941088541666667,
+        "y": 4.5744637733933615
       },
       "prevControl": {
-        "x": 7.067466607522913,
-        "y": 3.539325302595259
+        "x": 6.069564574505651,
+        "y": 5.142620884092514
       },
       "nextControl": {
-        "x": 5.647087745949075,
-        "y": 4.183607855902777
+        "x": 5.8484693879031155,
+        "y": 4.164875855437877
       },
       "isLocked": false,
       "linkedName": "SecondCutCycle"
     },
     {
       "anchor": {
-        "x": 5.941088541666667,
-        "y": 7.3434519572953745
+        "x": 6.1014030499646905,
+        "y": 7.596022190589689
       },
       "prevControl": {
-        "x": 6.420832754629631,
-        "y": 6.67238743183241
+        "x": 6.581147262927654,
+        "y": 6.924957665126725
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,12 +46,16 @@
   ],
   "rotationTargets": [
     {
+      "waypointRelativePos": 0.1340677854122621,
+      "rotationDegrees": 0.0
+    },
+    {
       "waypointRelativePos": 1,
-      "rotationDegrees": 150.03087234180407
+      "rotationDegrees": -110.50223545694391
     },
     {
       "waypointRelativePos": 1.5314144736842106,
-      "rotationDegrees": 101.34611963506826
+      "rotationDegrees": -95.58063615694884
     }
   ],
   "constraintZones": [],
@@ -73,7 +77,7 @@
   "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.6917193867401
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

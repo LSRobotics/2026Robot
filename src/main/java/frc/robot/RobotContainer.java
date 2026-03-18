@@ -61,6 +61,7 @@ import frc.robot.subsystems.Vision.VisionIOPhotonVision;
 import frc.robot.subsystems.Vision.VisionSubsystem;
 import frc.robot.util.ManualFlywheelSpeed;
 import frc.robot.util.SendableSupplier;
+import frc.robot.util.Telemetry;
 import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;
 import frc.robot.commands.TurnTurretToAngleCommand;
 import frc.robot.generated.TunerConstants;
@@ -177,7 +178,7 @@ public class RobotContainer {
     LEDManager.setDefault();
     Logger.recordOutput("Swerve/BrakeMode", false);
     Logger.recordOutput("Swerve/BrakeModeColor", "#000000");
-    Logger.recordOutput("Swerve/MaxSpeed", MaxSpeed.get());
+    Logger.recordOutput("Swerve/MaxSpeed", MaxSpeed.get());    
 
     ManualFlywheelSpeed.init();
    
@@ -215,7 +216,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("Print", new PrintCommand("Print"));
 
     NamedCommands.registerCommand("LongIntake",new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(10));
-
     
     NamedCommands.registerCommand("ShootFromLeftBump", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump).withTimeout(4));
 
@@ -261,6 +261,9 @@ public class RobotContainer {
             .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with
         // negative X (left)
         ));
+
+    m_Swerve.registerTelemetry(new Telemetry(MaxSpeed.get())::telemeterize);
+
 
     // Supplier<Double> sliderInput = () -> m_operatorController.getRawAxis(OperatorConstants.slider);
     // Supplier<Double> operatorYaw = () -> m_operatorController.getRawAxis(OperatorConstants.yaw);
@@ -313,6 +316,8 @@ public class RobotContainer {
     opRJoystickX.whileTrue(new TurnTurretCommand(m_turret, opRightX));
     // opLJoystickY.whileTrue(new InstantCommand(() -> armSubsystem.runArm(opLeftY.getAsDouble()*0.5)).onlyWhile(
     //   () -> (armSubsystem.getArmEncoder().lte(ArmMotorConstants.ARM_REST_ANGLE) || armSubsystem.getArmEncoder().gte(ArmMotorConstants.ARM_DEPLOY_ANGLE))));
+
+    opLJoystickY.whileTrue(new ConditionalCommand(new ArmOutCommand(armSubsystem, ArmConstants.ArmMotorConstants.ARM_DEPLOY_ANGLE), new ArmOutCommand(armSubsystem, ArmConstants.ArmMotorConstants.ARM_REST_ANGLE), () -> opLeftY.getAsDouble()>0d));
 
     // m_driverController.povLeft()
     //     .whileTrue(Commands.parallel(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED),

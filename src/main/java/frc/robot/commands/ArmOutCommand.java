@@ -13,6 +13,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;
+import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;
 
 /** An example command that uses an example subsystem. */
@@ -79,6 +80,14 @@ public class ArmOutCommand extends Command {
     // m_arm.runArm(0);
     // return;
     // }
+
+    if (armDegrees>ArmConstants.ArmMotorConstants.ARM_REST_ANGLE.in(Degrees) && direction==1d){
+      direction = 0;
+    }
+
+    else if (armDegrees<ArmConstants.ArmMotorConstants.ARM_DEPLOY_ANGLE.in(Degrees) && direction==-1d){
+      direction = 0;
+    }
 
     m_arm.runArm(direction * ArmMotorConstants.ARM_SPEED);
   }

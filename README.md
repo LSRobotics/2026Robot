@@ -27,26 +27,27 @@
 - **Run Spindexer** = Left Bumper
 
 ##Autons
-####Short Left Cycle (Hatboro)
+
+#### Short Left Cycle (Hatboro)
 
 - **What was used at Hatboro; shoots from left trench, grabs from the neutral zone, and shoots from left trench again**
   
-####Right Hatboro
+#### Right Hatboro
 
 - **Mirrored version of Short Left Cycle (Hatboro) for the right side**
   
-####Left Hatboro No Initial Shoot
+#### Left Hatboro No Initial Shoot
 
 - **Identical to Short Left Cycle (Hatboro) without the initial shoot from left trench**
   
-####Left Immediate Neutral Cycle + Fill Hopper
+#### Left Immediate Neutral Cycle + Fill Hopper
 
 - **Immediately goes from left trench to neutral zone, grabs balls, comes back to left trench and shoots, and grabs balls closer to the hub in the neutral zone before time runs out**
   
-####Right Immediate Neutral Cycle + Fill Hopper
+#### Right Immediate Neutral Cycle + Fill Hopper
 
 - **Mirrored version of Left Immediate Neutral Cycle + Fill Hopper for the right side**
   
-####Stand Still and Shoot From Left Bump
+#### Stand Still and Shoot From Left Bump
 
 - **Self explanitory**

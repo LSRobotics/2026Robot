@@ -26,7 +26,7 @@
 ####
 - **Run Spindexer** = Left Bumper
 
-##Autons
+## Autons
 
 #### Short Left Cycle (Hatboro)
 

@@ -47,7 +47,7 @@ public class ShooterConstants {
         public static final AngularVelocity manualSpeed1 = RotationsPerSecond.of(40);
         public static final AngularVelocity manualSpeed2 = RotationsPerSecond.of(42);
         public static final AngularVelocity manualSpeed3 = RotationsPerSecond.of(45);
-        public static final AngularVelocity manualSpeed4 = RotationsPerSecond.of(52);
+        public static final AngularVelocity manualSpeed4 = RotationsPerSecond.of(48);
     }
 
     public static class HoodConstants {

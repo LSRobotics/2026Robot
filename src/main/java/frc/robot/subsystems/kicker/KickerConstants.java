@@ -8,6 +8,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 
 public class KickerConstants {
     public static final int KICKER_MOTOR_ID = 61; 
-    public static final double KICKER_SPEED = -0.8; 
+    public static final double KICKER_SPEED = -1d; 
     public static final double OUTTAKE_SPEED = -KICKER_SPEED;
 }

@@ -158,7 +158,11 @@ public class RobotContainer {
 
   private final CommandSwerveDrivetrain m_Swerve = TunerConstants.createDrivetrain();
 
-  private final VisionSubsystem m_Vision = new VisionSubsystem(m_Swerve::addVisionMeasurement, new VisionIOPhotonVision(VisionConstants.camera0name, VisionConstants.robotToCamera0), new VisionIOPhotonVision(VisionConstants.camera1name, VisionConstants.robotToCamera1));
+
+  private final VisionSubsystem m_Vision = new VisionSubsystem(m_Swerve::addVisionMeasurement, 
+    new VisionIOPhotonVision(VisionConstants.camera0name, VisionConstants.robotToCamera0),
+    new VisionIOPhotonVision(VisionConstants.camera1name, VisionConstants.robotToCamera1),
+    new VisionIOPhotonVision(VisionConstants.camera2name, VisionConstants.robotToCamera2));
  
   private Trigger flywheelAtSpeed = new Trigger(
       () -> (m_shooter.getFlywheelVelocity().minus(m_shooter.targetSpeed).abs(RotationsPerSecond))<=(ShooterConstants.FlywheelConstants.flywheelTolerance.in(RotationsPerSecond)));
@@ -189,14 +193,20 @@ public class RobotContainer {
 
     configureBindings();
 
-    SmartDashboard.putData("SysId/Flywheel Quasistatic Forward",
-        m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("SysId/Flywheel Quasistatic Reverse",
-        m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData("SysId/Flywheel Dynamic Forward",
-        m_shooter.sysIdFlywheelDynamic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("SysId/Flywheel Dynamic Reverse",
-        m_shooter.sysIdFlywheelDynamic(SysIdRoutine.Direction.kReverse));
+    // SmartDashboard.putData("SysId/Flywheel Quasistatic Forward",
+    //     m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kForward));
+    // SmartDashboard.putData("SysId/Flywheel Quasistatic Reverse",
+    //     m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kReverse));
+    // SmartDashboard.putData("SysId/Flywheel Dynamic Forward",
+    //     m_shooter.sysIdFlywheelDynamic(SysIdRoutine.Direction.kForward));
+    // SmartDashboard.putData("SysId/Flywheel Dynamic Reverse",
+    //     m_shooter.sysIdFlywheelDynamic(SysIdRoutine.Direction.kReverse));
+
+    SmartDashboard.putData("SysId1/Swerve Quasistatic Forward", m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("SysId1/Swerve Quasistatic Reverse", m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    SmartDashboard.putData("SysId1/Swerve Dynamic Forward", m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    SmartDashboard.putData("SysId1/Swerve Dynamic Reverse", m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+
 
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
 
@@ -246,7 +256,6 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auton Chooser", autoChooser);
-
   }
 
   private void configureBindings() {
@@ -319,6 +328,7 @@ public class RobotContainer {
 
     opLJoystickY.whileTrue(new ConditionalCommand(new ArmOutCommand(armSubsystem, ArmConstants.ArmMotorConstants.ARM_DEPLOY_ANGLE), new ArmOutCommand(armSubsystem, ArmConstants.ArmMotorConstants.ARM_REST_ANGLE), () -> opLeftY.getAsDouble()>0d));
 
+    
     // m_driverController.povLeft()
     //     .whileTrue(Commands.parallel(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED),
     //         new WaitCommand(0.75).andThen(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))));
@@ -393,5 +403,6 @@ public class RobotContainer {
 
     public void periodic(){
         SmartDashboard.putBoolean("FlywheelAtSpeed", flywheelAtSpeed.getAsBoolean());
+        Logger.recordOutput("Swerve Current", m_Swerve.getModules()[0].getDriveMotor().getStatorCurrent().getValueAsDouble());
     }
 }

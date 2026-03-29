@@ -14,7 +14,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Turret.TurretConstants;
@@ -42,6 +44,14 @@ public class AimAtHubCommand extends Command {
     @Override
     public void execute() {
         Pose2d hubPose = TurretConstants.hubBlue;
+
+        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get()==Alliance.Blue){
+                hubPose = TurretConstants.hubBlue;
+        }
+        else if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get()==Alliance.Blue){
+        hubPose = TurretConstants.hubRed;
+        }
+        
         Pose2d turretPose = robotPoseSupplier.get()
                 .transformBy(new Transform2d(TurretConstants.turretOffset, new Rotation2d()));
 
@@ -53,7 +63,7 @@ public class AimAtHubCommand extends Command {
                                 robotVelocity.vyMetersPerSecond * TurretConstants.lookaheadLatency.in(Seconds)),
                         new Rotation2d(robotVelocity.omegaRadiansPerSecond * TurretConstants.lookaheadLatency.in(Seconds))));
         Rotation2d angleToHub = hubPose.getTranslation().minus(predictedTurretPose.getTranslation()).getAngle();
-        angleToHub = angleToHub.minus(robotPoseSupplier.get().getRotation());
+        angleToHub = angleToHub.minus(robotPoseSupplier.get().getRotation()).unaryMinus();
         int trajectoryPoints = 20;
         Pose2d[] trajectory = new Pose2d[trajectoryPoints];
         for (int i = 0; i < trajectoryPoints; i++) {

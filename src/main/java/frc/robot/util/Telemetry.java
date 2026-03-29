@@ -1,5 +1,7 @@
 package frc.robot.util;
 
+import static edu.wpi.first.units.Units.Amps;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
@@ -14,6 +16,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -57,6 +60,13 @@ public class Telemetry {
         new Mechanism2d(1, 1),
         new Mechanism2d(1, 1),
         new Mechanism2d(1, 1),
+    };
+
+    private final Current[] m_moduleCurrents = new Current[]{
+        Amps.of(0),
+        Amps.of(0),
+        Amps.of(0),
+        Amps.of(0),
     };
     /* A direction and length changing ligament for speed representation */
     private final MechanismLigament2d[] m_moduleSpeeds = new MechanismLigament2d[] {

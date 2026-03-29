@@ -13,8 +13,8 @@ public class SpindexerConstants {
     public static final double SPINDEXER_SPEED = 0.65; //0.575, 0.65 (Best)
     public static final double SPINDEXER_MIN_SPEED = 0.35;
 
-    public static final Current spindexerJamThreshold = Amps.of(45); // TODO: Tune
+    public static final Current spindexerJamThreshold = Amps.of(40); // TODO: Tune
     public static final Time jamRecoveryTime = Seconds.of(0.01);
-    public static final double jamRecoverySpeed = -0.15; // TODO
+    public static final double jamRecoverySpeed = -0.1; // TODO
     
 }

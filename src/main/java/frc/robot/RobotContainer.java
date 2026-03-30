@@ -158,7 +158,6 @@ public class RobotContainer {
 
   private final CommandSwerveDrivetrain m_Swerve = TunerConstants.createDrivetrain();
 
-
   private final VisionSubsystem m_Vision = new VisionSubsystem(m_Swerve::addVisionMeasurement, 
     new VisionIOPhotonVision(VisionConstants.camera0name, VisionConstants.robotToCamera0),
     new VisionIOPhotonVision(VisionConstants.camera1name, VisionConstants.robotToCamera1),
@@ -193,14 +192,14 @@ public class RobotContainer {
 
     configureBindings();
 
-    // SmartDashboard.putData("SysId/Flywheel Quasistatic Forward",
-    //     m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kForward));
-    // SmartDashboard.putData("SysId/Flywheel Quasistatic Reverse",
-    //     m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kReverse));
-    // SmartDashboard.putData("SysId/Flywheel Dynamic Forward",
-    //     m_shooter.sysIdFlywheelDynamic(SysIdRoutine.Direction.kForward));
-    // SmartDashboard.putData("SysId/Flywheel Dynamic Reverse",
-    //     m_shooter.sysIdFlywheelDynamic(SysIdRoutine.Direction.kReverse));
+     SmartDashboard.putData("SysId/Flywheel Quasistatic Forward",
+         m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kForward));
+     SmartDashboard.putData("SysId/Flywheel Quasistatic Reverse",
+         m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kReverse));
+     SmartDashboard.putData("SysId/Flywheel Dynamic Forward",
+         m_shooter.sysIdFlywheelDynamic(SysIdRoutine.Direction.kForward));
+     SmartDashboard.putData("SysId/Flywheel Dynamic Reverse",
+         m_shooter.sysIdFlywheelDynamic(SysIdRoutine.Direction.kReverse));
 
     SmartDashboard.putData("SysId1/Swerve Quasistatic Forward", m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     SmartDashboard.putData("SysId1/Swerve Quasistatic Reverse", m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
@@ -317,8 +316,8 @@ public class RobotContainer {
     m_driverController.povDown().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE));
     m_driverController.a()
         .whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
-    // m_driverController.leftBumper().onTrue(new InstantCommand((() -> m_shooter.setHoodPosition(angleSupplier))));
-    m_driverController.rightTrigger().whileTrue(
+    m_driverController.povRight().onTrue(new InstantCommand((() -> m_shooter.setHoodPosition(angleSupplier))));
+    m_operatorController.rightTrigger().whileTrue(
         new AimAtHubCommand(m_turret, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
     m_driverController.leftBumper().whileTrue(new InstantCommand(()->this.changeMaxSpeed(Constants.maxSpeedFast))).onFalse(new InstantCommand(()->this.changeMaxSpeed(Constants.maxSpeedSlow)));
 
@@ -339,8 +338,8 @@ public class RobotContainer {
 
     m_driverController.rightBumper().whileTrue(m_Swerve.applyRequest(()->brake).alongWith(new InstantCommand(()->this.brakeMode(true)))).onFalse(new InstantCommand(()->this.brakeMode(false)));
 
-    m_operatorController.rightTrigger().whileTrue(
-        new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
+    // m_operatorController.rightTrigger().whileTrue(
+    //     new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
 
     m_driverController.start().onTrue(new InstantCommand(() -> m_Swerve.resetRotation(DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? Rotation2d.fromDegrees(180) : Rotation2d.fromDegrees(0))));
 

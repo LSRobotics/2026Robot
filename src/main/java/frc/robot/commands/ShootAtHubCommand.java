@@ -171,7 +171,7 @@ public class ShootAtHubCommand extends Command {
         Pose2d predictedTurretPose = predictedPose.transformBy(new Transform2d(TurretConstants.turretOffset, new Rotation2d()));
         Rotation2d angleToTarget = Target.getTranslation().minus(predictedTurretPose.getTranslation()).getAngle();
         //angleToTarget = angleToTarget.minus(robotPoseSupplier.get().getRotation());
-        angleToTarget = angleToTarget.minus(predictedPose.getRotation());
+        angleToTarget = angleToTarget.minus(predictedPose.getRotation()).unaryMinus();
         double setpoint = MathUtil.clamp(
             angleToTarget.getDegrees(),
             -TurretConstants.turretRangeOneWay.in(Degrees),
@@ -224,16 +224,34 @@ public class ShootAtHubCommand extends Command {
 
     private class AimingConstants {
         public static final int maxIterations = 4;
-        public static final double ToFtolerance = 0.05; // seconds
+        public static final double ToFtolerance = 0.07; // seconds
         public static final InterpolatingDoubleTreeMap flywheelSpeedMap = new InterpolatingDoubleTreeMap(); // Meters to  RPM at best hood angle
         public static final InterpolatingDoubleTreeMap flywheelTOFMap = new InterpolatingDoubleTreeMap(); // Meters toseconds in air at best hood angle
         public static final InterpolatingDoubleTreeMap hoodAngleMap = new InterpolatingDoubleTreeMap(); // Meters to hood position as percent from center
-        public static final double maxRPMChange = 1500; // RPM per second TODO: tune this
-
-       // public static final double hoodTestRPM = 3000; //TODO: RPM for hood table
+        public static final double maxRPMChange = 4500; // RPM per second TODO: tune this
 
         public static void initialize() { //TODO: fill out once bot is done
             // Meters to RPM
+            flywheelSpeedMap.put(Meters.convertFrom(44, Inches), RPM.convertFrom(40, RotationsPerSecond));
+
+            // Meters to tof
+            flywheelTOFMap.put(Meters.convertFrom(44, Inches), Seconds.of(1.14).in(Seconds));
+
+            // Meters to hood angle at hoodTestRPM
+            hoodAngleMap.put(Meters.convertFrom(44, Inches), -1d);
+
+        }
+
+        public AimingConstants() throws Exception {
+            throw new Exception("dont instantiate this");
+
+        }
+    }
+
+}
+
+ /*
+   // Meters to RPM
             flywheelSpeedMap.put(Meters.convertFrom(44, Inches), RPM.convertFrom(40, RotationsPerSecond));
 
             flywheelSpeedMap.put(Meters.convertFrom(48, Inches), RPM.convertFrom(35, RotationsPerSecond));
@@ -246,7 +264,7 @@ public class ShootAtHubCommand extends Command {
 
             flywheelSpeedMap.put(Meters.convertFrom(139, Inches), RPM.convertFrom(52, RotationsPerSecond));
 
-            flywheelSpeedMap.put(Meters.convertFrom(153, Inches), RPM.convertFrom(55, RotationsPerSecond)); //TODO: Deal with points of inflection
+            flywheelSpeedMap.put(Meters.convertFrom(153, Inches), RPM.convertFrom(55, RotationsPerSecond)); 
 
             flywheelSpeedMap.put(Meters.convertFrom(168, Inches), RPM.convertFrom(95, RotationsPerSecond));
 
@@ -280,8 +298,6 @@ public class ShootAtHubCommand extends Command {
             flywheelTOFMap.put(Meters.convertFrom(236, Inches), Seconds.of(1.15).in(Seconds));
 
 
-
-
             // Meters to hood angle at hoodTestRPM
             hoodAngleMap.put(Meters.convertFrom(44, Inches), -1d);
 
@@ -303,16 +319,4 @@ public class ShootAtHubCommand extends Command {
 
             hoodAngleMap.put(Meters.convertFrom(236, Inches), 0.20040080160320642);
 
-
-
-        }
-
-        public AimingConstants() throws Exception {
-            throw new Exception("dont instantiate this");
-
-        }
-    }
-
-}
-
- 
+ */

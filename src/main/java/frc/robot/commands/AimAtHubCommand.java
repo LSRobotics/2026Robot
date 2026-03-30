@@ -64,6 +64,7 @@ public class AimAtHubCommand extends Command {
                         new Rotation2d(robotVelocity.omegaRadiansPerSecond * TurretConstants.lookaheadLatency.in(Seconds))));
         Rotation2d angleToHub = hubPose.getTranslation().minus(predictedTurretPose.getTranslation()).getAngle();
         angleToHub = angleToHub.minus(robotPoseSupplier.get().getRotation()).unaryMinus();
+        //
         int trajectoryPoints = 20;
         Pose2d[] trajectory = new Pose2d[trajectoryPoints];
         for (int i = 0; i < trajectoryPoints; i++) {
@@ -75,7 +76,7 @@ public class AimAtHubCommand extends Command {
         Logger.recordOutput("Turret/Trajectory", trajectory);
         Logger.recordOutput("Turret/AngleToHub", angleToHub.getDegrees());
         Logger.recordOutput("Turret/PredictedTurretPose", predictedTurretPose);
-
+        
         Rotation2d actualFieldAngle = Rotation2d.fromDegrees(turret.getAngle().in(Degrees))
                 .plus(robotPoseSupplier.get().getRotation());
         Logger.recordOutput("Field Angle", actualFieldAngle);
@@ -89,8 +90,11 @@ public class AimAtHubCommand extends Command {
                 turretPose,
                 new Pose2d(turretPose.getTranslation().plus(new Translation2d(5.0, actualFieldAngle)), actualFieldAngle)
         });
+        //
 
         //turret.pointAtAngle(Degrees.of(angleToHub.getDegrees()));
+
+        //
         pid.setSetpoint(MathUtils.clamp(-TurretConstants.turretRangeOneWay.in(Degrees), TurretConstants.turretRangeOneWay.in(Degrees), angleToHub.getDegrees()));
         double speed = pid.calculate(turret.getAngle().in(Degrees));
         SmartDashboard.putNumber("Angle2", angleToHub.getDegrees());

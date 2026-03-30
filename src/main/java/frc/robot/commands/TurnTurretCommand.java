@@ -23,7 +23,7 @@ public class TurnTurretCommand extends Command {
 
     @Override
     public void execute() {
-        double clampedSpeed = MathUtils.clamp(-TurretConstants.maxControlSpeed, TurretConstants.maxControlSpeed, speed.getAsDouble());
+        double clampedSpeed = MathUtils.clamp(-TurretConstants.maxOpSpeed, TurretConstants.maxOpSpeed, speed.getAsDouble());
 
         if (turret.getAngle().lte(TurretConstants.turretRangeOneWay.unaryMinus()) && clampedSpeed < 0) {
             clampedSpeed = 0;

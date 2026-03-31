@@ -17,5 +17,5 @@ public class LEDConstants {
     public static final double colorGold = 0.67;
     public static final double twinklesColorOneAndTwo = 0.51;
 
-    public static final double defaultColor = 0.45;
+    public static final double defaultColor = 0.87;
 }

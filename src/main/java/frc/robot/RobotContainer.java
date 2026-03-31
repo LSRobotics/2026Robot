@@ -20,6 +20,7 @@ import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.kicker.KickerIO;
 import frc.robot.subsystems.kicker.KickerIOTalonFX;
 import frc.robot.subsystems.kicker.KickerSubsystem;
+import frc.robot.subsystems.leds.LEDConstants;
 import frc.robot.subsystems.leds.LEDManager;
 import frc.robot.subsystems.leds.LedSubsystem;
 import frc.robot.subsystems.leds.LedsIO;
@@ -109,299 +110,361 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+    // The robot's subsystems and commands are defined here...
+    private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  private final SpindexerIOTalonFX SpinIO = new SpindexerIOTalonFX();
-  private final SpindexerSubsystem spindexer = new SpindexerSubsystem(SpinIO);
-  private final KickerIO kickerIO = new KickerIOTalonFX();
-  private final KickerSubsystem m_kicker = new KickerSubsystem(kickerIO);
-  private final TurretIO turretIO = new TurretIOTalon();
-  private final TurretSubsystem m_turret = new TurretSubsystem(turretIO);
+    private final SpindexerIOTalonFX SpinIO = new SpindexerIOTalonFX();
+    private final SpindexerSubsystem spindexer = new SpindexerSubsystem(SpinIO);
+    private final KickerIO kickerIO = new KickerIOTalonFX();
+    private final KickerSubsystem m_kicker = new KickerSubsystem(kickerIO);
+    private final TurretIO turretIO = new TurretIOTalon();
+    private final TurretSubsystem m_turret = new TurretSubsystem(turretIO);
 
-  private final SendableChooser<Command> autoChooser;
+    private final SendableChooser<Command> autoChooser;
 
-  private final ShooterSubsystem m_shooter = new ShooterSubsystem(new ShooterFlywheelIOTalonFX(),
-      new ShooterHoodIOLinearActuator(ShooterConstants.HoodConstants.hoodLinearActuatorPWMID,
-          ShooterConstants.HoodConstants.hoodLinearActuatorPWMID2));
+    private final ShooterSubsystem m_shooter = new ShooterSubsystem(new ShooterFlywheelIOTalonFX(),
+            new ShooterHoodIOLinearActuator(ShooterConstants.HoodConstants.hoodLinearActuatorPWMID,
+                    ShooterConstants.HoodConstants.hoodLinearActuatorPWMID2));
 
-  // Replace with CommandPS4Controller or Commandm_driverController if needed
-  private final CommandXboxController m_driverController = new CommandXboxController(
-      OperatorConstants.kDriverControllerPort);
-  // private final GenericHID m_operatorController = new
-  // GenericHID(OperatorConstants.kOperatorControllerPort);
-  private final CommandXboxController m_operatorController = new CommandXboxController(
-      OperatorConstants.kOperatorControllerPort);
+    // Replace with CommandPS4Controller or Commandm_driverController if needed
+    private final CommandXboxController m_driverController = new CommandXboxController(
+            OperatorConstants.kDriverControllerPort);
+    // private final GenericHID m_operatorController = new
+    // GenericHID(OperatorConstants.kOperatorControllerPort);
+    private final CommandXboxController m_operatorController = new CommandXboxController(
+            OperatorConstants.kOperatorControllerPort);
 
-  private final IntakeIOTalonFX intakeIO = new IntakeIOTalonFX();
-  private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(intakeIO);
+    private final IntakeIOTalonFX intakeIO = new IntakeIOTalonFX();
+    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(intakeIO);
 
-  private final ArmIOSparkMax armIO = new ArmIOSparkMax();
-  private final ArmLimitSwitchIOLimitSwitch limitSwitchIO = new ArmLimitSwitchIOLimitSwitch();
-  private final ArmSubsystem armSubsystem = new ArmSubsystem(armIO, limitSwitchIO);
+    private final ArmIOSparkMax armIO = new ArmIOSparkMax();
+    private final ArmLimitSwitchIOLimitSwitch limitSwitchIO = new ArmLimitSwitchIOLimitSwitch();
+    private final ArmSubsystem armSubsystem = new ArmSubsystem(armIO, limitSwitchIO);
 
-  private final LedsIOBlinkin ledIO = new LedsIOBlinkin();
-  private final LedSubsystem ledSubsystem = new LedSubsystem(ledIO);
+    private final LedsIOBlinkin ledIO = new LedsIOBlinkin();
+    private final LedSubsystem ledSubsystem = new LedSubsystem(ledIO);
 
-  private Supplier<Double> MaxSpeed =() -> Constants.maxSpeedSlow;
-  private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
-                                                                                    // max angular velocity
+    private Supplier<Double> MaxSpeed = () -> Constants.maxSpeedSlow;
+    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
+                                                                                      // max angular velocity
 
-  /* Setting up bindings for necessary control of the swerve drive platform */
-  private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed.get() * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-      .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage); // Use open-loop
-                                                                                                     // control for
-                                                                                                     // drive motors
-  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    /* Setting up bindings for necessary control of the swerve drive platform */
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+            .withDeadband(MaxSpeed.get() * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage); // Use
+                                                                                                           // open-loop
+                                                                                                           // control
+                                                                                                           // for
+                                                                                                           // drive
+                                                                                                           // motors
+    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-  private final CommandSwerveDrivetrain m_Swerve = TunerConstants.createDrivetrain();
+    private final CommandSwerveDrivetrain m_Swerve = TunerConstants.createDrivetrain();
 
-  private final VisionSubsystem m_Vision = new VisionSubsystem(m_Swerve::addVisionMeasurement, 
-    new VisionIOPhotonVision(VisionConstants.camera0name, VisionConstants.robotToCamera0),
-    new VisionIOPhotonVision(VisionConstants.camera1name, VisionConstants.robotToCamera1),
-    new VisionIOPhotonVision(VisionConstants.camera2name, VisionConstants.robotToCamera2));
- 
-  private Trigger flywheelAtSpeed = new Trigger(
-      () -> (m_shooter.getFlywheelVelocity().minus(m_shooter.targetSpeed).abs(RotationsPerSecond))<=(ShooterConstants.FlywheelConstants.flywheelTolerance.in(RotationsPerSecond)));
+    private final VisionSubsystem m_Vision = new VisionSubsystem(m_Swerve::addVisionMeasurement,
+            new VisionIOPhotonVision(VisionConstants.camera0name, VisionConstants.robotToCamera0),
+            new VisionIOPhotonVision(VisionConstants.camera1name, VisionConstants.robotToCamera1),
+            new VisionIOPhotonVision(VisionConstants.camera2name, VisionConstants.robotToCamera2));
 
-  DoubleSupplier opRightX = () -> m_operatorController.getRightX();
-  DoubleSupplier opLeftY = () -> m_operatorController.getLeftY();
-  Trigger opRJoystickX = new Trigger(() -> opRightX.getAsDouble() != 0);
-  Trigger opLJoystickY = new Trigger(() -> opLeftY.getAsDouble() != 0);
+    private Trigger flywheelAtSpeed = new Trigger(
+            () -> (m_shooter.getFlywheelVelocity().minus(m_shooter.targetSpeed)
+                    .abs(RotationsPerSecond)) <= (ShooterConstants.FlywheelConstants.flywheelTolerance
+                            .in(RotationsPerSecond)));
 
-  // private final SendableChooser<Command> autoChooser;
+    DoubleSupplier opRightX = () -> m_operatorController.getRightX();
+    DoubleSupplier opLeftY = () -> m_operatorController.getLeftY();
+    Trigger opRJoystickX = new Trigger(() -> opRightX.getAsDouble() != 0);
+    Trigger opLJoystickY = new Trigger(() -> opLeftY.getAsDouble() != 0);
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer() {
-    LEDManager.init(ledSubsystem);
-    LEDManager.setDefault();
-    Logger.recordOutput("Swerve/BrakeMode", false);
-    Logger.recordOutput("Swerve/BrakeModeColor", "#000000");
-    Logger.recordOutput("Swerve/MaxSpeed", MaxSpeed.get());    
+    // private final SendableChooser<Command> autoChooser;
 
-    ManualFlywheelSpeed.init();
-   
-    // Configure the trigger bindings
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
+        LEDManager.init(ledSubsystem);
+        LEDManager.setDefault();
+        Logger.recordOutput("Swerve/BrakeMode", false);
+        Logger.recordOutput("Swerve/BrakeModeColor", "#000000");
+        Logger.recordOutput("Swerve/MaxSpeed", MaxSpeed.get());
 
-    // autoChooser = AutoBuilder.buildAutoChooser();
-    // SmartDashboard.putData("Auto Mode", autoChooser);
+        ManualFlywheelSpeed.init();
 
-    configureBindings();
+        // Configure the trigger bindings
 
-     SmartDashboard.putData("SysId/Flywheel Quasistatic Forward",
-         m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kForward));
-     SmartDashboard.putData("SysId/Flywheel Quasistatic Reverse",
-         m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kReverse));
-     SmartDashboard.putData("SysId/Flywheel Dynamic Forward",
-         m_shooter.sysIdFlywheelDynamic(SysIdRoutine.Direction.kForward));
-     SmartDashboard.putData("SysId/Flywheel Dynamic Reverse",
-         m_shooter.sysIdFlywheelDynamic(SysIdRoutine.Direction.kReverse));
+        // autoChooser = AutoBuilder.buildAutoChooser();
+        // SmartDashboard.putData("Auto Mode", autoChooser);
 
-    SmartDashboard.putData("SysId1/Swerve Quasistatic Forward", m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("SysId1/Swerve Quasistatic Reverse", m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    SmartDashboard.putData("SysId1/Swerve Dynamic Forward", m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    SmartDashboard.putData("SysId1/Swerve Dynamic Reverse", m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        configureBindings();
 
+        SmartDashboard.putData("SysId/Flywheel Quasistatic Forward",
+                m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kForward));
+        SmartDashboard.putData("SysId/Flywheel Quasistatic Reverse",
+                m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kReverse));
+        SmartDashboard.putData("SysId/Flywheel Dynamic Forward",
+                m_shooter.sysIdFlywheelDynamic(SysIdRoutine.Direction.kForward));
+        SmartDashboard.putData("SysId/Flywheel Dynamic Reverse",
+                m_shooter.sysIdFlywheelDynamic(SysIdRoutine.Direction.kReverse));
 
-    SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
+        SmartDashboard.putData("SysId1/Swerve Quasistatic Forward",
+                m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        SmartDashboard.putData("SysId1/Swerve Quasistatic Reverse",
+                m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        SmartDashboard.putData("SysId1/Swerve Dynamic Forward",
+                m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        SmartDashboard.putData("SysId1/Swerve Dynamic Reverse",
+                m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
 
-    SmartDashboard.putData("Start logger", new InstantCommand(() -> SignalLogger.start()));
-    SmartDashboard.putData("Stop logger", new InstantCommand(() -> SignalLogger.stop()));
+        SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
 
-    NamedCommands.registerCommand("ArmOut", new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE).withTimeout(Seconds.of(20)));
-    NamedCommands.registerCommand("ArmIn", new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
-    NamedCommands.registerCommand("Intake",new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(3));
+        SmartDashboard.putData("Start logger", new InstantCommand(() -> SignalLogger.start()));
+        SmartDashboard.putData("Stop logger", new InstantCommand(() -> SignalLogger.stop()));
 
-    NamedCommands.registerCommand("Spindexer", new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED).withTimeout(6));
-    NamedCommands.registerCommand("Kicker", new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).withTimeout(8));
+        NamedCommands.registerCommand("ArmOut",
+                new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE).withTimeout(Seconds.of(20)));
+        NamedCommands.registerCommand("ArmIn", new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
+        NamedCommands.registerCommand("Intake",
+                new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(3));
 
-    NamedCommands.registerCommand("LongSpindexer", new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED).withTimeout(11));
-    NamedCommands.registerCommand("LongKicker", new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).withTimeout(11));
+        NamedCommands.registerCommand("Spindexer",
+                new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED).withTimeout(6));
+        NamedCommands.registerCommand("Kicker",
+                new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).withTimeout(8));
 
-    NamedCommands.registerCommand("Print", new PrintCommand("Print"));
+        NamedCommands.registerCommand("LongSpindexer",
+                new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED).withTimeout(11));
+        NamedCommands.registerCommand("LongKicker",
+                new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).withTimeout(11));
 
-    NamedCommands.registerCommand("LongIntake",new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(10));
-    
-    NamedCommands.registerCommand("ShootFromLeftBump", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump).withTimeout(4));
+        NamedCommands.registerCommand("Print", new PrintCommand("Print"));
 
-    NamedCommands.registerCommand("ShootFromLeftTrench", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(4));
+        NamedCommands.registerCommand("LongIntake",
+                new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(10));
 
-    NamedCommands.registerCommand("LongShootFromLeftTrench", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(10));
+        NamedCommands.registerCommand("ShootFromLeftBump",
+                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump).withTimeout(4));
 
-    NamedCommands.registerCommand("ShootFromRightTrench", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(4));
+        NamedCommands.registerCommand("ShootFromLeftTrench",
+                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(4));
 
-    NamedCommands.registerCommand("LongShootFromRightTrench", new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(10));
+        NamedCommands.registerCommand("LongShootFromLeftTrench",
+                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(10));
 
-    NamedCommands.registerCommand("Shoot3sec",
-        Commands.parallel(
-            new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose,
-                () -> m_Swerve.getState().Speeds),
-            new ConditionalCommand(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).andThen(
-                new WaitCommand(0.75).andThen(
-                    new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))),
-                new InstantCommand(), flywheelAtSpeed))
-            .withTimeout(3));
+        NamedCommands.registerCommand("ShootFromRightTrench",
+                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(4));
 
-    NamedCommands.registerCommand("Shoot6sec",
-        Commands.parallel(
-            new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose,() -> m_Swerve.getState().Speeds),
-            new RunSpindexerCommand(spindexer,SpindexerConstants.SPINDEXER_SPEED).alongWith(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED))
-        ).withTimeout(6)
-    );
+        NamedCommands.registerCommand("LongShootFromRightTrench",
+                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(10));
 
-    autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auton Chooser", autoChooser);
-  }
+        NamedCommands.registerCommand("Shoot3sec",
+                Commands.parallel(
+                        new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose,
+                                () -> m_Swerve.getState().Speeds),
+                        new ConditionalCommand(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).andThen(
+                                new WaitCommand(0.75).andThen(
+                                        new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))),
+                                new InstantCommand(), flywheelAtSpeed))
+                        .withTimeout(3));
 
-  private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+        NamedCommands.registerCommand("Shoot6sec",
+                Commands.parallel(
+                        new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose,
+                                () -> m_Swerve.getState().Speeds),
+                        new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED)
+                                .alongWith(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)))
+                        .withTimeout(6));
 
-    m_Swerve.setDefaultCommand(
-        // m_Swerve will execute this command periodically
-        m_Swerve.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed.get()) // Drive forward with
-            .withVelocityY(-m_driverController.getLeftX() * MaxSpeed.get()) // Drive left with negative X (left)
-            .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate) // Drive counterclockwise with
-        // negative X (left)
-        ));
-
-    m_Swerve.registerTelemetry(new Telemetry(MaxSpeed.get())::telemeterize);
-
-
-    // Supplier<Double> sliderInput = () -> m_operatorController.getRawAxis(OperatorConstants.slider);
-    // Supplier<Double> operatorYaw = () -> m_operatorController.getRawAxis(OperatorConstants.yaw);
-    // Supplier<Double> operatorPitch = () -> m_operatorController.getRawAxis(OperatorConstants.pitch);
-    // Supplier<Double> operatorRoll = () -> m_operatorController.getRawAxis(OperatorConstants.roll);
-
-    // SmartDashboard.putData("Slider", new SendableSupplier<Double>("Slider", sliderInput));
-    // SmartDashboard.putData("Yaw", new SendableSupplier<Double>("Yaw", operatorYaw));
-    // SmartDashboard.putData("Pitch", new SendableSupplier<Double>("Pitch", operatorPitch));
-    // SmartDashboard.putData("Roll", new SendableSupplier<Double>("Roll", operatorRoll));
-
-    SmartDashboard.putNumber("speed", 0);
-    SmartDashboard.putNumber("Angle", 0);
-    DoubleSupplier speedSupplier = () -> SmartDashboard.getNumber("speed", 0);
-    DoubleSupplier angleSupplier = () -> SmartDashboard.getNumber("Angle", 0);
-
-    // Regenerate tuner constants b[]\efore doing anything with swerve
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B []\button is
-    // pressed,
-    // []\cancelling on relea[]\se.
-    // m_driverController.a().onTrue(new TurnTurretToAngleCommand(m_turret, () ->
-    // Degree.of(speedSupplier.getAsDouble())));
-    m_driverController.x().whileTrue(
-        new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)
-            .alongWith(
-                Commands.sequence(
-                    new RunSpindexerCommand(
-                        spindexer,
-                        SpindexerConstants.jamRecoverySpeed
-                    ).withTimeout(0.25),
-                    new RunSpindexerCommand(
-                        spindexer,
-                        SpindexerConstants.SPINDEXER_SPEED
-                    )
-                )
-            )
-    );
-    // m_driverController.y().whileTrue(new InstantCommand(() -> m_kicker.runKicker(KickerConstants.KICKER_SPEED)))
-    //     .whileFalse(new InstantCommand(() -> m_kicker.runKicker(0)));
-    m_driverController.povUp().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
-    m_driverController.povDown().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE));
-    m_driverController.a()
-        .whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
-    m_driverController.povRight().onTrue(new InstantCommand((() -> m_shooter.setHoodPosition(angleSupplier))));
-    m_operatorController.rightTrigger().whileTrue(
-        new AimAtHubCommand(m_turret, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
-    m_driverController.leftBumper().whileTrue(new InstantCommand(()->this.changeMaxSpeed(Constants.maxSpeedFast))).onFalse(new InstantCommand(()->this.changeMaxSpeed(Constants.maxSpeedSlow)));
-
-    opRJoystickX.whileTrue(new TurnTurretCommand(m_turret, opRightX));
-    // opLJoystickY.whileTrue(new InstantCommand(() -> armSubsystem.runArm(opLeftY.getAsDouble()*0.5)).onlyWhile(
-    //   () -> (armSubsystem.getArmEncoder().lte(ArmMotorConstants.ARM_REST_ANGLE) || armSubsystem.getArmEncoder().gte(ArmMotorConstants.ARM_DEPLOY_ANGLE))));
-
-    opLJoystickY.whileTrue(new ConditionalCommand(new ArmOutCommand(armSubsystem, ArmConstants.ArmMotorConstants.ARM_DEPLOY_ANGLE), new ArmOutCommand(armSubsystem, ArmConstants.ArmMotorConstants.ARM_REST_ANGLE), () -> opLeftY.getAsDouble()>0d));
-
-    
-    // m_driverController.povLeft()
-    //     .whileTrue(Commands.parallel(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED),
-    //         new WaitCommand(0.75).andThen(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))));
-
-     m_driverController.b()
-         .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
-         .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
-
-    m_driverController.rightBumper().whileTrue(m_Swerve.applyRequest(()->brake).alongWith(new InstantCommand(()->this.brakeMode(true)))).onFalse(new InstantCommand(()->this.brakeMode(false)));
-
-    // m_operatorController.rightTrigger().whileTrue(
-    //     new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
-
-    m_driverController.start().onTrue(new InstantCommand(() -> m_Swerve.resetRotation(DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? Rotation2d.fromDegrees(180) : Rotation2d.fromDegrees(0))));
-
-    // m_operatorController.povUp().whileTrue(new InstantCommand(() -> armSubsystem.runArm(ArmMotorConstants.ARM_SPEED)));
-    // m_operatorController.povDown()
-    //     .whileTrue(new InstantCommand(() -> armSubsystem.runArm(-ArmMotorConstants.ARM_SPEED)));
-    
-    m_operatorController.povUp().onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed1)));
-    m_operatorController.povRight().onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed2)));
-    m_operatorController.povLeft().onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed3)));
-    m_operatorController.povDown().onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed4)));
-    
-    m_operatorController.y().whileTrue(Commands.parallel(new WaitCommand(0.5).andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle1)), 
-                                        new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed())));
-    m_operatorController.x().whileTrue(Commands.parallel(new WaitCommand(0.5).andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle2)), 
-                                        new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed())));
-    m_operatorController.b().whileTrue(Commands.parallel(new WaitCommand(0.5).andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle3)), 
-                                        new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed())));    
-                                        
-    m_operatorController.rightBumper().whileTrue(Commands.parallel(new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed())));                                                      
-
-    m_operatorController.leftBumper().whileTrue(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).alongWith(new WaitCommand(0.5).andThen(new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))));
-
-    m_operatorController.leftTrigger().whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.OUTTAKE_SPEED));
-  }
-  public Angle nextArmAngle() {
-    if (Math.abs(armSubsystem.getArmEncoder().minus(ArmMotorConstants.ARM_DEPLOY_ANGLE).in(Degrees)) < 
-        Math.abs(armSubsystem.getArmEncoder().minus(ArmMotorConstants.ARM_REST_ANGLE).in(Degrees))) {
-      return ArmMotorConstants.ARM_REST_ANGLE;
-    }
-    return ArmMotorConstants.ARM_DEPLOY_ANGLE;
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-    // // An example command will be run in autonomous
-    return autoChooser.getSelected();
-  }
-
-  public void changeMaxSpeed(double newMaxSpeed) {
-    Logger.recordOutput("Swerve/MaxSpeed", newMaxSpeed);
-    MaxSpeed = () -> newMaxSpeed;
-  }
-
-  public void brakeMode(boolean enable){
-    if ( enable ) {
-      Logger.recordOutput("Swerve/BrakeMode", true);
-      Logger.recordOutput("Swerve/BrakeModeColor", "#15ff00ff");
-    } else {
-      Logger.recordOutput("Swerve/BrakeMode", false);
-      Logger.recordOutput("Swerve/BrakeModeColor", "#0a00d0ff");
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auton Chooser", autoChooser);
     }
 
+    private void configureBindings() {
+        // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+        new Trigger(m_exampleSubsystem::exampleCondition)
+                .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-  }
+        m_Swerve.setDefaultCommand(
+                // m_Swerve will execute this command periodically
+                m_Swerve.applyRequest(() -> drive.withVelocityX(-m_driverController.getLeftY() * MaxSpeed.get()) // Drive
+                                                                                                                 // forward
+                                                                                                                 // with
+                        .withVelocityY(-m_driverController.getLeftX() * MaxSpeed.get()) // Drive left with negative X
+                                                                                        // (left)
+                        .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate) // Drive counterclockwise
+                                                                                              // with
+                // negative X (left)
+                ));
 
-    public void periodic(){
+        m_Swerve.registerTelemetry(new Telemetry(MaxSpeed.get())::telemeterize);
+
+        // Supplier<Double> sliderInput = () ->
+        // m_operatorController.getRawAxis(OperatorConstants.slider);
+        // Supplier<Double> operatorYaw = () ->
+        // m_operatorController.getRawAxis(OperatorConstants.yaw);
+        // Supplier<Double> operatorPitch = () ->
+        // m_operatorController.getRawAxis(OperatorConstants.pitch);
+        // Supplier<Double> operatorRoll = () ->
+        // m_operatorController.getRawAxis(OperatorConstants.roll);
+
+        // SmartDashboard.putData("Slider", new SendableSupplier<Double>("Slider",
+        // sliderInput));
+        // SmartDashboard.putData("Yaw", new SendableSupplier<Double>("Yaw",
+        // operatorYaw));
+        // SmartDashboard.putData("Pitch", new SendableSupplier<Double>("Pitch",
+        // operatorPitch));
+        // SmartDashboard.putData("Roll", new SendableSupplier<Double>("Roll",
+        // operatorRoll));
+
+        SmartDashboard.putNumber("speed", 0);
+        SmartDashboard.putNumber("Angle", 0);
+        DoubleSupplier speedSupplier = () -> SmartDashboard.getNumber("speed", 0);
+        DoubleSupplier angleSupplier = () -> SmartDashboard.getNumber("Angle", 0);
+
+        // Regenerate tuner constants b[]\efore doing anything with swerve
+
+        // Schedule `exampleMethodCommand` when the Xbox controller's B []\button is
+        // pressed,
+        // []\cancelling on relea[]\se.
+        // m_driverController.a().onTrue(new TurnTurretToAngleCommand(m_turret, () ->
+        // Degree.of(speedSupplier.getAsDouble())));
+        m_driverController.x().whileTrue(
+                new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)
+                        .alongWith(
+                                Commands.sequence(
+                                        new RunSpindexerCommand(
+                                                spindexer,
+                                                SpindexerConstants.jamRecoverySpeed).withTimeout(0.25),
+                                        new RunSpindexerCommand(
+                                                spindexer,
+                                                SpindexerConstants.SPINDEXER_SPEED))));
+        // m_driverController.y().whileTrue(new InstantCommand(() ->
+        // m_kicker.runKicker(KickerConstants.KICKER_SPEED)))
+        // .whileFalse(new InstantCommand(() -> m_kicker.runKicker(0)));
+        m_driverController.povUp().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
+        m_driverController.povDown().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE));
+        m_driverController.a()
+                .whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
+        m_driverController.povRight().onTrue(new InstantCommand((() -> m_shooter.setHoodPosition(angleSupplier))));
+        m_operatorController.rightTrigger().whileTrue(
+                new AimAtHubCommand(m_turret, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
+        m_driverController.leftBumper().whileTrue(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedFast)))
+                .onFalse(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedSlow)));
+
+        opRJoystickX.whileTrue(new TurnTurretCommand(m_turret, opRightX));
+        // opLJoystickY.whileTrue(new InstantCommand(() ->
+        // armSubsystem.runArm(opLeftY.getAsDouble()*0.5)).onlyWhile(
+        // () -> (armSubsystem.getArmEncoder().lte(ArmMotorConstants.ARM_REST_ANGLE) ||
+        // armSubsystem.getArmEncoder().gte(ArmMotorConstants.ARM_DEPLOY_ANGLE))));
+
+        opLJoystickY.whileTrue(
+                new ConditionalCommand(new ArmOutCommand(armSubsystem, ArmConstants.ArmMotorConstants.ARM_DEPLOY_ANGLE),
+                        new ArmOutCommand(armSubsystem, ArmConstants.ArmMotorConstants.ARM_REST_ANGLE),
+                        () -> opLeftY.getAsDouble() > 0d));
+
+        // m_driverController.povLeft()
+        // .whileTrue(Commands.parallel(new RunKickerCommand(m_kicker,
+        // KickerConstants.KICKER_SPEED),
+        // new WaitCommand(0.75).andThen(new RunSpindexerCommand(spindexer,
+        // SpindexerConstants.SPINDEXER_SPEED))));
+
+        m_driverController.b()
+                .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
+                .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
+
+        m_driverController.rightBumper()
+                .whileTrue(m_Swerve.applyRequest(() -> brake).alongWith(new InstantCommand(() -> this.brakeMode(true))))
+                .onFalse(new InstantCommand(() -> this.brakeMode(false)));
+
+        // m_operatorController.rightTrigger().whileTrue(
+        // new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, ()
+        // -> m_Swerve.getState().Speeds));
+
+        m_driverController.start()
+                .onTrue(new InstantCommand(() -> m_Swerve.resetRotation(
+                        DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? Rotation2d.fromDegrees(180)
+                                : Rotation2d.fromDegrees(0))));
+
+        // m_operatorController.povUp().whileTrue(new InstantCommand(() ->
+        // armSubsystem.runArm(ArmMotorConstants.ARM_SPEED)));
+        // m_operatorController.povDown()
+        // .whileTrue(new InstantCommand(() ->
+        // armSubsystem.runArm(-ArmMotorConstants.ARM_SPEED)));
+
+        m_operatorController.povUp()
+                .onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed1)));
+        m_operatorController.povRight()
+                .onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed2)));
+        m_operatorController.povLeft()
+                .onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed3)));
+        m_operatorController.povDown()
+                .onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed4)));
+
+        m_operatorController.y()
+                .whileTrue(Commands.parallel(
+                        new WaitCommand(0.5)
+                                .andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle1)),
+                        new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed())));
+        m_operatorController.x()
+                .whileTrue(Commands.parallel(
+                        new WaitCommand(0.5)
+                                .andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle2)),
+                        new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed())));
+        m_operatorController.b()
+                .whileTrue(Commands.parallel(
+                        new WaitCommand(0.5)
+                                .andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle3)),
+                        new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed())));
+
+        m_operatorController.rightBumper()
+                .whileTrue(Commands.parallel(new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed())));
+
+        m_operatorController.leftBumper()
+                .whileTrue(new ShootAtHubCommand(m_turret, m_shooter, ()->m_Swerve.getState().Pose, ()->m_Swerve.getState().Speeds));
+
+        m_operatorController.leftTrigger()
+                .whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.OUTTAKE_SPEED));
+    }
+
+    public Angle nextArmAngle() {
+        if (Math.abs(armSubsystem.getArmEncoder().minus(ArmMotorConstants.ARM_DEPLOY_ANGLE).in(Degrees)) < Math
+                .abs(armSubsystem.getArmEncoder().minus(ArmMotorConstants.ARM_REST_ANGLE).in(Degrees))) {
+            return ArmMotorConstants.ARM_REST_ANGLE;
+        }
+        return ArmMotorConstants.ARM_DEPLOY_ANGLE;
+    }
+
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        // // An example command will be run in autonomous
+        return autoChooser.getSelected();
+    }
+
+    public void changeMaxSpeed(double newMaxSpeed) {
+        Logger.recordOutput("Swerve/MaxSpeed", newMaxSpeed);
+        MaxSpeed = () -> newMaxSpeed;
+    }
+
+    public void brakeMode(boolean enable) {
+        if (enable) {
+            LEDManager.setColor(LEDConstants.colorRed);
+            Logger.recordOutput("Swerve/BrakeMode", true);
+            Logger.recordOutput("Swerve/BrakeModeColor", "#15ff00ff");
+        } else {
+            LEDManager.setDefault();
+            Logger.recordOutput("Swerve/BrakeMode", false);
+            Logger.recordOutput("Swerve/BrakeModeColor", "#0a00d0ff");
+        }
+
+    }
+
+    public void periodic() {
         SmartDashboard.putBoolean("FlywheelAtSpeed", flywheelAtSpeed.getAsBoolean());
-        Logger.recordOutput("Swerve Current", m_Swerve.getModules()[0].getDriveMotor().getStatorCurrent().getValueAsDouble());
+        Logger.recordOutput("Swerve Current",
+                m_Swerve.getModules()[0].getDriveMotor().getStatorCurrent().getValueAsDouble());
     }
 }

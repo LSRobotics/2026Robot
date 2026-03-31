@@ -3,59 +3,55 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.3845442708333335,
-        "y": 7.390585069444444
+        "x": 3.1222632378472226,
+        "y": 4.032572410300926
       },
       "prevControl": null,
       "nextControl": {
-        "x": 9.57745768229167,
-        "y": 7.613260850694444
+        "x": 2.728403211805556,
+        "y": 5.8236743344907405
       },
       "isLocked": false,
-      "linkedName": "LeftTrench"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.941088541666667,
-        "y": 4.5744637733933615
+        "x": 0.645465639467593,
+        "y": 5.2605391348379635
       },
       "prevControl": {
-        "x": 6.069564574505651,
-        "y": 5.142620884092514
+        "x": 1.2377319155092599,
+        "y": 4.7380168547453705
       },
       "nextControl": {
-        "x": 5.8484693879031155,
-        "y": 4.164875855437877
+        "x": 0.18626175942795664,
+        "y": 5.665668158947376
       },
       "isLocked": false,
-      "linkedName": "SecondCutCycle"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.1014030499646905,
-        "y": 7.596022190589689
+        "x": 1.693265842013889,
+        "y": 6.908675708912037
       },
       "prevControl": {
-        "x": 6.581147262927654,
-        "y": 6.924957665126725
+        "x": 1.0431310763888895,
+        "y": 7.2053665364583335
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "NeutralIntoTrench"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.1340677854122621,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -179.22175501899733
     },
     {
       "waypointRelativePos": 1,
-      "rotationDegrees": -110.50223545694391
-    },
-    {
-      "waypointRelativePos": 1.5314144736842106,
-      "rotationDegrees": -95.58063615694884
+      "rotationDegrees": 89.51412032454606
     }
   ],
   "constraintZones": [],
@@ -71,10 +67,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.1281010034897607
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Left",
+  "folder": "Center",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

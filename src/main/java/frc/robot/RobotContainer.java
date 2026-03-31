@@ -242,20 +242,43 @@ public class RobotContainer {
         NamedCommands.registerCommand("LongIntake",
                 new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(10));
 
+        NamedCommands.registerCommand("LongishIntake",
+                new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(3.7));
+
         NamedCommands.registerCommand("ShootFromLeftBump",
                 new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump).withTimeout(4));
 
-        NamedCommands.registerCommand("ShootFromLeftTrench",
-                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(4));
+        // NamedCommands.registerCommand("ShootFromLeftTrench",
+        //         new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(4));
 
-        NamedCommands.registerCommand("LongShootFromLeftTrench",
-                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(10));
+        // NamedCommands.registerCommand("LongShootFromLeftTrench",
+        //         new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(10));
 
-        NamedCommands.registerCommand("ShootFromRightTrench",
-                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(4));
+        // NamedCommands.registerCommand("ShootFromRightTrench",
 
-        NamedCommands.registerCommand("LongShootFromRightTrench",
-                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(10));
+        // NamedCommands.registerCommand("LongShootFromRightTrench",
+        //         new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(10));
+
+        NamedCommands.registerCommand("AimFromTrench", 
+                new AimAtHubCommand(m_turret, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds).withTimeout(0.2));
+
+        NamedCommands.registerCommand("LeftFlywheelFromTrench", 
+                new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(FlywheelConstants.leftTrenchSpeed)).withTimeout(4));
+
+        NamedCommands.registerCommand("LongLeftFlywheelFromTrench", 
+                new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(FlywheelConstants.leftTrenchSpeed)).withTimeout(10));
+
+        NamedCommands.registerCommand("RightFlywheelFromTrench", 
+                new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(FlywheelConstants.rightTrenchSpeed)).withTimeout(4));
+
+        NamedCommands.registerCommand("LongRightFlywheelFromTrench", 
+                new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(FlywheelConstants.rightTrenchSpeed)).withTimeout(10));
+
+        NamedCommands.registerCommand("FullVision", 
+                new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds).withTimeout(4));
+
+        NamedCommands.registerCommand("LongFullVision", 
+                new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds).withTimeout(10));
 
         NamedCommands.registerCommand("Shoot3sec",
                 Commands.parallel(

@@ -23,7 +23,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Left Trench to Cut Center"
+                  "pathName": "Right Trench to Cut Center"
                 }
               }
             ]
@@ -36,26 +36,39 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Cut Center to Left Trench"
+                  "pathName": "Right Trench From Cut Center"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "ShootFromLeftTrench"
+                  "name": "ShootFromRightTrench"
                 }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "ShootFromLeftTrench"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AimFromTrench"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "RightFlywheelFromTrench"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -83,7 +96,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.5
+                        "waitTime": 0.25
                       }
                     },
                     {
@@ -105,7 +118,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Neutral Left Trench to Second Cut Cycle"
+                  "pathName": "Alt Second Right Cycle"
                 }
               },
               {
@@ -130,13 +143,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Neutral Trench From Second Cut"
+                  "pathName": "Right Trench From Second Cut"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "ShootFromLeftTrench"
+                  "name": "ShootFromRightTrench"
                 }
               }
             ]
@@ -159,7 +172,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "LongShootFromLeftTrench"
+                        "name": "AimFromTrench"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "LongRightFlywheelFromTrench"
                       }
                     }
                   ]
@@ -209,6 +228,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Left",
+  "folder": "Right",
   "choreoAuto": false
 }

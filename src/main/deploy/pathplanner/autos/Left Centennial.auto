@@ -23,7 +23,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right Trench to Cut Center"
+                  "pathName": "Left Trench to Cut Center"
                 }
               }
             ]
@@ -36,26 +36,39 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right Trench From Cut Center"
+                  "pathName": "Cut Center to Left Trench"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "ShootFromRightTrench"
+                  "name": "ShootFromLeftTrench"
                 }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "ShootFromRightTrench"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AimFromTrench"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "LeftFlywheelFromTrench"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -83,7 +96,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.0
+                        "waitTime": 0.25
                       }
                     },
                     {
@@ -105,7 +118,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Alt Second Right Cycle"
+                  "pathName": "Neutral Left Trench to Second Cut Cycle"
                 }
               },
               {
@@ -130,13 +143,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right Trench From Second Cut"
+                  "pathName": "Neutral Trench From Second Cut"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "ShootFromRightTrench"
+                  "name": "ShootFromLeftTrench"
                 }
               }
             ]
@@ -159,7 +172,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "LongShootFromRightTrench"
+                        "name": "AimFromTrench"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "LongLeftFlywheelFromTrench"
                       }
                     }
                   ]
@@ -209,6 +228,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Right",
+  "folder": "Left",
   "choreoAuto": false
 }

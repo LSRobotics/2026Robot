@@ -1,10 +1,13 @@
 package frc.robot.subsystems.leds;
+
+import org.littletonrobotics.junction.Logger;
+
 //Static class wrapping led subssyetm
 public class LEDManager {
     private static LedSubsystem ledSubsystem;
 
-    public static void init(LedSubsystem ledSubsystem) {
-        LEDManager.ledSubsystem = ledSubsystem;
+    public static void init(LedSubsystem ledSubsystem1) {
+        LEDManager.ledSubsystem = ledSubsystem1;
     }
 
     public static void setColor(double color) {
@@ -12,10 +15,15 @@ public class LEDManager {
             throw new IllegalStateException("LEDManager not initialized");
         }
         ledSubsystem.setColor(color);
+        Logger.recordOutput("LED", color);
     }
 
     public static void setDefault(){
-        ledSubsystem.setColor(LEDConstants.defaultColor);
+        if (ledSubsystem == null) {
+            throw new IllegalStateException("LEDManager not initialized");
+        }
+        LEDManager.ledSubsystem.setColor(LEDConstants.defaultColor);
+        Logger.recordOutput("LED", LEDConstants.defaultColor);
     }
 
     private LEDManager() {

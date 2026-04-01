@@ -1,8 +1,9 @@
 package frc.robot.subsystems.leds;
 
 public class LEDConstants {
-    public static final int LED_CONTROLLER_PWM_PORT = 3;
-    public static final int LEDDriverOneID = 1;
+    public static final int LED_CONTROLLER_PWM_PORT = 4; 
+    @Deprecated
+    public static final int LEDDriverOneID = 4; 
     public static final double colorRed = 0.61;
     public static final double colorHotPink = 0.57;
     public static final double colorYellow = 0.69;
@@ -17,5 +18,5 @@ public class LEDConstants {
     public static final double colorGold = 0.67;
     public static final double twinklesColorOneAndTwo = 0.51;
 
-    public static final double defaultColor = 0.87;
+    public static final double defaultColor = LEDConstants.colorBlue;
 }

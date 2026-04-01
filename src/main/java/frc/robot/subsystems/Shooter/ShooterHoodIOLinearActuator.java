@@ -29,7 +29,6 @@ public class ShooterHoodIOLinearActuator implements ShooterHoodIO {
 
     @Override
     public void setPosition(double position) {
-        System.out.println("Position: " + position);
         position = MathUtils.clamp(-1d, 1d, position);
         actuator.setSpeed(position);
         actuator2.setSpeed(position);
@@ -37,7 +36,6 @@ public class ShooterHoodIOLinearActuator implements ShooterHoodIO {
 
     public void setLength(Distance length) {
         length = length.minus(ShooterConstants.HoodConstants.actuatorLengthRetracted);
-        System.out.println("Length: " + length);
         if (length.gt(ShooterConstants.HoodConstants.actuatorLengthExtended)) {
             length = ShooterConstants.HoodConstants.actuatorLengthExtended;
         } else if (length.lt(Meter.of(0))) {

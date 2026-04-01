@@ -25,7 +25,6 @@ public class SetHoodAngleCommand extends Command {
     @Override
     public void initialize() {
         m_Shooter.setHoodAngle(m_Angle.get());
-        System.out.println(m_Angle.get());
     }
 
     @Override

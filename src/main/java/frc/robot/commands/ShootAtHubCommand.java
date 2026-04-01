@@ -39,6 +39,7 @@ import frc.robot.subsystems.Turret.TurretConstants;
 import frc.robot.subsystems.Turret.TurretSubsystem;
 import frc.robot.subsystems.leds.LEDConstants;
 import frc.robot.subsystems.leds.LEDManager;
+import frc.robot.subsystems.leds.LedsIOBlinkin;
 import frc.robot.util.MathUtils;
 
 public class ShootAtHubCommand extends Command {
@@ -47,8 +48,8 @@ public class ShootAtHubCommand extends Command {
     private final ShooterSubsystem m_Shooter;
     private final Supplier<Pose2d> robotPoseSupplier;
     private final Supplier<ChassisSpeeds> chassisSpeedSupplier;
+    private  double LEDColor = LEDConstants.defaultColor;
 
-    private double LEDCOlor = LEDConstants.colorOrange;
 
     // private PIDController turretPID = new PIDController(0.008, 0, 0.0001);
     private PIDController turretPID = new PIDController(TurretConstants.kP, 0, TurretConstants.kD);
@@ -59,6 +60,7 @@ public class ShootAtHubCommand extends Command {
             ShooterConstants.FlywheelConstants.kV,
             ShooterConstants.FlywheelConstants.kA);
     private final Pose2d targetHubPose;
+    
 
     public ShootAtHubCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem,
             Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> chassisSpeedSupplier) {
@@ -79,7 +81,7 @@ public class ShootAtHubCommand extends Command {
 
     @Override
     public void initialize() {
-        LEDManager.setColor(LEDConstants.colorOrange);
+        LEDManager.setColor(LEDConstants.colorGold);
     }
 
     @Override
@@ -87,13 +89,22 @@ public class ShootAtHubCommand extends Command {
         Pose2d robotPose = robotPoseSupplier.get();
         ChassisSpeeds chassisSpeeds = chassisSpeedSupplier.get();
 
-        Pose2d turretPose = robotPose.transformBy(new Transform2d(TurretConstants.turretOffset, new Rotation2d()));
+        Pose2d turretPose = robotPose.transformBy(
+                new Transform2d(TurretConstants.turretOffset, new Rotation2d()));
 
-        Translation2d relVelocity = new Translation2d(
+        Translation2d robotVelocity = new Translation2d(
                 chassisSpeeds.vxMetersPerSecond,
-                chassisSpeeds.vyMetersPerSecond);
+                chassisSpeeds.vyMetersPerSecond).rotateBy(robotPose.getRotation());
 
-        Translation2d relPosition = targetHubPose.getTranslation().minus(turretPose.getTranslation());
+        Translation2d turretOffset = TurretConstants.turretOffset;
+        Translation2d tangentialVelocity = new Translation2d(
+                -chassisSpeeds.omegaRadiansPerSecond * turretOffset.getY(),
+                chassisSpeeds.omegaRadiansPerSecond * turretOffset.getX());
+
+        Translation2d relVelocity = robotVelocity.plus(tangentialVelocity);
+
+        Translation2d relPosition = targetHubPose.getTranslation()
+                .minus(turretPose.getTranslation());
         double distanceToTarget = relPosition.getNorm();
 
         Logger.recordOutput("Aiming/DistanceToTarget", distanceToTarget);
@@ -112,7 +123,6 @@ public class ShootAtHubCommand extends Command {
             predictedDistance = predictedRelPosition.getNorm();
 
             targetRPM = AimingConstants.flywheelSpeedMap.get(predictedDistance);
-
             Logger.recordOutput("Aiming/RawSpeedRPM", targetRPM);
 
             double difference = targetRPM - oldRPM;
@@ -135,19 +145,14 @@ public class ShootAtHubCommand extends Command {
             oldRPM = targetRPM;
         }
 
-        Pose2d predictedRobotPose = robotPose.plus(
-                new Transform2d(
-                        new Translation2d(
-                                chassisSpeeds.vxMetersPerSecond * TOF,
-                                chassisSpeeds.vyMetersPerSecond * TOF),
-                        new Rotation2d(chassisSpeeds.omegaRadiansPerSecond * 0.65 * TOF)));
+        Translation2d predictedTurretTranslation = turretPose.getTranslation().plus(relVelocity.times(TOF));
+
+        LEDManager.setColor(LEDColor);
 
         double hoodAngleDeg = AimingConstants.hoodAngleMap.get(predictedDistance);
-
         setHoodAngle(hoodAngleDeg);
-        aimTurret(predictedRobotPose, targetHubPose);
+        aimTurret(predictedTurretTranslation, robotPose.getRotation(), targetHubPose);
         spinUpFlywheel(targetRPM);
-        LEDManager.setColor(LEDCOlor);
     }
 
     public void spinUpFlywheel(double targetRPM) {
@@ -174,30 +179,38 @@ public class ShootAtHubCommand extends Command {
         m_Shooter.setFlywheelVoltage(Volt.of(totalVoltage));
     }
 
-    public void aimTurret(Pose2d predictedPose, Pose2d Target) {
-        Pose2d predictedTurretPose = predictedPose
-                .transformBy(new Transform2d(TurretConstants.turretOffset, new Rotation2d()));
-        Rotation2d angleToTarget = Target.getTranslation().minus(predictedTurretPose.getTranslation()).getAngle();
-        // angleToTarget = angleToTarget.minus(robotPoseSupplier.get().getRotation());
-        angleToTarget = angleToTarget.minus(predictedPose.getRotation()).unaryMinus();
+    public void aimTurret(Translation2d predictedTurretPosition, Rotation2d robotRotation, Pose2d target) {
+        Translation2d toTarget = target.getTranslation().minus(predictedTurretPosition);
+
+        Rotation2d fieldAngle = toTarget.getAngle();
+
+        Rotation2d turretAngle = fieldAngle.minus(robotRotation).unaryMinus();
+
         double setpoint = MathUtil.clamp(
-                angleToTarget.getDegrees(),
+                turretAngle.getDegrees(),
                 -TurretConstants.turretRangeOneWay.in(Degrees),
                 TurretConstants.turretRangeOneWay.in(Degrees));
-        turretPID.setSetpoint(
-                setpoint);
+
+        turretPID.setSetpoint(setpoint);
+
         double speed = turretPID.calculate(m_Turret.getAngle().in(Degrees));
+        Logger.recordOutput("Aiming/Turret/Unclamped Speed", speed);
+
         speed = MathUtils.clamp(-TurretConstants.maxControlSpeed, TurretConstants.maxControlSpeed, speed);
+
         m_Turret.setSpeed(speed);
 
         Logger.recordOutput("Aiming/Turret/PID_Error", turretPID.getError());
+        Logger.recordOutput("Aiming/Turret/Speed", speed);
         Logger.recordOutput("Aiming/Turret/PID_Setpoint", turretPID.getSetpoint());
 
-        if (turretPID.atSetpoint()) {
-            LEDCOlor = LEDConstants.colorLimeGreen;
-        } else {
-            LEDCOlor = LEDConstants.colorOrange;
+        if (Math.abs(m_Turret.getAngle().in(Degrees)-turretAngle.getDegrees())<5){
+            LEDColor = LEDConstants.colorLimeGreen;
         }
+        else {
+            LEDColor = LEDConstants.colorRed;
+        }
+
     }
 
     public void setHoodAngle(double a) {
@@ -217,7 +230,6 @@ public class ShootAtHubCommand extends Command {
     public boolean isFinished() {
         return false;
     }
-
     /*
      * TODO: FInalize
      * 1.Start with mid hood angle
@@ -239,7 +251,7 @@ public class ShootAtHubCommand extends Command {
 
     private class AimingConstants {
         public static final int maxIterations = 4;
-        public static final double ToFtolerance = 0.07; // seconds
+        public static final double ToFtolerance = 0.06; // seconds
         public static final InterpolatingDoubleTreeMap flywheelSpeedMap = new InterpolatingDoubleTreeMap(); // Meters to
                                                                                                             // RPM at
                                                                                                             // best hood
@@ -295,8 +307,16 @@ public class ShootAtHubCommand extends Command {
             flywheelTOFMap.put(Meters.convertFrom(89, Inches), Seconds.of(1.23).in(Seconds));
             hoodAngleMap.put(Meters.convertFrom(89, Inches), -1d);
 
-            flywheelSpeedMap.put(Meters.convertFrom(0, Inches), RPM.convertFrom(41, RotationsPerSecond));
-            flywheelTOFMap.put(Meters.convertFrom(0, Inches), Seconds.of(1.23).in(Seconds));
+            flywheelSpeedMap.put(Meters.convertFrom(82, Inches), RPM.convertFrom(37, RotationsPerSecond));
+            flywheelTOFMap.put(Meters.convertFrom(82, Inches), Seconds.of(1.04).in(Seconds));
+            hoodAngleMap.put(Meters.convertFrom(82, Inches), -1d);
+            
+            flywheelSpeedMap.put(Meters.convertFrom(65, Inches), RPM.convertFrom(36, RotationsPerSecond));
+            flywheelTOFMap.put(Meters.convertFrom(65, Inches), Seconds.of(1.02).in(Seconds));
+            hoodAngleMap.put(Meters.convertFrom(65, Inches), -1d);
+
+            flywheelSpeedMap.put(Meters.convertFrom(0, Inches), RPM.convertFrom(36, RotationsPerSecond));
+            flywheelTOFMap.put(Meters.convertFrom(0, Inches), Seconds.of(1.02).in(Seconds));
             hoodAngleMap.put(Meters.convertFrom(0, Inches), -1d);
         }
 

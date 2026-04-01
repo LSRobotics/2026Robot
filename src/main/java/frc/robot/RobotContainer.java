@@ -370,7 +370,7 @@ public class RobotContainer {
                 .whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
         m_driverController.povRight().onTrue(new InstantCommand((() -> m_shooter.setHoodPosition(angleSupplier))));
         m_operatorController.leftBumper().whileTrue(
-                new AimAtHubCommand(m_turret, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds)).onTrue(new InstantCommand(() ->LEDManager.setColor(LEDConstants.colorGold))).onFalse(new InstantCommand(() ->LEDManager.setDefault()));
+                new AimAtHubCommand(m_turret, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
         m_driverController.leftBumper().whileTrue(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedFast)))
                 .onFalse(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedSlow)));
 
@@ -443,7 +443,7 @@ public class RobotContainer {
                 .whileTrue(Commands.parallel(new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed())));
 
         m_operatorController.rightTrigger()
-                .whileTrue(new ShootAtHubCommand(m_turret, m_shooter, ()->m_Swerve.getState().Pose, ()->m_Swerve.getState().Speeds)).onTrue(new InstantCommand(() ->LEDManager.setColor(LEDConstants.colorLawnGreen))).onFalse(new InstantCommand(() ->LEDManager.setDefault()));
+                .whileTrue(new ShootAtHubCommand(m_turret, m_shooter, ()->m_Swerve.getState().Pose, ()->m_Swerve.getState().Speeds));
 
         m_operatorController.leftTrigger()
                 .whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.OUTTAKE_SPEED));
@@ -474,11 +474,9 @@ public class RobotContainer {
 
     public void brakeMode(boolean enable) {
         if (enable) {
-            LEDManager.setColor(LEDConstants.colorRed);
             Logger.recordOutput("Swerve/BrakeMode", true);
             Logger.recordOutput("Swerve/BrakeModeColor", "#15ff00ff");
         } else {
-            LEDManager.setDefault();
             Logger.recordOutput("Swerve/BrakeMode", false);
             Logger.recordOutput("Swerve/BrakeModeColor", "#0a00d0ff");
         }

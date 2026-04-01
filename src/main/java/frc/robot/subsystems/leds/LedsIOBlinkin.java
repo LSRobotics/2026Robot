@@ -1,6 +1,7 @@
 package frc.robot.subsystems.leds;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LedsIOBlinkin implements LedsIO {
 
@@ -11,13 +12,14 @@ public class LedsIOBlinkin implements LedsIO {
 
     public void updateInputs(LedsIOInputs inputs) {
         inputs.pwmSignal = ledController.get();
-        inputs.pwmInverted = ledController.getInverted();
+        
     }
 
+    @Override
     public void setPWM(double pwm) {
          ledController.set(pwm);
     }
-
+    @Override
     public void setColor(double color) {
          setPWM(color);
     }

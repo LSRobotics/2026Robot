@@ -50,6 +50,9 @@ public class ShootAtHubCommand extends Command {
     private final Supplier<ChassisSpeeds> chassisSpeedSupplier;
     private  double LEDColor = LEDConstants.defaultColor;
 
+    private final Supplier<Double> leftRightTrim;
+    private final Supplier<Double> latencyCompensation;
+
 
     // private PIDController turretPID = new PIDController(0.008, 0, 0.0001);
     private PIDController turretPID = new PIDController(TurretConstants.kP, 0, TurretConstants.kD);
@@ -68,6 +71,28 @@ public class ShootAtHubCommand extends Command {
         this.m_Shooter = shooterSubsystem;
         this.robotPoseSupplier = robotPoseSupplier;
         this.chassisSpeedSupplier = chassisSpeedSupplier;
+        this.leftRightTrim = () -> 0.0;
+        this.latencyCompensation = () -> 0.0;
+        this.targetHubPose = DriverStation.getAlliance().orElse(Alliance.Blue) == DriverStation.Alliance.Blue
+                ? TurretConstants.hubBlue
+                : TurretConstants.hubRed;
+        addRequirements(m_Turret, m_Shooter);
+
+        flywheelController.setTolerance(ShooterConstants.FlywheelConstants.flywheelTolerance.in(RotationsPerSecond));
+        AimingConstants.initialize();
+        turretPID.setTolerance(TurretConstants.turretTolerance.in(Degrees));
+        Logger.recordOutput("Aiming/TargetHubPose", targetHubPose);
+    }
+
+
+    public ShootAtHubCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem,
+            Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> chassisSpeedSupplier, Supplier<Double> leftRightTrim, Supplier<Double> latencyCompensation) {
+        this.m_Turret = turretSubsystem;
+        this.m_Shooter = shooterSubsystem;
+        this.robotPoseSupplier = robotPoseSupplier;
+        this.chassisSpeedSupplier = chassisSpeedSupplier;
+        this.leftRightTrim = leftRightTrim;
+        this.latencyCompensation = latencyCompensation;
         this.targetHubPose = DriverStation.getAlliance().orElse(Alliance.Blue) == DriverStation.Alliance.Blue
                 ? TurretConstants.hubBlue
                 : TurretConstants.hubRed;
@@ -145,6 +170,8 @@ public class ShootAtHubCommand extends Command {
             oldRPM = targetRPM;
         }
 
+        TOF += latencyCompensation.get();
+
         Translation2d predictedTurretTranslation = turretPose.getTranslation().plus(relVelocity.times(TOF));
 
         LEDManager.setColor(LEDColor);
@@ -185,6 +212,8 @@ public class ShootAtHubCommand extends Command {
         Rotation2d fieldAngle = toTarget.getAngle();
 
         Rotation2d turretAngle = fieldAngle.minus(robotRotation).unaryMinus();
+
+        turretAngle = turretAngle.plus(Rotation2d.fromDegrees(leftRightTrim.get()));
 
         double setpoint = MathUtil.clamp(
                 turretAngle.getDegrees(),
@@ -230,6 +259,7 @@ public class ShootAtHubCommand extends Command {
     public boolean isFinished() {
         return false;
     }
+    
     /*
      * TODO: FInalize
      * 1.Start with mid hood angle

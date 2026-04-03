@@ -144,6 +144,10 @@ public class RobotContainer {
     private final LedsIOBlinkin ledIO = new LedsIOBlinkin();
     private final LedSubsystem ledSubsystem = new LedSubsystem(ledIO);
 
+    // Operator left-right trim for ShootAtHubCommand
+    private double leftRightTrim = 0.0;
+    private static final double TRIM_DEGREES_PER_UNIT = 10.0; // Adjust as needed
+
     private Supplier<Double> MaxSpeed = () -> Constants.maxSpeedSlow;
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
                                                                                       // max angular velocity
@@ -300,9 +304,11 @@ public class RobotContainer {
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auton Chooser", autoChooser);
+
+        Logger.recordOutput("LeftRightTrim", leftRightTrim);
     }
 
-    private void configureBindings() {
+        private void configureBindings() {
         // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
         new Trigger(m_exampleSubsystem::exampleCondition)
                 .onTrue(new ExampleCommand(m_exampleSubsystem));
@@ -442,8 +448,38 @@ public class RobotContainer {
         m_operatorController.rightBumper()
                 .whileTrue(Commands.parallel(new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed())));
 
-        m_operatorController.rightTrigger()
-                .whileTrue(new ShootAtHubCommand(m_turret, m_shooter, ()->m_Swerve.getState().Pose, ()->m_Swerve.getState().Speeds));
+
+        m_operatorController.start().whileTrue(
+                new InstantCommand(() -> {
+                        leftRightTrim = m_operatorController.getRightX() * TRIM_DEGREES_PER_UNIT;
+                        Logger.recordOutput("LeftRightTrim", leftRightTrim);
+                })
+        );
+
+        m_operatorController.back().onTrue(
+                new InstantCommand(() -> {
+                        leftRightTrim = 0.0;
+                        Logger.recordOutput("LeftRightTrim", leftRightTrim);
+                })
+        );
+
+        m_operatorController.rightTrigger().and(m_operatorController.start()).whileTrue(new ShootAtHubCommand(
+                        m_turret,
+                        m_shooter,
+                        () -> m_Swerve.getState().Pose,
+                        () -> m_Swerve.getState().Speeds,
+                        () -> leftRightTrim,
+                        () -> 0.0
+                ));
+
+        // No trim
+        m_operatorController.rightTrigger().and(m_operatorController.start().negate())
+                .whileTrue(new ShootAtHubCommand(
+                        m_turret,
+                        m_shooter,
+                        () -> m_Swerve.getState().Pose,
+                        () -> m_Swerve.getState().Speeds
+                ));
 
         m_operatorController.leftTrigger()
                 .whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.OUTTAKE_SPEED));
@@ -472,19 +508,18 @@ public class RobotContainer {
         MaxSpeed = () -> newMaxSpeed;
     }
 
-    public void brakeMode(boolean enable) {
+        public void brakeMode(boolean enable) {
         if (enable) {
-            Logger.recordOutput("Swerve/BrakeMode", true);
-            Logger.recordOutput("Swerve/BrakeModeColor", "#15ff00ff");
+                Logger.recordOutput("Swerve/BrakeMode", true);
+                Logger.recordOutput("Swerve/BrakeModeColor", "#15ff00ff");
         } else {
-            Logger.recordOutput("Swerve/BrakeMode", false);
-            Logger.recordOutput("Swerve/BrakeModeColor", "#0a00d0ff");
+                Logger.recordOutput("Swerve/BrakeMode", false);
+                Logger.recordOutput("Swerve/BrakeModeColor", "#0a00d0ff");
         }
-    }
+        }
 
-    public void periodic() {
-        SmartDashboard.putBoolean("FlywheelAtSpeed", flywheelAtSpeed.getAsBoolean());
-        Logger.recordOutput("Swerve Current",
-                m_Swerve.getModules()[0].getDriveMotor().getStatorCurrent().getValueAsDouble());
-    }
+        public void periodic() {
+                Logger.recordOutput("FlywheelAtSpeed", flywheelAtSpeed.getAsBoolean());
+                Logger.recordOutput("Swerve Current", m_Swerve.getModules()[0].getDriveMotor().getStatorCurrent().getValueAsDouble());
+        }
 }

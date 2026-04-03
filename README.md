@@ -35,30 +35,35 @@
 
 ## Controls (So Far)
 ### Driver
-- **Run Spindexer** = X Button
-- **Run Kicker** = Y Button
-- **Arm Rest** = DPad Up
+- **Run Kicker + Spindexer** = X Button
+- **Arm Retract** = DPad Up
 - **Arm Deploy** = DPad Down
 - **Intake In** = A Button
-- **Hood Position** = Left Bumper (Broken)
-- **Shoot At Hub** = Right Bumper (Vision)
-- **Run Flywheel** = B Button
+- **Hood Position to Dashboard Angle** = DPad Right
+- **Speed Boost** = Left Bumper
+- **Brake Mode** = Right Bumper
+- **Run Flywheel to Dashboard Speed** = B Button
+- **Reset Gyro** = Start Button
 
 ### Operator
 - **Right Joy X** = Turn Turret
+- **Left Joy Y** = Arm Deploy/Rest
 - **Right Trigger** = Shoot At Hub (Vision)
+- **Left Trigger** = Outtake
+- **Left Bumper** = Aim At Hub
+
 #### Flywheel Speed
 - **Low Speed** = DPad Up
 - **Medium Speed** = DPad Left
 - **Almost High Speed** = DPad Right
 - **High Speed** = DPad Down
-#### Turret
-- **90° Right** = X Button
-- **90° Left** = B Button
-- **Straight** = Y Button
-####
-- **Run Spindexer** = Left Bumper
 
+#### Turret + Flywheel
+- **Straight + Flywheel** = Y Button
+- **90° Right + Flywheel** = X Button
+- **90° Left + Flywheel** = B Button
+- **Flywheel Only** = Right Bumper
+ --- 
 ## Autons
 
 #### Short Left Cycle (Hatboro)

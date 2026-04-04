@@ -23,6 +23,7 @@ public class ArmOutCommand extends Command {
   private final Supplier<Angle> targetAngle;
   private final Supplier<Double> targetArmDegrees;
   private final Supplier<Double> targetMotorDegrees;
+  private final Supplier<Double> speed;
 
   /**
    * Creates a new ExampleCommand.
@@ -30,11 +31,22 @@ public class ArmOutCommand extends Command {
    * @param subsystem The subsystem used by this command.
    */
 
-    public ArmOutCommand(ArmSubsystem arm, Supplier<Angle> angle) {
+  public ArmOutCommand(ArmSubsystem arm, Supplier<Angle> angle) {
     m_arm = arm;
     this.targetAngle = angle;
     this.targetArmDegrees = ()->angle.get().in(Degrees);
     this.targetMotorDegrees = ()->targetArmDegrees.get() * ArmMotorConstants.gearRatio;
+    this.speed = ()->ArmMotorConstants.ARM_SPEED;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(arm);
+  }
+
+  public ArmOutCommand(ArmSubsystem arm, Supplier<Angle> angle, Supplier<Double> speed) {
+    m_arm = arm;
+    this.targetAngle = angle;
+    this.targetArmDegrees = ()->angle.get().in(Degrees);
+    this.targetMotorDegrees = ()->targetArmDegrees.get() * ArmMotorConstants.gearRatio;
+    this.speed = speed;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(arm);
   }
@@ -43,6 +55,7 @@ public class ArmOutCommand extends Command {
     this.targetAngle = ()->angle;
     this.targetArmDegrees = ()->angle.in(Degrees);
     this.targetMotorDegrees = ()->targetArmDegrees.get() * ArmMotorConstants.gearRatio;
+    this.speed = ()->ArmMotorConstants.ARM_SPEED;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(arm);
   }
@@ -89,7 +102,7 @@ public class ArmOutCommand extends Command {
       direction = 0;
     }
 
-    m_arm.runArm(direction * ArmMotorConstants.ARM_SPEED);
+    m_arm.runArm(direction * speed.get());
   }
 
   // Called once the command ends or is interrupted.

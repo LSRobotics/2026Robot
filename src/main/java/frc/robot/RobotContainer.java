@@ -375,14 +375,13 @@ public class RobotContainer {
                 .onFalse(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedSlow)));
 
         opRJoystickX.whileTrue(new TurnTurretCommand(m_turret, opRightX));
-        // opLJoystickY.whileTrue(new InstantCommand(() ->
-        // armSubsystem.runArm(opLeftY.getAsDouble()*0.5)).onlyWhile(
-        // () -> (armSubsystem.getArmEncoder().lte(ArmMotorConstants.ARM_REST_ANGLE) ||
-        // armSubsystem.getArmEncoder().gte(ArmMotorConstants.ARM_DEPLOY_ANGLE))));
 
         opLJoystickY.whileTrue(
-                new ConditionalCommand(new ArmOutCommand(armSubsystem, ArmConstants.ArmMotorConstants.ARM_DEPLOY_ANGLE),
-                        new ArmOutCommand(armSubsystem, ArmConstants.ArmMotorConstants.ARM_REST_ANGLE),
+                new ConditionalCommand(
+                        new ArmOutCommand(armSubsystem, () -> ArmConstants.ArmMotorConstants.ARM_DEPLOY_ANGLE, 
+                                () -> Math.abs(opLeftY.getAsDouble()) * ArmMotorConstants.ARM_SPEED),
+                        new ArmOutCommand(armSubsystem, () -> ArmConstants.ArmMotorConstants.ARM_REST_ANGLE, 
+                                () -> Math.abs(opLeftY.getAsDouble()) * ArmMotorConstants.ARM_SPEED),
                         () -> opLeftY.getAsDouble() > 0d));
 
         // m_driverController.povLeft()

@@ -23,34 +23,25 @@ import frc.robot.subsystems.Shooter.ShooterConstants;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.subsystems.Turret.TurretConstants;
 import frc.robot.subsystems.Turret.TurretSubsystem;
+import frc.robot.util.FieldConstants;
 import frc.robot.util.MathUtils;
 
 public class FeedCommand extends Command {
     private final TurretSubsystem turret;
     private final Supplier<Pose2d> robotPoseSupplier;
     private final Supplier<ChassisSpeeds> chassisSpeedSupplier;
-    private final ShooterSubsystem m_shooter; 
-    private final Supplier<Pose2d> target;
+    private final ShooterSubsystem m_shooter;
+    private Pose2d target;
     private PIDController pid = new PIDController(TurretConstants.kP, 0, TurretConstants.kD);
 
-    public FeedCommand(TurretSubsystem turret, ShooterSubsystem shooter, Pose2d target, Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> chassisSpeedSupplier) {
+    public FeedCommand(TurretSubsystem turret, ShooterSubsystem shooter, Supplier<Pose2d> robotPoseSupplier,
+            Supplier<ChassisSpeeds> chassisSpeedSupplier) {
         this.turret = turret;
         this.m_shooter = shooter;
         this.robotPoseSupplier = robotPoseSupplier;
-        this.target = () -> target;
         this.chassisSpeedSupplier = chassisSpeedSupplier;
         addRequirements(turret);
     }
-
-    public FeedCommand(TurretSubsystem turret, ShooterSubsystem shooter, Supplier<Pose2d> target, Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> chassisSpeedSupplier) {
-        this.turret = turret;
-        this.m_shooter = shooter;
-        this.robotPoseSupplier = robotPoseSupplier;
-        this.target = target;
-        this.chassisSpeedSupplier = chassisSpeedSupplier;
-        addRequirements(turret);
-    }
-
 
     @Override
     public void initialize() {
@@ -59,8 +50,26 @@ public class FeedCommand extends Command {
 
     @Override
     public void execute() {
-        Pose2d turretPose = robotPoseSupplier.get()
-                .transformBy(new Transform2d(TurretConstants.turretOffset, new Rotation2d()));
+        Pose2d target1 = new Pose2d(TurretConstants.blue1, new Rotation2d());
+        Pose2d target2 = new Pose2d(TurretConstants.blue2, new Rotation2d());
+
+        if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red) { 
+            target1 = new Pose2d(
+                    FieldConstants.fieldLength - target1.getX(), 
+                    target1.getY(), 
+                    target1.getRotation().plus(Rotation2d.fromDegrees(180))
+            );
+
+            target2 = new Pose2d(
+                FieldConstants.fieldLength - target2.getX(),
+                target2.getY(),
+                target2.getRotation().plus(Rotation2d.fromDegrees(180)));
+        }
+        
+        target = target1.getTranslation().getDistance(robotPoseSupplier.get().getTranslation())<target2.getTranslation().getDistance(robotPoseSupplier.get().getTranslation()) ? target1 : target2;
+
+        
+        Pose2d turretPose = robotPoseSupplier.get().transformBy(new Transform2d(TurretConstants.turretOffset, new Rotation2d()));
 
         ChassisSpeeds robotVelocity = chassisSpeedSupplier.get();
         Pose2d predictedTurretPose = turretPose.plus(
@@ -68,13 +77,15 @@ public class FeedCommand extends Command {
                         new Translation2d(
                                 robotVelocity.vxMetersPerSecond * TurretConstants.lookaheadLatency.in(Seconds),
                                 robotVelocity.vyMetersPerSecond * TurretConstants.lookaheadLatency.in(Seconds)),
-                        new Rotation2d(robotVelocity.omegaRadiansPerSecond * TurretConstants.lookaheadLatency.in(Seconds))));
-        Rotation2d angleToHub = target.get().getTranslation().minus(predictedTurretPose.getTranslation()).getAngle();
+                        new Rotation2d(
+                                robotVelocity.omegaRadiansPerSecond * TurretConstants.lookaheadLatency.in(Seconds))));
+        Rotation2d angleToHub = target.getTranslation().minus(predictedTurretPose.getTranslation()).getAngle();
         angleToHub = angleToHub.minus(robotPoseSupplier.get().getRotation()).unaryMinus();
-        
-        //turret.pointAtAngle(Degrees.of(angleToHub.getDegrees()));
 
-        pid.setSetpoint(MathUtils.clamp(-TurretConstants.turretRangeOneWay.in(Degrees), TurretConstants.turretRangeOneWay.in(Degrees), angleToHub.getDegrees()));
+        // turret.pointAtAngle(Degrees.of(angleToHub.getDegrees()));
+
+        pid.setSetpoint(MathUtils.clamp(-TurretConstants.turretRangeOneWay.in(Degrees),
+                TurretConstants.turretRangeOneWay.in(Degrees), angleToHub.getDegrees()));
         double speed = pid.calculate(turret.getAngle().in(Degrees));
         speed = MathUtils.clamp(-TurretConstants.maxControlSpeed, TurretConstants.maxControlSpeed, speed);
         turret.setSpeed(speed);

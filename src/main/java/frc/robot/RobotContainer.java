@@ -33,6 +33,7 @@ import frc.robot.subsystems.arm.ArmIOSparkMax;
 import frc.robot.subsystems.arm.ArmLimitSwitchIOLimitSwitch;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.FeedCommand;
 import frc.robot.commands.RunFlywheelCommand;
 import frc.robot.commands.RunIntakeCommand;
 import frc.robot.commands.RunKickerCommand;
@@ -397,6 +398,7 @@ public class RobotContainer {
         m_driverController.rightBumper()
                 .whileTrue(m_Swerve.applyRequest(() -> brake).alongWith(new InstantCommand(() -> this.brakeMode(true))))
                 .onFalse(new InstantCommand(() -> this.brakeMode(false)));
+        m_operatorController.a().whileTrue(new FeedCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
 
         // m_operatorController.rightTrigger().whileTrue(
         // new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, ()

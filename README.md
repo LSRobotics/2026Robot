@@ -33,7 +33,7 @@
 ```
 
 
-## Controls (So Far)
+## Controls
 ### Driver
 - **Run Kicker + Spindexer** = X Button
 - **Arm Retract** = DPad Up
@@ -42,15 +42,16 @@
 - **Hood Position to Dashboard Angle** = DPad Right
 - **Speed Boost** = Left Bumper
 - **Brake Mode** = Right Bumper
-- **Run Flywheel to Dashboard Speed** = B Button
+- **Run Flywheel to Dashboard Speed (RPS)** = B Button
 - **Reset Gyro** = Start Button
 
 ### Operator
 - **Right Joy X** = Turn Turret
-- **Left Joy Y** = Arm Deploy/Rest
+- **Left Joy Y** = Intake Arm
 - **Right Trigger** = Shoot At Hub (Vision)
-- **Left Trigger** = Outtake
-- **Left Bumper** = Aim At Hub
+- **Left Trigger** = Outtake Balls
+- **Left Bumper** = Aim At Hub (Vision)
+- **A Button** = Feed (Vision)
 
 #### Flywheel Speed
 - **Low Speed** = DPad Up

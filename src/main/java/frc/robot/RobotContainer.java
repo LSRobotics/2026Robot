@@ -66,6 +66,7 @@ import frc.robot.util.SendableSupplier;
 import frc.robot.util.Telemetry;
 import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;
 import frc.robot.commands.TurnTurretToAngleCommand;
+import frc.robot.commands.WheelRadiusCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import frc.robot.subsystems.spindexer.SpindexerConstants;
@@ -191,6 +192,7 @@ public class RobotContainer {
         Logger.recordOutput("Swerve/MaxSpeed", MaxSpeed.get());
 
         ManualFlywheelSpeed.init();
+        SmartDashboard.putData("Commands/WheelRadius", new WheelRadiusCommand(m_Swerve));
 
         // Configure the trigger bindings
 

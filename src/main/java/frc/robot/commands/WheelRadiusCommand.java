@@ -14,7 +14,7 @@ import java.text.NumberFormat;
 import frc.robot.generated.TunerConstants;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
-// Based on https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template/#wheel-radius-characterization
+// Based loosely on https://docs.advantagekit.org/getting-started/template-projects/talonfx-swerve-template/#wheel-radius-characterization
 //Updat e src/main/deploy/pathplanner/settings.json ("driveWheelRadius") and TunerConstants.kWheelRadius with output
 public class WheelRadiusCommand extends Command {
 

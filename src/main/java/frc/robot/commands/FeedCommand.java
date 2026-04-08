@@ -100,5 +100,4 @@ public class FeedCommand extends Command {
     public void end(boolean interrupted) {
         turret.setSpeed(0);
     }
-
 }

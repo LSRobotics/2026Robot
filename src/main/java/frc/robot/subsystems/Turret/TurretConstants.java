@@ -37,4 +37,9 @@ public class TurretConstants {
     public static final Angle manualAngle1 = Degrees.of(0);
     public static final Angle manualAngle2 = Degrees.of(-90);
     public static final Angle manualAngle3 = Degrees.of(90);
+    
+
+    //Feed locations
+    public static final Translation2d blue1 = new Translation2d(Meters.of(0.5), Meters.of(0.5)); //Outpost
+    public static final Translation2d blue2 = new Translation2d(Meters.of(0.5), Meters.of(7.5)); //Depot
 }

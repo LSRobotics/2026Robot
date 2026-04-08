@@ -258,6 +258,11 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
         PathPlannerLogging.setLogActivePathCallback((poses) -> {
             m_Field.getObject("path").setPoses(poses);
+            Logger.recordOutput("Pathplanner/Active Path", poses.toArray(new Pose2d[0]));
+        });
+
+        PathPlannerLogging.setLogCurrentPoseCallback((target) -> {
+            Logger.recordOutput("Pathplanner/Target", target);
         });
     }
 

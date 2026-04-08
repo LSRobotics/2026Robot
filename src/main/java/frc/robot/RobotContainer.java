@@ -146,9 +146,8 @@ public class RobotContainer {
     private final LedsIOBlinkin ledIO = new LedsIOBlinkin();
     private final LedSubsystem ledSubsystem = new LedSubsystem(ledIO);
 
-    // Operator left-right trim for ShootAtHubCommand
     private double leftRightTrim = 0.0;
-    private static final double TRIM_DEGREES_PER_UNIT = 10.0; // Adjust as needed
+    private static final double TRIM_DEGREES = 10.0d;
 
     private Supplier<Double> MaxSpeed = () -> Constants.maxSpeedSlow;
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
@@ -454,7 +453,7 @@ public class RobotContainer {
 
         m_operatorController.start().whileTrue(
                 new InstantCommand(() -> {
-                        leftRightTrim = m_operatorController.getRightX() * TRIM_DEGREES_PER_UNIT;
+                        leftRightTrim = m_operatorController.getRightX() * TRIM_DEGREES;
                         Logger.recordOutput("LeftRightTrim", leftRightTrim);
                 })
         );

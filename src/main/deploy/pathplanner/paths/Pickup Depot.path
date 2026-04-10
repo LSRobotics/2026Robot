@@ -3,43 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.341897424768519,
-        "y": 0.6407047164351853
+        "x": 0.4983012152777784,
+        "y": 7.261201099537037
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.977816082690438,
-        "y": 0.5998373460591948
+        "x": 0.4960704571759265,
+        "y": 6.627665798611112
       },
       "isLocked": false,
-      "linkedName": "RightTrench"
+      "linkedName": "DepotLehigh"
     },
     {
       "anchor": {
-        "x": 7.787368923611112,
-        "y": 1.3552034143518517
+        "x": 0.4983012152777784,
+        "y": 6.116559751157407
       },
       "prevControl": {
-        "x": 7.417135306320622,
-        "y": 0.8089592161016945
+        "x": 0.49915415219907455,
+        "y": 6.775223885995371
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "RightStartOfBalls"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.31641652960526373,
-      "rotationDegrees": 0.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -47,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 89.41971643350206
+    "rotation": -90.52504179082071
   },
   "reversed": false,
-  "folder": "Right",
+  "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.43736386752070455
+    "rotation": -89.98565274112546
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

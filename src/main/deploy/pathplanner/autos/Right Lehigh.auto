@@ -5,9 +5,60 @@
     "data": {
       "commands": [
         {
-          "type": "wait",
+          "type": "deadline",
           "data": {
-            "waitTime": 3.0
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Bump Right Trench to Cut Center"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Right Over Bump 1"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.3
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "LongishIntake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "FullVision"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ArmOut"
+                }
+              }
+            ]
           }
         },
         {
@@ -17,7 +68,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "ShootFromRightTrench"
+                  "name": "FullVision"
                 }
               },
               {
@@ -33,13 +84,19 @@
                 }
               },
               {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              },
+              {
                 "type": "sequential",
                 "data": {
                   "commands": [
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.5
+                        "waitTime": 0.25
                       }
                     },
                     {
@@ -55,44 +112,57 @@
           }
         },
         {
-          "type": "race",
+          "type": "wait",
+          "data": {
+            "waitTime": 0.7
+          }
+        },
+        {
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Alt Second Right Cycle"
+                  "pathName": "Right Bump Second Cycle"
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "Intake"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "LongishIntake"
+                      }
+                    }
+                  ]
                 }
               }
             ]
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Right Trench From Second Cut"
-          }
-        },
-        {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "ArmOut"
+                  "name": "LongFullVision"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "LongShootFromRightTrench"
+                  "name": "ArmOut"
                 }
               },
               {
@@ -114,7 +184,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 0.5
+                        "waitTime": 0.25
                       }
                     },
                     {

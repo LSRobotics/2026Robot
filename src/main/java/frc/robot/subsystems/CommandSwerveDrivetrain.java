@@ -16,6 +16,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -254,6 +255,15 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             // Handle exception as needed
             e.printStackTrace();
         }
+
+        PathPlannerLogging.setLogActivePathCallback((poses) -> {
+            m_Field.getObject("path").setPoses(poses);
+            Logger.recordOutput("Pathplanner/Active Path", poses.toArray(new Pose2d[0]));
+        });
+
+        PathPlannerLogging.setLogCurrentPoseCallback((target) -> {
+            Logger.recordOutput("Pathplanner/Target", target);
+        });
     }
 
     /**

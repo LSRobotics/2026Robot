@@ -47,7 +47,7 @@ public class ArmIOTalonFX implements ArmIO {
     public void setArmAngle(Angle angle) {
         armMotor.getConfigurator().setPosition(angle);
     }
-
+ 
     @Override
     public void stop() {
         armMotor.stopMotor();

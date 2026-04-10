@@ -90,3 +90,6 @@
 #### Stand Still and Shoot From Left Bump
 
 - **Self explanitory**
+
+#### Left Bump Auto (Lehigh)
+- TODO

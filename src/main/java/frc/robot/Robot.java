@@ -19,6 +19,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import frc.robot.BuildConstants;
+import frc.robot.util.CommandLogger;
 import frc.robot.util.GameTimers;
 import frc.robot.util.PhaseTimer;
 
@@ -61,6 +62,10 @@ public class Robot extends LoggedRobot {
     Logger.start();
 
     m_robotContainer = new RobotContainer();
+
+    CommandScheduler.getInstance().onCommandInitialize(CommandLogger::logCommandStart);
+    CommandScheduler.getInstance().onCommandFinish(CommandLogger::logCommandEnd);
+    CommandScheduler.getInstance().onCommandInterrupt(CommandLogger::logCommandEnd);
   }
 
   /**

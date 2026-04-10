@@ -10,6 +10,7 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
 import frc.robot.Constants.OperatorConstants;
@@ -60,6 +61,7 @@ import frc.robot.subsystems.Turret.TurretIOTalon;
 import frc.robot.subsystems.Turret.TurretSubsystem;
 import frc.robot.subsystems.Vision.VisionConstants;
 import frc.robot.subsystems.Vision.VisionIOPhotonVision;
+import frc.robot.subsystems.Vision.VisionIOPhotonVisionSim;
 import frc.robot.subsystems.Vision.VisionSubsystem;
 import frc.robot.util.ManualFlywheelSpeed;
 import frc.robot.util.SendableSupplier;
@@ -122,6 +124,9 @@ public class RobotContainer {
     private final TurretIO turretIO = new TurretIOTalon();
     private final TurretSubsystem m_turret = new TurretSubsystem(turretIO);
 
+    @SuppressWarnings("unused")
+    private final Class<? extends Object> commandLogger = frc.robot.util.CommandLogger.class; //akit makes this neccessary
+
     private final SendableChooser<Command> autoChooser;
 
     private final ShooterSubsystem m_shooter = new ShooterSubsystem(new ShooterFlywheelIOTalonFX(),
@@ -165,9 +170,9 @@ public class RobotContainer {
     private final CommandSwerveDrivetrain m_Swerve = TunerConstants.createDrivetrain();
 
     private final VisionSubsystem m_Vision = new VisionSubsystem(m_Swerve::addVisionMeasurement,
-            new VisionIOPhotonVision(VisionConstants.camera0name, VisionConstants.robotToCamera0),
-            new VisionIOPhotonVision(VisionConstants.camera1name, VisionConstants.robotToCamera1),
-            new VisionIOPhotonVision(VisionConstants.camera2name, VisionConstants.robotToCamera2));
+            Robot.isReal()?new VisionIOPhotonVision(VisionConstants.camera0name, VisionConstants.robotToCamera0): new VisionIOPhotonVisionSim(VisionConstants.camera0name, VisionConstants.robotToCamera0, ()->m_Swerve.getState().Pose),
+            Robot.isReal()?new VisionIOPhotonVision(VisionConstants.camera1name, VisionConstants.robotToCamera1): new VisionIOPhotonVisionSim(VisionConstants.camera1name, VisionConstants.robotToCamera1, ()->m_Swerve.getState().Pose),
+            Robot.isReal()?new VisionIOPhotonVision(VisionConstants.camera2name, VisionConstants.robotToCamera2): new VisionIOPhotonVisionSim(VisionConstants.camera2name, VisionConstants.robotToCamera2, ()->m_Swerve.getState().Pose));
 
     private Trigger flywheelAtSpeed = new Trigger(
             () -> (m_shooter.getFlywheelVelocity().minus(m_shooter.targetSpeed)
@@ -200,6 +205,7 @@ public class RobotContainer {
         // SmartDashboard.putData("Auto Mode", autoChooser);
 
         configureBindings();
+        
 
         SmartDashboard.putData("SysId/Flywheel Quasistatic Forward",
                 m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kForward));
@@ -363,7 +369,7 @@ public class RobotContainer {
                                                 SpindexerConstants.jamRecoverySpeed).withTimeout(0.25),
                                         new RunSpindexerCommand(
                                                 spindexer,
-                                                SpindexerConstants.SPINDEXER_SPEED))));
+                                                SpindexerConstants.SPINDEXER_SPEED))).withName("RunKickerAndSpindexer"));
         // m_driverController.y().whileTrue(new InstantCommand(() ->
         // m_kicker.runKicker(KickerConstants.KICKER_SPEED)))
         // .whileFalse(new InstantCommand(() -> m_kicker.runKicker(0)));
@@ -374,8 +380,8 @@ public class RobotContainer {
         m_driverController.povRight().onTrue(new InstantCommand((() -> m_shooter.setHoodPosition(angleSupplier))));
         m_operatorController.leftBumper().whileTrue(
                 new AimAtHubCommand(m_turret, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
-        m_driverController.leftBumper().whileTrue(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedFast)))
-                .onFalse(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedSlow)));
+        m_driverController.leftBumper().whileTrue(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedFast)).withName("Start Fast Mode"))
+                .onFalse(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedSlow)).withName("Exit Fast Mode"));
 
         opRJoystickX.whileTrue(new TurnTurretCommand(m_turret, opRightX));
 
@@ -385,7 +391,7 @@ public class RobotContainer {
                                 () -> Math.abs(opLeftY.getAsDouble()) * ArmMotorConstants.ARM_SPEED),
                         new ArmOutCommand(armSubsystem, () -> ArmConstants.ArmMotorConstants.ARM_REST_ANGLE, 
                                 () -> Math.abs(opLeftY.getAsDouble()) * ArmMotorConstants.ARM_SPEED),
-                        () -> opLeftY.getAsDouble() > 0d));
+                        () -> opLeftY.getAsDouble() > 0d).withName("OperatorManualIntakeArm"));
 
         // m_driverController.povLeft()
         // .whileTrue(Commands.parallel(new RunKickerCommand(m_kicker,
@@ -398,8 +404,8 @@ public class RobotContainer {
                 .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
 
         m_driverController.rightBumper()
-                .whileTrue(m_Swerve.applyRequest(() -> brake).alongWith(new InstantCommand(() -> this.brakeMode(true))))
-                .onFalse(new InstantCommand(() -> this.brakeMode(false)));
+                .whileTrue(m_Swerve.applyRequest(() -> brake).alongWith(new InstantCommand(() -> this.brakeMode(true)).withName("Enter Brake Mode")))
+                .onFalse(new InstantCommand(() -> this.brakeMode(false)).withName("Exit Brake Mode"));
         m_operatorController.a().whileTrue(new FeedCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
 
         // m_operatorController.rightTrigger().whileTrue(
@@ -409,7 +415,7 @@ public class RobotContainer {
         m_driverController.start()
                 .onTrue(new InstantCommand(() -> m_Swerve.resetRotation(
                         DriverStation.getAlliance().get() == DriverStation.Alliance.Red ? Rotation2d.fromDegrees(180)
-                                : Rotation2d.fromDegrees(0))));
+                                : Rotation2d.fromDegrees(0))).withName("Reset Field Centric Heading"));
 
         // m_operatorController.povUp().whileTrue(new InstantCommand(() ->
         // armSubsystem.runArm(ArmMotorConstants.ARM_SPEED)));
@@ -418,13 +424,13 @@ public class RobotContainer {
         // armSubsystem.runArm(-ArmMotorConstants.ARM_SPEED)));
 
         m_operatorController.povUp()
-                .onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed1)));
+                .onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed1)).withName("Manual Speed 1"));
         m_operatorController.povRight()
-                .onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed2)));
+                .onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed2)).withName("Manual Speed 2"));
         m_operatorController.povLeft()
-                .onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed3)));
+                .onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed3)).withName("Manual Speed 3"));
         m_operatorController.povDown()
-                .onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed4)));
+                .onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed4)).withName("Manual Speed 4"));
 
         m_operatorController.y()
                 .whileTrue(Commands.parallel(

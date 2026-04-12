@@ -2,13 +2,19 @@ package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volt;
 
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -23,6 +29,8 @@ import frc.robot.subsystems.Shooter.ShooterConstants;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.subsystems.Turret.TurretConstants;
 import frc.robot.subsystems.Turret.TurretSubsystem;
+import frc.robot.subsystems.leds.LEDConstants;
+import frc.robot.subsystems.leds.LEDManager;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.MathUtils;
 
@@ -33,6 +41,13 @@ public class FeedCommand extends Command {
     private final ShooterSubsystem m_shooter;
     private Pose2d target;
     private PIDController pid = new PIDController(TurretConstants.kP, 0, TurretConstants.kD);
+    private BangBangController flywheelController = new BangBangController();
+    // @SuppressWarnings("unchecked")
+    private SimpleMotorFeedforward flywheelFeedforward = new SimpleMotorFeedforward(
+            ShooterConstants.FlywheelConstants.kS.in(Volt),
+            ShooterConstants.FlywheelConstants.kV,
+            ShooterConstants.FlywheelConstants.kA);
+    private  double LEDColor = LEDConstants.defaultColor;
 
     public FeedCommand(TurretSubsystem turret, ShooterSubsystem shooter, Supplier<Pose2d> robotPoseSupplier,
             Supplier<ChassisSpeeds> chassisSpeedSupplier) {
@@ -91,13 +106,47 @@ public class FeedCommand extends Command {
         turret.setSpeed(speed);
         Logger.recordOutput("Turret/PID_Error", pid.getError());
         Logger.recordOutput("Turret/PID_Setpoint", pid.getSetpoint());
+        if (Math.abs(turret.getAngle().in(Degrees)-angleToHub.getDegrees())<5){
+            LEDColor = LEDConstants.colorLimeGreen;
+        }
+        else {
+            LEDColor = LEDConstants.colorRed;
+        }
 
-        m_shooter.setFlywheelVelocity(ShooterConstants.FeedSpeed);
+        spinUpFlywheel(ShooterConstants.FeedSpeed.in(RPM));
         m_shooter.setHoodPosition(ShooterConstants.FeedHood);
+
+        LEDManager.setColor(LEDColor);
     }
+    public void spinUpFlywheel(double targetRPM) {
+
+        double targetRPS = targetRPM / 60.0;
+
+        double feedforwardVoltage = flywheelFeedforward.calculate(targetRPS); // Tuned in V per rot/s
+        double controlOutput = flywheelController.calculate(
+                m_shooter.getFlywheelVelocity().times(ShooterConstants.FlywheelConstants.gearRatio)
+                        .in(RotationsPerSecond),
+                targetRPS)
+                * ShooterConstants.FlywheelConstants.bangBangVolts.in(Volt);
+        double totalVoltage = feedforwardVoltage
+                + controlOutput * ShooterConstants.FlywheelConstants.bangBangCoefficient;
+        totalVoltage = MathUtil.clamp(totalVoltage, -ShooterConstants.FlywheelConstants.maxVoltage.in(Volt),
+                ShooterConstants.FlywheelConstants.maxVoltage.in(Volt));
+
+        Logger.recordOutput("Aiming/Flywheel/TargetRPM", targetRPM);
+        Logger.recordOutput("Aiming/Flywheel/FeedforwardVoltage", feedforwardVoltage);
+        Logger.recordOutput("Aiming/Flywheel/TotalVoltage", totalVoltage);
+
+        m_shooter.targetSpeed = RPM.of(targetRPM);
+
+        m_shooter.setFlywheelVoltage(Volt.of(totalVoltage));
+        }
 
     @Override
     public void end(boolean interrupted) {
         turret.setSpeed(0);
+        m_shooter.setHoodPosition(-1d);
+        m_shooter.setFlywheelVoltage(Volt.of(0));
+        LEDManager.setDefault();
     }
 }

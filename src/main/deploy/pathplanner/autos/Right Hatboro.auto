@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 3.0
-          }
-        },
-        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -61,7 +55,26 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Alt Second Right Cycle"
+                  "pathName": "Right Trench to Start of Balls"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Right Cycle Collect"
                 }
               },
               {
@@ -76,7 +89,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right Trench From Second Cut"
+            "pathName": "Right Balls to Trench"
           }
         },
         {

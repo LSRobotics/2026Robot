@@ -20,7 +20,7 @@ public class VisionConstants {
     public final static String camera2name = "Arducam_OV9281_USB_Camera"; //Back
 
     public final static Transform3d robotToCamera0 = new Transform3d(
-            new Translation3d(Inches.of(7.325), Inches.of(14), Inches.of(19.5)),
+            new Translation3d(Inches.of(2.325), Inches.of(14), Inches.of(19.5)),
             new Rotation3d(Degrees.of(0), Degrees.of(0), Degrees.of(90))); // Left Camera
     public final static Transform3d robotToCamera1 = new Transform3d(
             new Translation3d(Inches.of(2.325), Inches.of(-14), Inches.of(19.5)),

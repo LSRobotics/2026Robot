@@ -487,6 +487,9 @@ public class RobotContainer {
 
     public void periodic() {
         SmartDashboard.putBoolean("FlywheelAtSpeed", flywheelAtSpeed.getAsBoolean());
+        if (Math.random()<0.01){
+                Runtime.getRuntime().gc();
+        }
         Logger.recordOutput("Swerve Current",
                 m_Swerve.getModules()[0].getDriveMotor().getStatorCurrent().getValueAsDouble());
     }

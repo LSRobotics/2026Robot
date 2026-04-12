@@ -50,8 +50,8 @@ public class ShooterConstants {
 
         public static final AngularVelocity manualSpeed4 = RotationsPerSecond.of(49);
 
-        public static final double rightTrenchSpeed = 49;
-        public static final double leftTrenchSpeed = 45;
+        public static final double rightTrenchSpeed = 45;
+        public static final double leftTrenchSpeed = 42;
     }
 
     public static class HoodConstants {

@@ -20,12 +20,12 @@
         "y": 4.5744637733933615
       },
       "prevControl": {
-        "x": 6.069564574505651,
-        "y": 5.142620884092514
+        "x": 6.173481047453704,
+        "y": 5.030442997685186
       },
       "nextControl": {
-        "x": 5.8484693879031155,
-        "y": 4.164875855437877
+        "x": 5.750405905412407,
+        "y": 4.200323823093864
       },
       "isLocked": false,
       "linkedName": "SecondCutCycle"
@@ -36,8 +36,8 @@
         "y": 7.596022190589689
       },
       "prevControl": {
-        "x": 6.581147262927654,
-        "y": 6.924957665126725
+        "x": 8.589457682291666,
+        "y": 6.725687934027778
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,20 +50,24 @@
       "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 1,
+      "waypointRelativePos": 0.5324218749999998,
+      "rotationDegrees": -112.79050874669596
+    },
+    {
+      "waypointRelativePos": 0.9789884868421052,
       "rotationDegrees": -110.50223545694391
     },
     {
-      "waypointRelativePos": 1.5314144736842106,
-      "rotationDegrees": -95.58063615694884
+      "waypointRelativePos": 1.2664062499999995,
+      "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -79,5 +83,5 @@
     "velocity": 0,
     "rotation": 0.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

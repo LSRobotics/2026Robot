@@ -251,16 +251,17 @@ public class RobotContainer {
         NamedCommands.registerCommand("ShootFromLeftBump",
                 new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump).withTimeout(4));
 
-        // NamedCommands.registerCommand("ShootFromLeftTrench",
-        //         new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(4));
+        NamedCommands.registerCommand("ShootFromLeftTrench",
+                 new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(4));
 
-        // NamedCommands.registerCommand("LongShootFromLeftTrench",
-        //         new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(10));
+        NamedCommands.registerCommand("LongShootFromLeftTrench",
+                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(10));
 
-        // NamedCommands.registerCommand("ShootFromRightTrench",
+        NamedCommands.registerCommand("ShootFromRightTrench",
+                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(4));
 
-        // NamedCommands.registerCommand("LongShootFromRightTrench",
-        //         new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(10));
+        NamedCommands.registerCommand("LongShootFromRightTrench",
+                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(10));
 
         NamedCommands.registerCommand("AimFromTrench", 
                 new AimAtHubCommand(m_turret, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds).withTimeout(0.2));

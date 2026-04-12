@@ -22,17 +22,17 @@ import static edu.wpi.first.units.Units.VoltsPerRadianPerSecond;
 import static edu.wpi.first.units.Units.VoltsPerRadianPerSecondSquared;
 public class ShooterConstants {
     public static class FlywheelConstants {
-        public static final AngularVelocity maxSpeed = RPM.of(100);// TODO
-        public static final AngularVelocity holdSpeed = RPM.of(1); // TODO
+        public static final AngularVelocity maxSpeed = RotationsPerSecond.of(100);// TODO
+        public static final AngularVelocity holdSpeed = RotationsPerSecond.of(1); // TODO
         public static final int flywheelMotor1ID = 53;
         public static final Current statorCurrentLimit = Amps.of(80);//TODO
         public static final int flywheelMotor2ID = 54;
-        public static final Voltage maxVoltage = Volts.of(11.5);
-        public static final Voltage bangBangVolts = Volts.of(5); // TODO
+        public static final Voltage maxVoltage = Volts.of(12);
+        public static final Voltage bangBangVolts = Volts.of(5.5); 
         public static final double gearRatio = 1d/1d;
-        public static final AngularVelocity flywheelTolerance = RotationsPerSecond.of(3); // TODO
+        public static final AngularVelocity flywheelTolerance = RotationsPerSecond.of(8); // TODO
 
-        public static final double bangBangCoefficient = 0.3;
+        public static final double bangBangCoefficient = 0.28;
 
         //From sysid
         public static final Per<VoltageUnit, AngularVelocityUnit> kVVoltSecondsPerRadian = VoltsPerRadianPerSecond.ofNative(0.018398); 

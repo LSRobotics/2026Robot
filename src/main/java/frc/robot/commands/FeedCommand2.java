@@ -33,8 +33,8 @@ import frc.robot.subsystems.leds.LEDConstants;
 import frc.robot.subsystems.leds.LEDManager;
 import frc.robot.util.FieldConstants;
 import frc.robot.util.MathUtils;
-//Neutral zone
-public class FeedCommand extends Command {
+//Opposing ALliance
+public class FeedCommand2 extends Command {
     private final TurretSubsystem turret;
     private final Supplier<Pose2d> robotPoseSupplier;
     private final Supplier<ChassisSpeeds> chassisSpeedSupplier;
@@ -49,7 +49,7 @@ public class FeedCommand extends Command {
             ShooterConstants.FlywheelConstants.kA);
     private  double LEDColor = LEDConstants.defaultColor;
 
-    public FeedCommand(TurretSubsystem turret, ShooterSubsystem shooter, Supplier<Pose2d> robotPoseSupplier,
+    public FeedCommand2(TurretSubsystem turret, ShooterSubsystem shooter, Supplier<Pose2d> robotPoseSupplier,
             Supplier<ChassisSpeeds> chassisSpeedSupplier) {
         this.turret = turret;
         this.m_shooter = shooter;
@@ -113,8 +113,8 @@ public class FeedCommand extends Command {
             LEDColor = LEDConstants.colorRed;
         }
 
-        spinUpFlywheel(ShooterConstants.FeedSpeed.in(RPM));
-        m_shooter.setHoodPosition(ShooterConstants.FeedHood);
+        spinUpFlywheel(ShooterConstants.FeedSpeed2.in(RPM));
+        m_shooter.setHoodPosition(ShooterConstants.FeedHood2);
 
         LEDManager.setColor(LEDColor);
     }

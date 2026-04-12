@@ -34,6 +34,7 @@ import frc.robot.subsystems.arm.ArmLimitSwitchIOLimitSwitch;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.FeedCommand;
+import frc.robot.commands.FeedCommand2;
 import frc.robot.commands.RunFlywheelCommand;
 import frc.robot.commands.RunIntakeCommand;
 import frc.robot.commands.RunKickerCommand;
@@ -383,7 +384,7 @@ public class RobotContainer {
         m_driverController.leftBumper().whileTrue(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedFast)))
                 .onFalse(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedSlow)));
 
-        opRJoystickX.whileTrue(new TurnTurretCommand(m_turret, opRightX));
+        opRJoystickX.and(m_operatorController.start().negate()).whileTrue(new TurnTurretCommand(m_turret, opRightX));
 
         opLJoystickY.whileTrue(
                 new ConditionalCommand(
@@ -406,7 +407,9 @@ public class RobotContainer {
         m_driverController.rightBumper()
                 .whileTrue(m_Swerve.applyRequest(() -> brake).alongWith(new InstantCommand(() -> this.brakeMode(true))))
                 .onFalse(new InstantCommand(() -> this.brakeMode(false)));
-        m_operatorController.a().whileTrue(new FeedCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
+        m_operatorController.a().and(m_operatorController.b().negate()).whileTrue(new FeedCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
+        m_operatorController.a().and(m_operatorController.b()).whileTrue(new FeedCommand2(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
+        
 
         // m_operatorController.rightTrigger().whileTrue(
         // new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, ()
@@ -442,7 +445,7 @@ public class RobotContainer {
                         new WaitCommand(0.5)
                                 .andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle2)),
                         new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed())));
-        m_operatorController.b()
+        m_operatorController.b().and(m_operatorController.a().negate())
                 .whileTrue(Commands.parallel(
                         new WaitCommand(0.5)
                                 .andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle3)),
@@ -452,26 +455,26 @@ public class RobotContainer {
                 .whileTrue(Commands.parallel(new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed())));
 
 
-        m_operatorController.start().whileTrue(
-                new InstantCommand(() -> {
-                        leftRightTrim = m_operatorController.getRightX() * TRIM_DEGREES;
-                        Logger.recordOutput("LeftRightTrim", leftRightTrim);
-                })
-        );
+        // m_operatorController.start().whileTrue(
+        //         new InstantCommand(() -> {
+        //                 leftRightTrim = m_operatorController.getRightX() * TRIM_DEGREES;
+        //                 Logger.recordOutput("LeftRightTrim", leftRightTrim);
+        //         })
+        // );
 
-        m_operatorController.back().onTrue(
-                new InstantCommand(() -> {
-                        leftRightTrim = 0.0;
-                        Logger.recordOutput("LeftRightTrim", leftRightTrim);
-                })
-        );
+        // m_operatorController.back().onTrue(
+        //         new InstantCommand(() -> {
+        //                 leftRightTrim = 0.0;
+        //                 Logger.recordOutput("LeftRightTrim", leftRightTrim);
+        //         })
+        // );
 
         m_operatorController.rightTrigger().and(m_operatorController.start()).whileTrue(new ShootAtHubCommand(
                         m_turret,
                         m_shooter,
                         () -> m_Swerve.getState().Pose,
                         () -> m_Swerve.getState().Speeds,
-                        () -> leftRightTrim,
+                        () -> m_operatorController.getRightX() * TRIM_DEGREES,
                         () -> 0.0
                 ));
 

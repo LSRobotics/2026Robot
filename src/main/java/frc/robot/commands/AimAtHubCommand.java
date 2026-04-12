@@ -48,7 +48,7 @@ public class AimAtHubCommand extends Command {
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get()==Alliance.Blue){
                 hubPose = TurretConstants.hubBlue;
         }
-        else if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get()==Alliance.Blue){
+        else if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get()==Alliance.Red){
                 hubPose = TurretConstants.hubRed;
         }
         

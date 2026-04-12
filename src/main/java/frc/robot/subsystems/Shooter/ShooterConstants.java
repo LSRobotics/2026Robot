@@ -44,11 +44,10 @@ public class ShooterConstants {
         public static final double kV = VoltsPerRotationsPerSecond.convertFrom(kVVoltSecondsPerRadian.in(VoltsPerRadianPerSecond), VoltsPerRadianPerSecond);
         public static final double kA = VoltsPerRotationsPerSecond.convertFrom(kAVoltSecondsPerRadian.in(VoltsPerRadianPerSecond), VoltsPerRadianPerSecond);
 
-        public static final AngularVelocity manualSpeed1 = RotationsPerSecond.of(40);
-        public static final AngularVelocity manualSpeed2 = RotationsPerSecond.of(42);
-        public static final AngularVelocity manualSpeed3 = RotationsPerSecond.of(45);
-
-        public static final AngularVelocity manualSpeed4 = RotationsPerSecond.of(49);
+        public static final AngularVelocity manualSpeed1 = RotationsPerSecond.of(38);
+        public static final AngularVelocity manualSpeed2 = RotationsPerSecond.of(40);
+        public static final AngularVelocity manualSpeed3 = RotationsPerSecond.of(42);
+        public static final AngularVelocity manualSpeed4 = RotationsPerSecond.of(45);
 
         public static final double rightTrenchSpeed = 45;
         public static final double leftTrenchSpeed = 42;
@@ -71,5 +70,8 @@ public class ShooterConstants {
 
     public static AngularVelocity FeedSpeed = RotationsPerSecond.of(57);
     public static double FeedHood = 0.7;
+
+    public static AngularVelocity FeedSpeed2 = RotationsPerSecond.of(75);
+    public static double FeedHood2 = 1;
 
 }

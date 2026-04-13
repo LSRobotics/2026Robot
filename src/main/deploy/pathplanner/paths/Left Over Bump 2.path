@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.837095847800925,
-        "y": 4.032244357638889
+        "x": 6.0346491608796295,
+        "y": 5.157268156828704
       },
       "isLocked": false,
       "linkedName": "BumpCenter"
@@ -36,7 +36,7 @@
         "y": 6.3091266637731485
       },
       "prevControl": {
-        "x": 3.140699797453704,
+        "x": 3.1406997974537045,
         "y": 6.000297887731481
       },
       "nextControl": null,
@@ -46,7 +46,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.16314960629921782,
+      "waypointRelativePos": 0.36642680921052645,
       "rotationDegrees": 136.22698687831402
     },
     {

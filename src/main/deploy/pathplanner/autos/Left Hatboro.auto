@@ -11,7 +11,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "ShootFromRightTrench"
+                  "name": "ShootFromLeftTrench"
                 }
               },
               {
@@ -68,7 +68,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Alt Second Right Cycle"
+                  "pathName": "Neutral Left Trench to Second Cut Cycle"
                 }
               },
               {
@@ -83,7 +83,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right Trench From Second Cut"
+            "pathName": "Neutral Trench From Second Cut"
           }
         },
         {
@@ -93,7 +93,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "LongShootFromRightTrench"
+                  "name": "ShootFromLeftTrench"
                 }
               },
               {
@@ -147,6 +147,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Right",
+  "folder": "Left",
   "choreoAuto": false
 }

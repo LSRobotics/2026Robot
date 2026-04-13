@@ -50,6 +50,9 @@ public class ShootAtHubCommand extends Command {
     private final Supplier<ChassisSpeeds> chassisSpeedSupplier;
     private  double LEDColor = LEDConstants.defaultColor;
 
+    private final Supplier<Double> leftRightTrim;
+    private final Supplier<Double> latencyCompensation;
+
 
     // private PIDController turretPID = new PIDController(0.008, 0, 0.0001);
     private PIDController turretPID = new PIDController(TurretConstants.kP, 0, TurretConstants.kD);
@@ -68,6 +71,28 @@ public class ShootAtHubCommand extends Command {
         this.m_Shooter = shooterSubsystem;
         this.robotPoseSupplier = robotPoseSupplier;
         this.chassisSpeedSupplier = chassisSpeedSupplier;
+        this.leftRightTrim = () -> 0.0;
+        this.latencyCompensation = () -> 0.0;
+        this.targetHubPose = DriverStation.getAlliance().orElse(Alliance.Blue) == DriverStation.Alliance.Blue
+                ? TurretConstants.hubBlue
+                : TurretConstants.hubRed;
+        addRequirements(m_Turret, m_Shooter);
+
+        flywheelController.setTolerance(ShooterConstants.FlywheelConstants.flywheelTolerance.in(RotationsPerSecond));
+        AimingConstants.initialize();
+        turretPID.setTolerance(TurretConstants.turretTolerance.in(Degrees));
+        Logger.recordOutput("Aiming/TargetHubPose", targetHubPose);
+    }
+
+
+    public ShootAtHubCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem,
+            Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisSpeeds> chassisSpeedSupplier, Supplier<Double> leftRightTrim, Supplier<Double> latencyCompensation) {
+        this.m_Turret = turretSubsystem;
+        this.m_Shooter = shooterSubsystem;
+        this.robotPoseSupplier = robotPoseSupplier;
+        this.chassisSpeedSupplier = chassisSpeedSupplier;
+        this.leftRightTrim = leftRightTrim;
+        this.latencyCompensation = latencyCompensation;
         this.targetHubPose = DriverStation.getAlliance().orElse(Alliance.Blue) == DriverStation.Alliance.Blue
                 ? TurretConstants.hubBlue
                 : TurretConstants.hubRed;
@@ -145,6 +170,8 @@ public class ShootAtHubCommand extends Command {
             oldRPM = targetRPM;
         }
 
+        TOF += latencyCompensation.get();
+
         Translation2d predictedTurretTranslation = turretPose.getTranslation().plus(relVelocity.times(TOF));
 
         LEDManager.setColor(LEDColor);
@@ -185,6 +212,8 @@ public class ShootAtHubCommand extends Command {
         Rotation2d fieldAngle = toTarget.getAngle();
 
         Rotation2d turretAngle = fieldAngle.minus(robotRotation).unaryMinus();
+
+        turretAngle = turretAngle.plus(Rotation2d.fromDegrees(leftRightTrim.get()));
 
         double setpoint = MathUtil.clamp(
                 turretAngle.getDegrees(),
@@ -230,6 +259,7 @@ public class ShootAtHubCommand extends Command {
     public boolean isFinished() {
         return false;
     }
+    
     /*
      * TODO: FInalize
      * 1.Start with mid hood angle
@@ -269,6 +299,67 @@ public class ShootAtHubCommand extends Command {
 
         public static void initialize() { // TODO: fill out once bot is done
             // Meters to RPM
+            flywheelSpeedMap.put(Meters.convertFrom(270, Inches), RPM.convertFrom(55, RotationsPerSecond));
+            // Meters to tof
+            flywheelTOFMap.put(Meters.convertFrom(270, Inches), Seconds.of(1.025).in(Seconds));
+            // Meters to hood angle at hoodTestRPM
+            hoodAngleMap.put(Meters.convertFrom(270, Inches), 0.55d);
+
+            flywheelSpeedMap.put(Meters.convertFrom(249, Inches), RPM.convertFrom(53, RotationsPerSecond));
+            flywheelTOFMap.put(Meters.convertFrom(249, Inches), Seconds.of(1.02).in(Seconds));
+            hoodAngleMap.put(Meters.convertFrom(249, Inches), 0.5d);
+
+            flywheelSpeedMap.put(Meters.convertFrom(233, Inches), RPM.convertFrom(50, RotationsPerSecond));
+            flywheelTOFMap.put(Meters.convertFrom(233, Inches), Seconds.of(1.02).in(Seconds));
+            hoodAngleMap.put(Meters.convertFrom(233, Inches), 0.3d);
+            
+            flywheelSpeedMap.put(Meters.convertFrom(198, Inches), RPM.convertFrom(45, RotationsPerSecond));
+            flywheelTOFMap.put(Meters.convertFrom(198, Inches), Seconds.of(1.013).in(Seconds));
+            hoodAngleMap.put(Meters.convertFrom(198, Inches), 0.25d);
+
+            flywheelSpeedMap.put(Meters.convertFrom(187, Inches), RPM.convertFrom(44, RotationsPerSecond));
+            flywheelTOFMap.put(Meters.convertFrom(187, Inches), Seconds.of(1.01).in(Seconds));
+            hoodAngleMap.put(Meters.convertFrom(187, Inches), 0.15d);
+
+            flywheelSpeedMap.put(Meters.convertFrom(164, Inches), RPM.convertFrom(42, RotationsPerSecond));
+            flywheelTOFMap.put(Meters.convertFrom(164, Inches), Seconds.of(1.01).in(Seconds));
+            hoodAngleMap.put(Meters.convertFrom(164, Inches), -0.05d);
+
+            flywheelSpeedMap.put(Meters.convertFrom(142, Inches), RPM.convertFrom(40, RotationsPerSecond));
+            flywheelTOFMap.put(Meters.convertFrom(142, Inches), Seconds.of(1.01).in(Seconds));
+            hoodAngleMap.put(Meters.convertFrom(142, Inches), -0.2d);
+
+            flywheelSpeedMap.put(Meters.convertFrom(118, Inches), RPM.convertFrom(38, RotationsPerSecond));
+            flywheelTOFMap.put(Meters.convertFrom(118, Inches), Seconds.of(1.03).in(Seconds));
+            hoodAngleMap.put(Meters.convertFrom(118, Inches), -0.4d);
+
+            flywheelSpeedMap.put(Meters.convertFrom(98, Inches), RPM.convertFrom(37, RotationsPerSecond));
+            flywheelTOFMap.put(Meters.convertFrom(98, Inches), Seconds.of(1.01).in(Seconds));
+            hoodAngleMap.put(Meters.convertFrom(98, Inches), -0.65d);
+
+            flywheelSpeedMap.put(Meters.convertFrom(82, Inches), RPM.convertFrom(36, RotationsPerSecond));
+            flywheelTOFMap.put(Meters.convertFrom(82, Inches), Seconds.of(1.023).in(Seconds));
+            hoodAngleMap.put(Meters.convertFrom(82, Inches), -0.95d);
+
+            flywheelSpeedMap.put(Meters.convertFrom(67.67, Inches), RPM.convertFrom(34, RotationsPerSecond));
+            flywheelTOFMap.put(Meters.convertFrom(67.67, Inches), Seconds.of(1.01).in(Seconds));
+            hoodAngleMap.put(Meters.convertFrom(67.67, Inches), -1.0d);
+
+            flywheelSpeedMap.put(Meters.convertFrom(0, Inches), RPM.convertFrom(34, RotationsPerSecond));
+            flywheelTOFMap.put(Meters.convertFrom(0, Inches), Seconds.of(1.01).in(Seconds));
+            hoodAngleMap.put(Meters.convertFrom(0, Inches), -1.0d);
+
+            }
+
+        public AimingConstants() throws Exception {
+            throw new Exception("dont instantiate this");
+        }
+    }
+
+}
+
+//Newer
+/* // Meters to RPM
             flywheelSpeedMap.put(Meters.convertFrom(261, Inches), RPM.convertFrom(57, RotationsPerSecond));
             // Meters to tof
             flywheelTOFMap.put(Meters.convertFrom(261, Inches), Seconds.of(1.235).in(Seconds));
@@ -317,15 +408,7 @@ public class ShootAtHubCommand extends Command {
 
             flywheelSpeedMap.put(Meters.convertFrom(0, Inches), RPM.convertFrom(36, RotationsPerSecond));
             flywheelTOFMap.put(Meters.convertFrom(0, Inches), Seconds.of(1.02).in(Seconds));
-            hoodAngleMap.put(Meters.convertFrom(0, Inches), -1d);
-        }
-
-        public AimingConstants() throws Exception {
-            throw new Exception("dont instantiate this");
-        }
-    }
-
-}
+            hoodAngleMap.put(Meters.convertFrom(0, Inches), -1d); */
 
 /*
  * // Meters to RPM

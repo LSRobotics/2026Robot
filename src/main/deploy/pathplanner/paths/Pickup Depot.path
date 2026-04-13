@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.957258949064266,
-        "y": 0.5401237702546302
+        "x": 0.4983012152777784,
+        "y": 7.261201099537037
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.128839253196199,
-        "y": 0.5493298167517044
+        "x": 0.4960704571759265,
+        "y": 6.627665798611112
       },
       "isLocked": false,
-      "linkedName": "RightSecondCut"
+      "linkedName": "DepotLehigh"
     },
     {
       "anchor": {
-        "x": 4.341897424768519,
-        "y": 0.6407047164351853
+        "x": 0.4983012152777784,
+        "y": 6.116559751157407
       },
       "prevControl": {
-        "x": 6.2418815734060065,
-        "y": 0.641294390149641
+        "x": 0.49915415219907455,
+        "y": 6.775223885995371
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "RightTrench"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.43736386752070455
+    "rotation": -90.52504179082071
   },
   "reversed": false,
-  "folder": "Right",
+  "folder": "Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.21623556541959618
+    "rotation": -89.98565274112546
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

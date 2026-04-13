@@ -35,6 +35,7 @@ import frc.robot.subsystems.arm.ArmLimitSwitchIOLimitSwitch;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.FeedCommand;
+import frc.robot.commands.FeedCommand2;
 import frc.robot.commands.RunFlywheelCommand;
 import frc.robot.commands.RunIntakeCommand;
 import frc.robot.commands.RunKickerCommand;
@@ -151,6 +152,9 @@ public class RobotContainer {
     private final LedsIOBlinkin ledIO = new LedsIOBlinkin();
     private final LedSubsystem ledSubsystem = new LedSubsystem(ledIO);
 
+    private double leftRightTrim = 0.0;
+    private static final double TRIM_DEGREES = 10.0d;
+
     private Supplier<Double> MaxSpeed = () -> Constants.maxSpeedSlow;
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
                                                                                       // max angular velocity
@@ -257,16 +261,17 @@ public class RobotContainer {
         NamedCommands.registerCommand("ShootFromLeftBump",
                 new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump).withTimeout(4));
 
-        // NamedCommands.registerCommand("ShootFromLeftTrench",
-        //         new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(4));
+        NamedCommands.registerCommand("ShootFromLeftTrench",
+                 new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(4));
 
-        // NamedCommands.registerCommand("LongShootFromLeftTrench",
-        //         new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(10));
+        NamedCommands.registerCommand("LongShootFromLeftTrench",
+                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(10));
 
-        // NamedCommands.registerCommand("ShootFromRightTrench",
+        NamedCommands.registerCommand("ShootFromRightTrench",
+                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(4));
 
-        // NamedCommands.registerCommand("LongShootFromRightTrench",
-        //         new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(10));
+        NamedCommands.registerCommand("LongShootFromRightTrench",
+                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(10));
 
         NamedCommands.registerCommand("AimFromTrench", 
                 new AimAtHubCommand(m_turret, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds).withTimeout(0.2));
@@ -309,9 +314,11 @@ public class RobotContainer {
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auton Chooser", autoChooser);
+
+        Logger.recordOutput("LeftRightTrim", leftRightTrim);
     }
 
-    private void configureBindings() {
+        private void configureBindings() {
         // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
         new Trigger(m_exampleSubsystem::exampleCondition)
                 .onTrue(new ExampleCommand(m_exampleSubsystem));
@@ -383,7 +390,7 @@ public class RobotContainer {
         m_driverController.leftBumper().whileTrue(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedFast)).withName("Start Fast Mode"))
                 .onFalse(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedSlow)).withName("Exit Fast Mode"));
 
-        opRJoystickX.whileTrue(new TurnTurretCommand(m_turret, opRightX));
+        opRJoystickX.and(m_operatorController.start().negate()).whileTrue(new TurnTurretCommand(m_turret, opRightX));
 
         opLJoystickY.whileTrue(
                 new ConditionalCommand(
@@ -404,9 +411,11 @@ public class RobotContainer {
                 .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
 
         m_driverController.rightBumper()
-                .whileTrue(m_Swerve.applyRequest(() -> brake).alongWith(new InstantCommand(() -> this.brakeMode(true)).withName("Enter Brake Mode")))
-                .onFalse(new InstantCommand(() -> this.brakeMode(false)).withName("Exit Brake Mode"));
-        m_operatorController.a().whileTrue(new FeedCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
+                .whileTrue(m_Swerve.applyRequest(() -> brake).alongWith(new InstantCommand(() -> this.brakeMode(true))))
+                .onFalse(new InstantCommand(() -> this.brakeMode(false)));
+        m_operatorController.a().and(m_operatorController.b().negate()).whileTrue(new FeedCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
+        m_operatorController.a().and(m_operatorController.b()).whileTrue(new FeedCommand2(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
+        
 
         // m_operatorController.rightTrigger().whileTrue(
         // new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, ()
@@ -442,7 +451,7 @@ public class RobotContainer {
                         new WaitCommand(0.5)
                                 .andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle2)),
                         new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed())));
-        m_operatorController.b()
+        m_operatorController.b().and(m_operatorController.a().negate())
                 .whileTrue(Commands.parallel(
                         new WaitCommand(0.5)
                                 .andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle3)),
@@ -451,8 +460,38 @@ public class RobotContainer {
         m_operatorController.rightBumper()
                 .whileTrue(Commands.parallel(new RunFlywheelCommand(m_shooter, () -> ManualFlywheelSpeed.getSpeed())));
 
-        m_operatorController.rightTrigger()
-                .whileTrue(new ShootAtHubCommand(m_turret, m_shooter, ()->m_Swerve.getState().Pose, ()->m_Swerve.getState().Speeds));
+
+        // m_operatorController.start().whileTrue(
+        //         new InstantCommand(() -> {
+        //                 leftRightTrim = m_operatorController.getRightX() * TRIM_DEGREES;
+        //                 Logger.recordOutput("LeftRightTrim", leftRightTrim);
+        //         })
+        // );
+
+        // m_operatorController.back().onTrue(
+        //         new InstantCommand(() -> {
+        //                 leftRightTrim = 0.0;
+        //                 Logger.recordOutput("LeftRightTrim", leftRightTrim);
+        //         })
+        // );
+
+        m_operatorController.rightTrigger().and(m_operatorController.start()).whileTrue(new ShootAtHubCommand(
+                        m_turret,
+                        m_shooter,
+                        () -> m_Swerve.getState().Pose,
+                        () -> m_Swerve.getState().Speeds,
+                        () -> m_operatorController.getRightX() * TRIM_DEGREES,
+                        () -> 0.0
+                ));
+
+        // No trim
+        m_operatorController.rightTrigger().and(m_operatorController.start().negate())
+                .whileTrue(new ShootAtHubCommand(
+                        m_turret,
+                        m_shooter,
+                        () -> m_Swerve.getState().Pose,
+                        () -> m_Swerve.getState().Speeds
+                ));
 
         m_operatorController.leftTrigger()
                 .whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.OUTTAKE_SPEED));
@@ -481,19 +520,23 @@ public class RobotContainer {
         MaxSpeed = () -> newMaxSpeed;
     }
 
-    public void brakeMode(boolean enable) {
+        public void brakeMode(boolean enable) {
         if (enable) {
-            Logger.recordOutput("Swerve/BrakeMode", true);
-            Logger.recordOutput("Swerve/BrakeModeColor", "#15ff00ff");
+                Logger.recordOutput("Swerve/BrakeMode", true);
+                Logger.recordOutput("Swerve/BrakeModeColor", "#15ff00ff");
         } else {
-            Logger.recordOutput("Swerve/BrakeMode", false);
-            Logger.recordOutput("Swerve/BrakeModeColor", "#0a00d0ff");
+                Logger.recordOutput("Swerve/BrakeMode", false);
+                Logger.recordOutput("Swerve/BrakeModeColor", "#0a00d0ff");
         }
-    }
+        }
 
     public void periodic() {
         SmartDashboard.putBoolean("FlywheelAtSpeed", flywheelAtSpeed.getAsBoolean());
+        if (Math.random()<0.01){
+                Runtime.getRuntime().gc();
+        }
         Logger.recordOutput("Swerve Current",
                 m_Swerve.getModules()[0].getDriveMotor().getStatorCurrent().getValueAsDouble());
     }
 }
+

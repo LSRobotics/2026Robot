@@ -62,7 +62,7 @@ public class ShootAtHubCommand extends Command {
             ShooterConstants.FlywheelConstants.kS.in(Volts),
             ShooterConstants.FlywheelConstants.kV,
             ShooterConstants.FlywheelConstants.kA);
-    private final Pose2d targetHubPose;
+    private Pose2d targetHubPose;
     
 
     public ShootAtHubCommand(TurretSubsystem turretSubsystem, ShooterSubsystem shooterSubsystem,
@@ -73,9 +73,6 @@ public class ShootAtHubCommand extends Command {
         this.chassisSpeedSupplier = chassisSpeedSupplier;
         this.leftRightTrim = () -> 0.0;
         this.latencyCompensation = () -> 0.0;
-        this.targetHubPose = DriverStation.getAlliance().orElse(Alliance.Blue) == DriverStation.Alliance.Blue
-                ? TurretConstants.hubBlue
-                : TurretConstants.hubRed;
         addRequirements(m_Turret, m_Shooter);
 
         flywheelController.setTolerance(ShooterConstants.FlywheelConstants.flywheelTolerance.in(RotationsPerSecond));
@@ -93,9 +90,6 @@ public class ShootAtHubCommand extends Command {
         this.chassisSpeedSupplier = chassisSpeedSupplier;
         this.leftRightTrim = leftRightTrim;
         this.latencyCompensation = latencyCompensation;
-        this.targetHubPose = DriverStation.getAlliance().orElse(Alliance.Blue) == DriverStation.Alliance.Blue
-                ? TurretConstants.hubBlue
-                : TurretConstants.hubRed;
         addRequirements(m_Turret, m_Shooter);
 
         flywheelController.setTolerance(ShooterConstants.FlywheelConstants.flywheelTolerance.in(RotationsPerSecond));
@@ -107,6 +101,9 @@ public class ShootAtHubCommand extends Command {
     @Override
     public void initialize() {
         LEDManager.setColor(LEDConstants.colorGold);
+        this.targetHubPose = DriverStation.getAlliance().orElse(Alliance.Blue) == DriverStation.Alliance.Blue
+        ? TurretConstants.hubBlue
+        : TurretConstants.hubRed;
     }
 
     @Override

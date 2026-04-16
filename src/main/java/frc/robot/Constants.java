@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -40,5 +43,6 @@ public final class Constants {
 
   public static double maxSpeedFast = 4.5;
     public static double maxSpeedSlow = 4;
+    public static double MaxAngularSpeedNormal = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
 }

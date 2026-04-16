@@ -151,12 +151,12 @@ public class RobotContainer {
     private static final double TRIM_DEGREES = 10.0d;
 
     private Supplier<Double> MaxSpeed = () -> Constants.maxSpeedSlow;
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
+    private Supplier<Double> MaxAngularRate = () -> RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
                                                                                       // max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed.get() * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDeadband(MaxSpeed.get() * 0.1).withRotationalDeadband(MaxAngularRate.get() * 0.1) // Add a 10% deadband
             .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage); // Use
                                                                                                            // open-loop
                                                                                                            // control
@@ -324,7 +324,7 @@ public class RobotContainer {
                                                                                                                  // with
                         .withVelocityY(-m_driverController.getLeftX() * MaxSpeed.get()) // Drive left with negative X
                                                                                         // (left)
-                        .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate) // Drive counterclockwise
+                        .withRotationalRate(-m_driverController.getRightX() * MaxAngularRate.get()) // Drive counterclockwise
                                                                                               // with
                 // negative X (left)
                 ));
@@ -384,7 +384,7 @@ public class RobotContainer {
         m_driverController.leftBumper().whileTrue(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedFast)))
                 .onFalse(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedSlow)));
 
-        m_driverController.rightTrigger(0.5).onTrue(Commands.runOnce(()->{changeMaxSpeed(2);})).onFalse(Commands.runOnce(()->{changeMaxSpeed(Constants.maxSpeedFast);}));
+        m_driverController.rightTrigger(0.5).onTrue(Commands.runOnce(()->{changeMaxSpeed(2, RotationsPerSecond.of(0.5).in(RadiansPerSecond));})).onFalse(Commands.runOnce(()->{changeMaxSpeed(Constants.maxSpeedFast, Constants.MaxAngularSpeedNormal);}));
 
         opRJoystickX.and(m_operatorController.start().negate()).whileTrue(new TurnTurretCommand(m_turret, opRightX));
 
@@ -514,6 +514,12 @@ public class RobotContainer {
     public void changeMaxSpeed(double newMaxSpeed) {
         Logger.recordOutput("Swerve/MaxSpeed", newMaxSpeed);
         MaxSpeed = () -> newMaxSpeed;
+    }
+
+    public void changeMaxSpeed(double newMaxSpeed, double newMaxAngularSpeed) {
+        Logger.recordOutput("Swerve/MaxSpeed", newMaxSpeed);
+        MaxSpeed = () -> newMaxSpeed;
+        MaxAngularRate = () -> newMaxAngularSpeed; 
     }
 
         public void brakeMode(boolean enable) {

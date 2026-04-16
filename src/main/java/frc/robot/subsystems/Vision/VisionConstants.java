@@ -41,7 +41,6 @@ public class VisionConstants {
     public static double linearStdDevBaseline = 0.75; // Meters
     public static double angularStdDevBaseline = 1.5; // Radians
 
-
     // Standard deviation multipliers for each camera
     public static double[] cameraStdDevFactors = new double[] {
             1.5, // Camera 0

@@ -15,9 +15,9 @@ import edu.wpi.first.math.Matrix;
 
 public class VisionConstants {
     public static AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
-    public final static String camera0name = "Arducam_OV9281_USB_Camera (1)"; //Left
-    public final static String camera1name = "Arducam_OV9281_USB_Camera (2)"; //Right
-    public final static String camera2name = "Arducam_OV9281_USB_Camera"; //Back
+    public final static String camera0name = "Arducam_OV9281_USB_Camera (1)"; // Left
+    public final static String camera1name = "Arducam_OV9281_USB_Camera (2)"; // Right
+    public final static String camera2name = "Arducam_OV9281_USB_Camera";     // Back
 
     public final static Transform3d robotToCamera0 = new Transform3d(
             new Translation3d(Inches.of(2.325), Inches.of(14), Inches.of(19.5)),

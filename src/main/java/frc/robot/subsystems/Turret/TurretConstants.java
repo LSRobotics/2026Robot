@@ -30,8 +30,8 @@ public class TurretConstants {
     public static final Time lookaheadLatency = Seconds.of(1.2);
     public static final Angle turretRangeOneWay = Degrees.of(93);
     //new PIDController(0.008, 0, 0.0001);
-    public static final double kP = 0.01677;
-    public static final double kD = 0.00103;
+    public static final double kP = 0.01277;
+    public static final double kD = 0.00101;
     public static final double tolerance = 0.5;
 
     public static final Angle manualAngle1 = Degrees.of(0);

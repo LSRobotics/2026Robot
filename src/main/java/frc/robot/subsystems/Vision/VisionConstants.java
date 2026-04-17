@@ -33,19 +33,19 @@ public class VisionConstants {
     public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(1.5, 1.5, Integer.MAX_VALUE); //TODO: REMOVE
 
     // Basic filtering thresholds
-    public static double maxAmbiguity = 0.25;
+    public static double maxAmbiguity = 0.3;
     public static double maxZError = 0.1;
 
     // Standard deviation baselines, for 1 meter distance and 1 tag
     // (Adjusted automatically based on distance and # of tags)
-    public static double linearStdDevBaseline = 0.75; // Meters
-    public static double angularStdDevBaseline = 1.5; // Radians
+    public static double linearStdDevBaseline = 0.3; // Meters
+    public static double angularStdDevBaseline = 1.2; // Radians
 
     // Standard deviation multipliers for each camera
     public static double[] cameraStdDevFactors = new double[] {
-            1.3, // Camera 0
-            1.3, // Camera 1
-            1.3 // Camera 2
+            1.1, // Camera 0
+            1.1, // Camera 1
+            1.1 // Camera 2
     };
 
     public static double linearStdDevMegatag2Factor = 0.5; // More stable than full 3D solve

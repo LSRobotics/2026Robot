@@ -64,10 +64,13 @@ import frc.robot.subsystems.Vision.VisionIOPhotonVision;
 import frc.robot.subsystems.Vision.VisionSubsystem;
 import frc.robot.util.ManualFlywheelSpeed;
 import frc.robot.util.SendableSupplier;
+import frc.robot.util.ShotSolution;
 import frc.robot.util.Telemetry;
 import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;
 import frc.robot.commands.TurnTurretToAngleCommand;
+import frc.robot.commands.VisionFixedSpeedCommand;
 import frc.robot.commands.WheelRadiusCommand;
+import frc.robot.commands.TakeShotCommand.ShotData;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import frc.robot.subsystems.spindexer.SpindexerConstants;
@@ -288,6 +291,11 @@ public class RobotContainer {
         NamedCommands.registerCommand("LongFullVision", 
                 new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds).withTimeout(10));
 
+        NamedCommands.registerCommand("FeedFromNeutral", 
+                new FeedCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds).withTimeout(6)); 
+
+
+        NamedCommands.registerCommand("CenterShoot", new VisionFixedSpeedCommand(m_turret, m_shooter, new ShotSolution(-1,52,-1), ()->m_Swerve.getState().Pose, ()->m_Swerve.getState().Speeds));
         NamedCommands.registerCommand("Shoot3sec",
                 Commands.parallel(
                         new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose,

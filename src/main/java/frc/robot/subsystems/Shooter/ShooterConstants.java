@@ -68,10 +68,11 @@ public class ShooterConstants {
 
     }
 
-    public static AngularVelocity FeedSpeed = RotationsPerSecond.of(57);
-    public static double FeedHood = 0.7;
+    public static AngularVelocity FeedSpeed = RotationsPerSecond.of(53);
+    public static double FeedHood = 0.8;
 
-    public static AngularVelocity FeedSpeed2 = RotationsPerSecond.of(85);
-    public static double FeedHood2 = 0.85;
+    public static AngularVelocity FeedSpeed2 = RotationsPerSecond.of(89);
+    public static double FeedHood2 = 0.8;
+    
 
 }

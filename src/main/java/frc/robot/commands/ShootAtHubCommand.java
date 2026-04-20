@@ -276,7 +276,7 @@ public class ShootAtHubCommand extends Command {
     // Second: 0.5m, 1m, 1.5m, 2.5m, 3.5m, 4.5m, 5.5m, 6m
     // Third: 2.25m, 2.75m, 3.25m, 3.75m, 4.25m
 
-    private class AimingConstants {
+    public class AimingConstants {
         public static final int maxIterations = 4;
         public static final double ToFtolerance = 0.06; // seconds
         public static final InterpolatingDoubleTreeMap flywheelSpeedMap = new InterpolatingDoubleTreeMap(); // Meters to

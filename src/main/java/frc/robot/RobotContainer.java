@@ -84,6 +84,7 @@ import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volt;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import java.util.function.DoubleSupplier;
@@ -412,7 +413,7 @@ public class RobotContainer {
 
         m_driverController.b()
                 .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
-                .onFalse(new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(0)));
+                .onFalse(new InstantCommand(()-> m_shooter.setFlywheelVoltage(Volt.of(0))));
 
         m_driverController.rightBumper()
                 .whileTrue(m_Swerve.applyRequest(() -> brake).alongWith(new InstantCommand(() -> this.brakeMode(true))))
@@ -487,6 +488,8 @@ public class RobotContainer {
                         () -> m_operatorController.getRightX() * TRIM_DEGREES,
                         () -> 0.0
                 ));
+
+        m_driverController.y().whileTrue(Commands.run(() -> m_shooter.setHoodPosition(-1), m_shooter).withName("Hood Down").withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
         // No trim
         m_operatorController.rightTrigger().and(m_operatorController.start().negate())

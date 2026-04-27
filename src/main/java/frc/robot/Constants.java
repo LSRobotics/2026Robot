@@ -7,6 +7,8 @@ package frc.robot;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import edu.wpi.first.wpilibj.RobotBase;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -16,6 +18,15 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static final Mode simMode = Mode.SIM;
+  public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+
+  public static enum Mode {
+    REAL,
+    SIM,
+    REPLAY
+  }
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;

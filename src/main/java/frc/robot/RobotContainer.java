@@ -489,7 +489,7 @@ public class RobotContainer {
                         () -> 0.0
                 ));
 
-        m_driverController.y().whileTrue(Commands.run(() -> m_shooter.setHoodPosition(-1), m_shooter).withName("Hood Down").withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+        m_driverController.y().whileTrue(Commands.run(() -> {m_shooter.setHoodPosition(-1); LEDManager.setColor(LEDConstants.colorGold);}, m_shooter).withName("Hood Down").withInterruptBehavior(InterruptionBehavior.kCancelIncoming)).onFalse(Commands.runOnce(LEDManager::setDefault));
 
         // No trim
         m_operatorController.rightTrigger().and(m_operatorController.start().negate())

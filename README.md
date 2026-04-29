@@ -44,7 +44,7 @@
 - **Brake Mode** = Right Bumper
 - **Run Flywheel to Dashboard Speed (RPS)** = B Button
 - **Reset Gyro** = Start Button
-
+- **Y Button** = Hood down (kCancelIncoming)
 ### Operator
 - **Right Joy X** = Turn Turret
 - **Left Joy Y** = Intake Arm

@@ -176,6 +176,11 @@ public class RobotContainer {
             new VisionIOPhotonVision(VisionConstants.camera0name, VisionConstants.robotToCamera0),
             new VisionIOPhotonVision(VisionConstants.camera1name, VisionConstants.robotToCamera1),
             new VisionIOPhotonVision(VisionConstants.camera2name, VisionConstants.robotToCamera2));
+        // private final VisionSubsystem m_Vision = new VisionSubsystem(m_Swerve::addVisionMeasurement,
+        //     Robot.isReal()?new VisionIOPhotonVision(VisionConstants.camera0name, VisionConstants.robotToCamera0):new VisionIOPhotonVisionSim(VisionConstants.camera0name, VisionConstants.robotToCamera0, () -> m_Swerve.getState().Pose),
+        //     Robot.isReal()?new VisionIOPhotonVision(VisionConstants.camera1name, VisionConstants.robotToCamera1):new VisionIOPhotonVisionSim(VisionConstants.camera1name, VisionConstants.robotToCamera1, () -> m_Swerve.getState().Pose),
+        //     Robot.isReal()?new VisionIOPhotonVision(VisionConstants.camera2name, VisionConstants.robotToCamera2):new VisionIOPhotonVisionSim(VisionConstants.camera2name, VisionConstants.robotToCamera2, () -> m_Swerve.getState().Pose));
+
 
     private Trigger flywheelAtSpeed = new Trigger(
             () -> (m_shooter.getFlywheelVelocity().minus(m_shooter.targetSpeed)

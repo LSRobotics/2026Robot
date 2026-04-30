@@ -55,7 +55,7 @@ public class FeedCommand extends Command {
         this.m_shooter = shooter;
         this.robotPoseSupplier = robotPoseSupplier;
         this.chassisSpeedSupplier = chassisSpeedSupplier;
-        addRequirements(turret);
+        addRequirements(turret, shooter);
     }
 
     @Override

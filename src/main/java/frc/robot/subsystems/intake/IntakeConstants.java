@@ -1,10 +1,10 @@
 package frc.robot.subsystems.intake;
 
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Degree;
-import edu.wpi.first.units.measure.Current;
+import static org.wpilib.units.Units.Amps;
+import static org.wpilib.units.Units.Degree;
+import org.wpilib.units.measure.Current;
 
-import edu.wpi.first.units.measure.Angle;
+import org.wpilib.units.measure.Angle;
 
 public class IntakeConstants {
     public static final int INTAKE_MOTOR_ID = 52; 

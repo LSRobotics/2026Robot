@@ -1,12 +1,12 @@
 package frc.robot.util;
 
-import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static org.wpilib.units.Units.RotationsPerSecond;
 
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.units.measure.AngularVelocity;
+import org.wpilib.units.measure.AngularVelocity;
 import frc.robot.subsystems.Shooter.ShooterConstants.FlywheelConstants;
 
 public class ManualFlywheelSpeed {

@@ -8,8 +8,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Voltage;
+import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Voltage;
 
 public class ShooterFlywheelIOTalonFX implements ShooterFlywheelIO {
     private final TalonFX flywheelMotor1 = new TalonFX(ShooterConstants.FlywheelConstants.flywheelMotor1ID);

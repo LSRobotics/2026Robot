@@ -1,6 +1,6 @@
 package frc.robot.subsystems.spindexer;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.wpilib.command2.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.DoubleSupplier;
@@ -8,9 +8,9 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.AutoLog;
 import frc.robot.subsystems.spindexer.SpindexerIO;
-import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
+import org.wpilib.math.filter.SlewRateLimiter;
+import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Current;
 
 public class SpindexerSubsystem extends SubsystemBase {
     private final SpindexerIO io;

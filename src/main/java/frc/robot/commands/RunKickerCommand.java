@@ -6,7 +6,7 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.kicker.KickerSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
+import org.wpilib.command2.Command;
 
 /** An example command that uses an example subsystem. */
 public class RunKickerCommand extends Command {

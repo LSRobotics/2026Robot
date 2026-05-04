@@ -1,6 +1,6 @@
 package frc.robot.subsystems.arm;
 
-import edu.wpi.first.wpilibj.DigitalInput;
+import org.wpilib.hardware.discrete.DigitalInput;
 import frc.robot.subsystems.arm.ArmConstants.ArmLimitSwitchConstants;
 
 public class ArmLimitSwitchIOLimitSwitch implements ArmLimitSwitchIO {

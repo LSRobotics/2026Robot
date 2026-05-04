@@ -1,13 +1,13 @@
 package frc.robot.subsystems.intake;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.wpilib.command2.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
-import static edu.wpi.first.units.Units.RPM;
+import static org.wpilib.units.Units.RPM;
 
 import org.littletonrobotics.junction.AutoLog;
 import frc.robot.subsystems.intake.IntakeIO;
-import edu.wpi.first.units.measure.AngularVelocity;
+import org.wpilib.units.measure.AngularVelocity;
 
 public class IntakeSubsystem extends SubsystemBase {
     private final IntakeIO io;

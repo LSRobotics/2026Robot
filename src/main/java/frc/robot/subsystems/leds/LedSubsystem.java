@@ -2,8 +2,8 @@ package frc.robot.subsystems.leds;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.wpilib.command2.Subsystem;
+import org.wpilib.command2.SubsystemBase;
 
 public class LedSubsystem extends SubsystemBase{
     private final LedsIO io;

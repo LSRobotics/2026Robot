@@ -1,10 +1,10 @@
 package frc.robot.util;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import org.wpilib.driverstation.DriverStation;
+import org.wpilib.system.Timer;
+import org.wpilib.driverstation.DriverStation.Alliance;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.wpilibj.simulation.DriverStationSim;
+import org.wpilib.simulation.DriverStationSim;
 
 public class HubStatus {
 

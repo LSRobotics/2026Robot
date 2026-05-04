@@ -2,8 +2,8 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj2.command.Command;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.command2.Command;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 
 public class SetHoodAngleCommand extends Command {

@@ -4,14 +4,14 @@
 
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Degrees;
+import static org.wpilib.units.Units.Degrees;
 
 import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj2.command.Command;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.command2.Command;
 import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;
 import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.ArmSubsystem;

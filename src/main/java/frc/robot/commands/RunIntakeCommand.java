@@ -12,7 +12,7 @@ import frc.robot.subsystems.leds.LedSubsystem;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import org.wpilib.command2.Command;
 
 /** An example command that uses an example subsystem. */
 public class RunIntakeCommand extends Command {

@@ -1,15 +1,15 @@
 package frc.robot.subsystems.kicker;
 
 import org.littletonrobotics.junction.AutoLog;
-import static edu.wpi.first.units.Units.RPM;
-import edu.wpi.first.units.measure.AngularVelocity;
-import static edu.wpi.first.units.Units.Volts;
-import edu.wpi.first.units.measure.Voltage;
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static org.wpilib.units.Units.RPM;
+import org.wpilib.units.measure.AngularVelocity;
+import static org.wpilib.units.Units.Volts;
+import org.wpilib.units.measure.Voltage;
+import static org.wpilib.units.Units.Amps;
+import static org.wpilib.units.Units.Degrees;
+import static org.wpilib.units.Units.DegreesPerSecond;
 
-import edu.wpi.first.units.measure.Current;
+import org.wpilib.units.measure.Current;
 import org.littletonrobotics.junction.Logger;
 
 public interface KickerIO {

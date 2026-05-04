@@ -1,8 +1,8 @@
 package frc.robot.util;
 import java.util.function.Supplier;
 
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
+import org.wpilib.util.sendable.Sendable;
+import org.wpilib.util.sendable.SendableBuilder;
 
 public class SendableSupplier<T> implements Supplier<T>, Sendable {
     private final Supplier<T> supplier;

@@ -2,14 +2,14 @@ package frc.robot.commands;
 
 import frc.robot.subsystems.spindexer.SpindexerConstants;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
+import org.wpilib.command2.Command;
 import frc.robot.subsystems.kicker.KickerSubsystem;
 import frc.robot.subsystems.kicker.KickerConstants;
 
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import edu.wpi.first.units.measure.AngularVelocity;
-import static edu.wpi.first.units.Units.RPM;
+import org.wpilib.units.measure.AngularVelocity;
+import static org.wpilib.units.Units.RPM;
 
 public class RunIndexerCommand extends Command {
     @SuppressWarnings("PMD.UnusedPrivateField")

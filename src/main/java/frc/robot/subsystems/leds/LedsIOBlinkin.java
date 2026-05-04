@@ -1,7 +1,7 @@
 package frc.robot.subsystems.leds;
 
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.wpilib.hardware.motor.Spark;
+import org.wpilib.smartdashboard.SmartDashboard;
 
 public class LedsIOBlinkin implements LedsIO {
 

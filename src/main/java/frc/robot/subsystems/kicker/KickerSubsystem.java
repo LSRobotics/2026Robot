@@ -1,12 +1,12 @@
 package frc.robot.subsystems.kicker;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import org.wpilib.command2.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.AutoLog;
-import edu.wpi.first.units.measure.AngularVelocity;
+import org.wpilib.units.measure.AngularVelocity;
 import frc.robot.subsystems.kicker.KickerIO;
 
 public class KickerSubsystem extends SubsystemBase {

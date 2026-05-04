@@ -1,8 +1,8 @@
 package frc.robot.util;
 import java.util.Optional;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.Timer;
+import org.wpilib.driverstation.DriverStation;
+import org.wpilib.driverstation.DriverStation.Alliance;
+import org.wpilib.system.Timer;
 
 public final class PhaseTimer {
     private static Optional<Alliance> alliance;

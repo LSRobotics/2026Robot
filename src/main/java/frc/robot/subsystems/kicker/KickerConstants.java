@@ -1,10 +1,10 @@
 package frc.robot.subsystems.kicker;
 
-import static edu.wpi.first.units.Units.Degree;
-import static edu.wpi.first.units.Units.RPM;
+import static org.wpilib.units.Units.Degree;
+import static org.wpilib.units.Units.RPM;
 
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.AngularVelocity;
 
 public class KickerConstants {
     public static final int KICKER_MOTOR_ID = 61; 

@@ -1,11 +1,11 @@
 package frc.robot.subsystems.arm;
 
-import static edu.wpi.first.units.Units.Amps;
-import static edu.wpi.first.units.Units.Degree;
-import static edu.wpi.first.units.Units.Degrees;
+import static org.wpilib.units.Units.Amps;
+import static org.wpilib.units.Units.Degree;
+import static org.wpilib.units.Units.Degrees;
 
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Current;
+import org.wpilib.units.measure.Angle;
+import org.wpilib.units.measure.Current;
 
 public class ArmConstants {
     public static class ArmMotorConstants {

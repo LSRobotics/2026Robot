@@ -3,8 +3,8 @@ package frc.robot.subsystems.leds;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Current;
+import org.wpilib.units.measure.AngularVelocity;
+import org.wpilib.units.measure.Current;
 
 public interface LedsIO {
     @AutoLog

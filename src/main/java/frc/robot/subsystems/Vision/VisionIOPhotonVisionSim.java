@@ -9,8 +9,8 @@ package frc.robot.subsystems.Vision;
 
 import static frc.robot.subsystems.Vision.VisionConstants.aprilTagLayout;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Transform3d;
+import org.wpilib.math.geometry.Pose2d;
+import org.wpilib.math.geometry.Transform3d;
 import java.util.function.Supplier;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;

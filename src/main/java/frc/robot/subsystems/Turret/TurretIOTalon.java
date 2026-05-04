@@ -1,15 +1,15 @@
 package frc.robot.subsystems.Turret;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Rotation;
+import static org.wpilib.units.Units.Degrees;
+import static org.wpilib.units.Units.Rotation;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.wpilib.units.measure.Voltage;
+import org.wpilib.smartdashboard.SmartDashboard;
 
 public class TurretIOTalon implements TurretIO {
     private TalonFX turretMotor = new TalonFX(TurretConstants.turretMotorID);

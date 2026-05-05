@@ -2,11 +2,11 @@ package frc.robot.subsystems.leds;
 
 import org.littletonrobotics.junction.Logger;
 
-//Static class wrapping led subssyetm
+//singleton
 public class LEDManager {
-    private static LedSubsystem ledSubsystem;
+    private static LEDMechanism ledSubsystem;
 
-    public static void init(LedSubsystem ledSubsystem1) {
+    public static void init(LEDMechanism ledSubsystem1) {
         LEDManager.ledSubsystem = ledSubsystem1;
     }
 

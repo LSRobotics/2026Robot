@@ -5,13 +5,12 @@
 package frc.robot;
 
 import org.wpilib.math.geometry.Rotation2d;
-import org.wpilib.math.kinematics.ChassisSpeeds;
+import org.wpilib.math.kinematics.ChassisVelocities;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.driverstation.DriverStation;
 import org.wpilib.driverstation.GenericHID;
 import org.wpilib.driverstation.GenericHID.RumbleType;
-import org.wpilib.shuffleboard.SuppliedValueWidget;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AimAtHubCommand;
 import frc.robot.commands.ArmOutCommand;
@@ -31,7 +30,10 @@ import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.ArmIOSparkMax;
 import frc.robot.subsystems.arm.ArmLimitSwitchIOLimitSwitch;
-import org.wpilib.command2.button.CommandXboxController;
+import org.wpilib.command3.Command;
+import org.wpilib.command3.Trigger;
+import org.wpilib.command3.button.CommandNiDsXboxController;
+
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.FeedCommand;
 import frc.robot.commands.FeedCommand2;
@@ -45,7 +47,6 @@ import frc.robot.commands.TakeShotCommand;
 import frc.robot.commands.TurnTurretCommand;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -94,17 +95,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import org.wpilib.smartdashboard.SendableChooser;
 import org.wpilib.smartdashboard.SmartDashboard;
-import org.wpilib.command2.Command;
-import org.wpilib.command2.CommandScheduler;
-import org.wpilib.command2.Commands;
-import org.wpilib.command2.ConditionalCommand;
-import org.wpilib.command2.InstantCommand;
-import org.wpilib.command2.PrintCommand;
-import org.wpilib.command2.WaitCommand;
-import org.wpilib.command2.WaitUntilCommand;
-import org.wpilib.command2.Command.InterruptionBehavior;
-import org.wpilib.command2.button.Trigger;
-import org.wpilib.command2.sysid.SysIdRoutine;
+import org.wpilib.sysid.SysIdRoutineLog;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -133,11 +125,11 @@ public class RobotContainer {
                     ShooterConstants.HoodConstants.hoodLinearActuatorPWMID2));
 
     // Replace with CommandPS4Controller or Commandm_driverController if needed
-    private final CommandXboxController m_driverController = new CommandXboxController(
+    private final CommandNiDsXboxController m_driverController = new CommandNiDsXboxController(
             OperatorConstants.kDriverControllerPort);
     // private final GenericHID m_operatorController = new
     // GenericHID(OperatorConstants.kOperatorControllerPort);
-    private final CommandXboxController m_operatorController = new CommandXboxController(
+    private final CommandNiDsXboxController m_operatorController = new CommandNiDsXboxController(
             OperatorConstants.kOperatorControllerPort);
 
     private final IntakeIOTalonFX intakeIO = new IntakeIOTalonFX();
@@ -199,7 +191,6 @@ public class RobotContainer {
         Logger.recordOutput("Swerve/MaxSpeed", MaxSpeed.get());
 
         ManualFlywheelSpeed.init();
-        SmartDashboard.putData("Commands/WheelRadius", new WheelRadiusCommand(m_Swerve));
 
         // Configure the trigger bindings
 
@@ -209,28 +200,16 @@ public class RobotContainer {
         configureBindings();
 
         SmartDashboard.putData("SysId/Flywheel Quasistatic Forward",
-                m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kForward));
+                m_shooter.sysIdFlywheelQuasistatic(SysIdRoutineLog.State.QUASISTATIC_FORWARD));
         SmartDashboard.putData("SysId/Flywheel Quasistatic Reverse",
-                m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kReverse));
+                m_shooter.sysIdFlywheelQuasistatic(SysIdRoutineLog.State.QUASISTATIC_REVERSE));
         SmartDashboard.putData("SysId/Flywheel Dynamic Forward",
-                m_shooter.sysIdFlywheelDynamic(SysIdRoutine.Direction.kForward));
+                m_shooter.sysIdFlywheelDynamic(SysIdRoutineLog.State.DYNAMIC_FORWARD));
         SmartDashboard.putData("SysId/Flywheel Dynamic Reverse",
-                m_shooter.sysIdFlywheelDynamic(SysIdRoutine.Direction.kReverse));
+                m_shooter.sysIdFlywheelDynamic(SysIdRoutineLog.State.DYNAMIC_REVERSE));
 
-        SmartDashboard.putData("SysId1/Swerve Quasistatic Forward",
-                m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        SmartDashboard.putData("SysId1/Swerve Quasistatic Reverse",
-                m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        SmartDashboard.putData("SysId1/Swerve Dynamic Forward",
-                m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        SmartDashboard.putData("SysId1/Swerve Dynamic Reverse",
-                m_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
 
-        SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
-
-        SmartDashboard.putData("Start logger", new InstantCommand(() -> SignalLogger.start()));
-        SmartDashboard.putData("Stop logger", new InstantCommand(() -> SignalLogger.stop()));
-
+   
         NamedCommands.registerCommand("ArmOut",
                 new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE).withTimeout(Seconds.of(20)));
         NamedCommands.registerCommand("ArmIn", new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));

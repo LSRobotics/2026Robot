@@ -4,11 +4,12 @@ import org.littletonrobotics.junction.Logger;
 
 import org.wpilib.command2.Subsystem;
 import org.wpilib.command2.SubsystemBase;
+import org.wpilib.command3.Mechanism;
 
-public class LedSubsystem extends SubsystemBase{
+public class LEDMechanism extends Mechanism{
     private final LedsIO io;
     private LedsIOInputsAutoLogged inputs = new LedsIOInputsAutoLogged();
-    public LedSubsystem(LedsIO IO){
+    public LEDMechanism(LedsIO IO){
         this.io = IO;
     }
 

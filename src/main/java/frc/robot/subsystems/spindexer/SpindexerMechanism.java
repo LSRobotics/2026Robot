@@ -1,6 +1,8 @@
 package frc.robot.subsystems.spindexer;
 
 import org.wpilib.command2.SubsystemBase;
+import org.wpilib.command3.Mechanism;
+import org.wpilib.command3.Scheduler;
 import org.littletonrobotics.junction.Logger;
 
 import java.util.function.DoubleSupplier;
@@ -12,13 +14,17 @@ import org.wpilib.math.filter.SlewRateLimiter;
 import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.units.measure.Current;
 
-public class SpindexerSubsystem extends SubsystemBase {
+public class SpindexerMechanism extends Mechanism {
     private final SpindexerIO io;
     private final SpindexerIOInputsAutoLogged inputs = new SpindexerIOInputsAutoLogged();
     private final SlewRateLimiter speedLimiter = new SlewRateLimiter(SpindexerConstants.spindexerRampRatePositive, SpindexerConstants.spindexerRampRateNegative, 0d);
 
-    public SpindexerSubsystem(SpindexerIO io) {
+    public SpindexerMechanism(SpindexerIO io) {
         this.io = io;
+        Scheduler.getDefault().addPeriodic(() -> {
+            io.updateInputs(inputs);
+            Logger.processInputs("Spindexer", inputs);
+        });
     }
 
     public void runSpindexer(double speed) {
@@ -51,11 +57,6 @@ public class SpindexerSubsystem extends SubsystemBase {
         }
     }
 
-    @Override
-    public void periodic() {
-        io.updateInputs(inputs);
-        Logger.processInputs("Spindexer", inputs);
-    }
 
     public AngularVelocity getSpindexerSpeed() {
         return inputs.spindexerSpeed;

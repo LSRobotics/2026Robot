@@ -13,9 +13,10 @@ import org.wpilib.units.measure.Distance;
 import org.wpilib.units.measure.Voltage;
 import org.wpilib.command2.Command;
 import org.wpilib.command2.SubsystemBase;
-import org.wpilib.command2.sysid.SysIdRoutine;
+import org.wpilib.sysid.SysIdRoutineLog;
+import org.wpilib.command3.Mechanism;
 
-public class ShooterSubsystem extends SubsystemBase{
+public class ShooterMechanism extends Mechanism{
     private final ShooterFlywheelIO flywheelIO;
     private final ShooterHoodIO hoodIO;
 
@@ -26,11 +27,11 @@ public class ShooterSubsystem extends SubsystemBase{
 
     public AngularVelocity targetSpeed = DegreesPerSecond.zero();
 
-    public ShooterSubsystem(ShooterFlywheelIO flywheelIO, ShooterHoodIO hoodIO) {
+    public ShooterMechanism(ShooterFlywheelIO flywheelIO, ShooterHoodIO hoodIO) {
         this.flywheelIO = flywheelIO;
         this.hoodIO = hoodIO;
 
-    flywheelSysIdRoutine = new SysIdRoutine(
+    flywheelSysIdRoutine = new SysIdRoutine( 
         new SysIdRoutine.Config(
             null,
             null,

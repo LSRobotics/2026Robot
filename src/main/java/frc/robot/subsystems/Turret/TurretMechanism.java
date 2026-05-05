@@ -4,27 +4,26 @@ import static org.wpilib.units.Units.Degrees;
 
 import org.littletonrobotics.junction.Logger;
 import org.xml.sax.ext.DeclHandler;
-
+import org.wpilib.command3.Mechanism;
+import org.wpilib.command3.Scheduler;
 import org.wpilib.math.controller.PIDController;
 import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.Voltage;
 import org.wpilib.smartdashboard.SmartDashboard;
-import org.wpilib.command2.SubsystemBase;
 import frc.robot.util.MathUtils;
 
-public class TurretSubsystem extends SubsystemBase{
+public class TurretMechanism extends Mechanism{
 
     private final TurretIO io;
     private TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged(); 
 
-    public TurretSubsystem(TurretIO io){
+    public TurretMechanism(TurretIO io){
         this.io = io;
         io.zeroEncoder();
-    }
-
-    public void periodic(){
-        io.updateInputs(inputs);
-        Logger.processInputs("Turret", inputs);
+        Scheduler.getDefault().addPeriodic(() -> {
+            io.updateInputs(inputs);
+            Logger.processInputs("Turret", inputs);
+        });
     }
 
     public void setVoltage(Voltage voltage){

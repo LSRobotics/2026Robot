@@ -24,6 +24,13 @@ pluginManagement {
         mavenLocal()
         gradlePluginPortal()
     }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == 'org.wpilib.GradleRIO') {
+                useModule("org.wpilib.GradleRIO:org.wpilib.GradleRIO.gradle.plugin:2027.0.0-alpha-5")
+            }
+        }
+    }
 }
 
 Properties props = System.getProperties();

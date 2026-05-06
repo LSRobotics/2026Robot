@@ -7,15 +7,15 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import static org.wpilib.units.Units.Amps;
-import com.ctre.phoenix6.hardware.TalonFX;
 import org.wpilib.units.measure.Current;
 import org.wpilib.units.measure.Voltage;
 import org.wpilib.units.measure.AngularVelocity;
+import com.revrobotics.spark.SparkFlex;
 import static org.wpilib.units.Units.RPM;
 import static org.wpilib.units.Units.Volts;
 
 public class SpindexerIOSparkFlex implements SpindexerIO {
-    private final SparkFlex spindexerMotor = new SparkFlex(SpindexerConstants.SPINDEXER_MOTOR_ID, MotorType.kBrushless);
+    private final SparkFlex spindexerMotor = new SparkFlex(0,SpindexerConstants.SPINDEXER_MOTOR_ID, MotorType.kBrushless);
 
     public SpindexerIOSparkFlex(){}
 

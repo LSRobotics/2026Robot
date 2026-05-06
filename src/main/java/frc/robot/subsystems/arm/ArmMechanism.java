@@ -22,6 +22,11 @@ public class ArmMechanism extends Mechanism {
     public ArmMechanism(ArmIO armIO, ArmLimitSwitchIO limitSwitchIO) {
         this.armIO = armIO;
         this.limitSwitchIO = limitSwitchIO;
+        Scheduler.getDefault().addPeriodic(() -> {
+            armIO.updateInputs(armInputs);
+            limitSwitchIO.updateInputs(limitSwitchInputs);
+            Logger.processInputs("Arm", armInputs);
+        });
     }
 
     public void runArm(double speed) {
@@ -30,18 +35,6 @@ public class ArmMechanism extends Mechanism {
 
     public void setAngle(Angle angle) {
         armIO.setArmAngle(angle);
-    }
-
-
-    public Command telemetry() {
-        return Command.noRequirements(co -> {
-            while (true) {
-                armIO.updateInputs(armInputs);
-                limitSwitchIO.updateInputs(limitSwitchInputs);
-                Logger.processInputs("Arm", armInputs);
-                co.yield();
-            }
-        }).named("Arm Telemetry");
     }
 
     public AngularVelocity getArmSpeed() {

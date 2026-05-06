@@ -21,8 +21,8 @@ public class SpindexerIOTalonFX implements SpindexerIO {
 
     @Override
     public void updateInputs(SpindexerIOInputs inputs){
-        inputs.spindexerMotorCurrent = spindexerMotor.getStatorCurrent().getValue();
-        inputs.spindexerSpeed = spindexerMotor.getVelocity().getValue();
+        // inputs.spindexerMotorCurrent = spindexerMotor.getStatorCurrent().getValue();
+        // inputs.spindexerSpeed = spindexerMotor.getVelocity().getValue();
     }
 
     @Override

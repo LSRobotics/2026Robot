@@ -1,0 +1,26 @@
+{
+  "fileName": "photonlib.json",
+  "name": "photonlib",
+  "version": "dev-v2026.3.4-33-g363b8274",
+  "wpilibYear": "2027_alpha5",
+  "uuid": "515fe07e-bfc6-11fa-b3de-0242ac130004",
+  "mavenUrls": [
+    "https://maven.photonvision.org/repository/internal",
+    "https://maven.photonvision.org/repository/snapshots"
+  ],
+  "jsonUrl": "https://maven.photonvision.org/repository/internal/org/photonvision/photonlib-json/1.0/photonlib-json-1.0.json",
+  "jniDependencies": [],
+  "cppDependencies": [],
+  "javaDependencies": [
+    {
+      "groupId": "org.photonvision",
+      "artifactId": "photonlib-java",
+      "version": "dev-v2026.3.4-33-g363b8274"
+    },
+    {
+      "groupId": "org.photonvision",
+      "artifactId": "photontargeting-java",
+      "version": "dev-v2026.3.4-33-g363b8274"
+    }
+  ]
+}

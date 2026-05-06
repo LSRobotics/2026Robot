@@ -11,8 +11,6 @@ import org.wpilib.units.measure.Angle;
 import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.units.measure.Distance;
 import org.wpilib.units.measure.Voltage;
-import org.wpilib.command2.Command;
-import org.wpilib.command2.SubsystemBase;
 import org.wpilib.sysid.SysIdRoutineLog;
 import org.wpilib.command3.Mechanism;
 

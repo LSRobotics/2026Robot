@@ -5,7 +5,7 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.MotorArrangementValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import org.wpilib.units.measure.AngularVelocity;
@@ -17,22 +17,22 @@ public class ShooterFlywheelIOTalonFX implements ShooterFlywheelIO {
 
     public ShooterFlywheelIOTalonFX() {
         TalonFXConfiguration config = new TalonFXConfiguration();
-        config.CurrentLimits = new CurrentLimitsConfigs().withStatorCurrentLimit(ShooterConstants.FlywheelConstants.statorCurrentLimit);
+        // config.CurrentLimits = new CurrentLimitsConfigs().withStatorCurrentLimit(ShooterConstants.FlywheelConstants.statorCurrentLimit);
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         flywheelMotor1.getConfigurator().apply(config);
         flywheelMotor2.getConfigurator().apply(config);
 
-        flywheelMotor2.setControl(new Follower(flywheelMotor1.getDeviceID(), MotorAlignmentValue.Opposed));
+        flywheelMotor2.setControl(new Follower(flywheelMotor1.getDeviceID(), true));
     }
 
     @Override
     public void setVelocity(AngularVelocity velocity) {
-        flywheelMotor1.setControl(new VelocityDutyCycle(velocity));
+        // flywheelMotor1.setControl(new VelocityDutyCycle(velocity));
     }
 
     @Override
     public void setVoltage(Voltage voltage) {
-        flywheelMotor1.setControl(new VoltageOut(voltage));
+        // flywheelMotor1.setControl(new VoltageOut(voltage));
     }
 
     @Override
@@ -42,11 +42,11 @@ public class ShooterFlywheelIOTalonFX implements ShooterFlywheelIO {
 
     @Override
     public void updateInputs(ShooterFlywheelIOInputs inputs) {
-        inputs.velocity = flywheelMotor1.getVelocity().getValue();
-        inputs.motor1Current = flywheelMotor1.getStatorCurrent().getValue();
-        inputs.motor2Current = flywheelMotor2.getStatorCurrent().getValue();
-        inputs.position = flywheelMotor1.getPosition().getValue();
-        inputs.appliedVoltage = flywheelMotor1.getMotorVoltage().getValue();
+        // inputs.velocity = flywheelMotor1.getVelocity().getValue();
+        // inputs.motor1Current = flywheelMotor1.getStatorCurrent().getValue();
+        // inputs.motor2Current = flywheelMotor2.getStatorCurrent().getValue();
+        // inputs.position = flywheelMotor1.getPosition().getValue();
+        // inputs.appliedVoltage = flywheelMotor1.getMotorVoltage().getValue();
     }
 
 }

@@ -18,19 +18,19 @@ public class ArmIOTalonFX implements ArmIO {
 
     public ArmIOTalonFX() {
         armMotor.setNeutralMode(NeutralModeValue.Brake);
-        armMotor.getConfigurator().apply(new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(ArmMotorConstants.STATOR_CURRENT_LIMIT)
-            .withStatorCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(ArmMotorConstants.SUPPLY_CURRENT_LIMIT)
-            .withSupplyCurrentLimitEnable(true));
+        // armMotor.getConfigurator().apply(new CurrentLimitsConfigs()
+        //     .withStatorCurrentLimit(ArmMotorConstants.STATOR_CURRENT_LIMIT)
+        //     .withStatorCurrentLimitEnable(true)
+        //     .withSupplyCurrentLimit(ArmMotorConstants.SUPPLY_CURRENT_LIMIT)
+        //     .withSupplyCurrentLimitEnable(true));
     }
 
     @Override
     public void updateInputs(ArmIOInputs inputs) {
-        inputs.armMotorCurrent = Amps.of(armMotor.getSupplyCurrent().getValueAsDouble());
-        inputs.armAngle = armMotor.getRotorPosition().getValue();
-        inputs.armOut = inputs.armAngle.equals(ArmMotorConstants.ARM_DEPLOY_ANGLE);
-        inputs.armSpeed = armMotor.getRotorVelocity().getValue();
+        // inputs.armMotorCurrent = Amps.of(armMotor.getSupplyCurrent().getValueAsDouble());
+        // inputs.armAngle = armMotor.getRotorPosition().getValue();
+        // inputs.armOut = inputs.armAngle.equals(ArmMotorConstants.ARM_DEPLOY_ANGLE);
+        // inputs.armSpeed = armMotor.getRotorVelocity().getValue();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ArmIOTalonFX implements ArmIO {
 
     @Override
     public void setArmAngle(Angle angle) {
-        armMotor.getConfigurator().setPosition(angle);
+        // armMotor.getConfigurator().setPosition(angle);
     }
  
     @Override

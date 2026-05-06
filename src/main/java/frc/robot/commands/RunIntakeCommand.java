@@ -1,68 +1,68 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+// // Copyright (c) FIRST and other WPILib contributors.
+// // Open Source Software; you can modify and/or share it under the terms of
+// // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+// package frc.robot.commands;
 
-import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.intake.IntakeConstants;
-import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.leds.LEDConstants;
-import frc.robot.subsystems.leds.LedSubsystem;
+// import frc.robot.subsystems.ExampleSubsystem;
+// import frc.robot.subsystems.intake.IntakeConstants;
+// import frc.robot.subsystems.intake.IntakeSubsystem;
+// import frc.robot.subsystems.leds.LEDConstants;
+// import frc.robot.subsystems.leds.LedSubsystem;
 
-import java.util.function.DoubleSupplier;
+// import java.util.function.DoubleSupplier;
 
-import org.wpilib.command2.Command;
+// import org.wpilib.command2.Command;
 
-/** An example command that uses an example subsystem. */
-public class RunIntakeCommand extends Command {
-  @SuppressWarnings("PMD.UnusedPrivateField")
-  private final IntakeSubsystem m_intakeSubsystem;
-  private final LedSubsystem m_Leds;
+// /** An example command that uses an example subsystem. */
+// public class RunIntakeCommand extends Command {
+//   @SuppressWarnings("PMD.UnusedPrivateField")
+//   private final IntakeSubsystem m_intakeSubsystem;
+//   private final LedSubsystem m_Leds;
 
-  private final DoubleSupplier speed;
+//   private final DoubleSupplier speed;
 
-  /**
-   * Creates a new RunIntakeCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public RunIntakeCommand(IntakeSubsystem intake, LedSubsystem led, double speed) {
-    m_intakeSubsystem = intake;
-    m_Leds = led;
-    this.speed = () -> speed;
+//   /**
+//    * Creates a new RunIntakeCommand.
+//    *
+//    * @param subsystem The subsystem used by this command.
+//    */
+//   public RunIntakeCommand(IntakeSubsystem intake, LedSubsystem led, double speed) {
+//     m_intakeSubsystem = intake;
+//     m_Leds = led;
+//     this.speed = () -> speed;
 
-    addRequirements(intake);
-  }
+//     addRequirements(intake);
+//   }
 
-  public RunIntakeCommand(IntakeSubsystem intake, LedSubsystem led, DoubleSupplier speed) {
-    m_intakeSubsystem = intake;
-    m_Leds = led;
-    this.speed = speed;
+//   public RunIntakeCommand(IntakeSubsystem intake, LedSubsystem led, DoubleSupplier speed) {
+//     m_intakeSubsystem = intake;
+//     m_Leds = led;
+//     this.speed = speed;
 
-    addRequirements(intake);
-  }
+//     addRequirements(intake);
+//   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
+//   // Called when the command is initially scheduled.
+//   @Override
+//   public void initialize() {}
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    m_intakeSubsystem.runIntake(speed.getAsDouble());
-  }
+//   // Called every time the scheduler runs while the command is scheduled.
+//   @Override
+//   public void execute() {
+//     m_intakeSubsystem.runIntake(speed.getAsDouble());
+//   }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    m_intakeSubsystem.runIntake(0);
-  }
+//   // Called once the command ends or is interrupted.
+//   @Override
+//   public void end(boolean interrupted) {
+//     m_intakeSubsystem.runIntake(0);
+//   }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+//   // Returns true when the command should end.
+//   @Override
+//   public boolean isFinished() {
+//     return false;
+//   }
 
-}
+// }

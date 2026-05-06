@@ -1,6 +1,5 @@
 package frc.robot.subsystems.spindexer;
 
-import org.wpilib.command2.SubsystemBase;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.command3.Scheduler;
 import org.littletonrobotics.junction.Logger;

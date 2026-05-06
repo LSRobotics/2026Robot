@@ -22,15 +22,15 @@ public class IntakeIOTalonFX implements IntakeIO {
 
     public IntakeIOTalonFX() {
         intakeMotor.setNeutralMode(NeutralModeValue.Coast);
-        intakeMotor.getConfigurator().apply(new CurrentLimitsConfigs()
-            .withStatorCurrentLimit(IntakeConstants.STATOR_CURRENT_LIMIT)
-            .withStatorCurrentLimitEnable(true)
-            .withSupplyCurrentLimit(IntakeConstants.SUPPLY_CURRENT_LIMIT)
-            .withSupplyCurrentLimitEnable(true));
+        // intakeMotor.getConfigurator().apply(new CurrentLimitsConfigs()
+        //     .withStatorCurrentLimit(IntakeConstants.STATOR_CURRENT_LIMIT)
+        //     .withStatorCurrentLimitEnable(true)
+        //     .withSupplyCurrentLimit(IntakeConstants.SUPPLY_CURRENT_LIMIT)
+        //     .withSupplyCurrentLimitEnable(true));
 
-        intakeCurrent.setUpdateFrequency(Hertz.of(50));
-        intakeSpeed.setUpdateFrequency(Hertz.of(50));
-        intakeMotor.optimizeBusUtilization();
+        // intakeCurrent.setUpdateFrequency(Hertz.of(50));
+        // intakeSpeed.setUpdateFrequency(Hertz.of(50));
+        // intakeMotor.optimizeBusUtilization();
     }
 
     @Override
@@ -57,6 +57,6 @@ public class IntakeIOTalonFX implements IntakeIO {
     }
 
     public AngularVelocity getRollerSpeed() {
-        return RPM.of(intakeMotor.getRotorVelocity().getValueAsDouble());
+        // return RPM.of(intakeMotor.getRotorVelocity().getValueAsDouble());
     }
 }

@@ -176,7 +176,7 @@ public class ShootAtHubCommand extends Command {
         double hoodAngleDeg = AimingConstants.hoodAngleMap.get(predictedDistance);
         setHoodAngle(hoodAngleDeg);
         aimTurret(predictedTurretTranslation, robotPose.getRotation(), targetHubPose);
-        spinUpFlywheel(0.97*targetRPM);
+        spinUpFlywheel(0.98*targetRPM);
     }
 
     public void spinUpFlywheel(double targetRPM) {

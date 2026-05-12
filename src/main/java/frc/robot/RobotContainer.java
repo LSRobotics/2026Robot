@@ -416,9 +416,11 @@ public class RobotContainer {
         // new WaitCommand(0.75).andThen(new RunSpindexerCommand(spindexer,
         // SpindexerConstants.SPINDEXER_SPEED))));
 
-        m_driverController.b()
-                .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
-                .onFalse(new InstantCommand(()-> m_shooter.setFlywheelVoltage(Volt.of(0))));
+        // m_driverController.b()
+        //         .whileTrue(new RunFlywheelCommand(m_shooter, () -> RotationsPerSecond.of(speedSupplier.getAsDouble())))
+        //         .onFalse(new InstantCommand(()-> m_shooter.setFlywheelVoltage(Volt.of(0))));
+
+        m_driverController.b().onTrue(Commands.runOnce(armSubsystem::zeroEncoder));
 
         m_driverController.rightBumper()
                 .whileTrue(m_Swerve.applyRequest(() -> brake).alongWith(new InstantCommand(() -> this.brakeMode(true))))

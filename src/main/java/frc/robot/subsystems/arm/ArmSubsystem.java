@@ -1,5 +1,7 @@
 package frc.robot.subsystems.arm;
 
+import static edu.wpi.first.units.Units.Degree;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.units.measure.Angle;
@@ -28,6 +30,10 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void setAngle(Angle angle) {
         armIO.setArmAngle(angle);
+    }
+
+    public void zeroEncoder(){
+        armIO.setArmAngle(Degree.zero());
     }
 
     @Override

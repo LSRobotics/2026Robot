@@ -42,9 +42,9 @@ public class VisionConstants {
 
     // Standard deviation multipliers for each camera
     public static double[] cameraStdDevFactors = new double[] {
-            1.1, // Camera 0
-            1.1, // Camera 1
-            1.1 // Camera 2
+            1.2, // Camera 0
+            1.2, // Camera 1
+            2 // Camera 2
     };
 
     public static double linearStdDevMegatag2Factor = 0.5; // More stable than full 3D solve

@@ -189,6 +189,7 @@ public class ShootAtHubCommand extends Command {
                         .in(RotationsPerSecond),
                 targetRPS)
                 * ShooterConstants.FlywheelConstants.bangBangVolts.in(Volt);
+                
         double totalVoltage = feedforwardVoltage
                 + controlOutput * ShooterConstants.FlywheelConstants.bangBangCoefficient;
         totalVoltage = MathUtil.clamp(totalVoltage, -ShooterConstants.FlywheelConstants.maxVoltage.in(Volt),

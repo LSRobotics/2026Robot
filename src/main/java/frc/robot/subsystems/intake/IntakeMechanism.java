@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.command3.Scheduler;
 import org.littletonrobotics.junction.Logger;
@@ -44,5 +45,14 @@ public class IntakeMechanism extends Mechanism {
 
     public AngularVelocity getRollerSpeed() {
         return inputs.intakeRollerSpeed;
+    }
+
+    public Command runIntakeCommand(double speed) {
+        return this.run(co -> {
+            while (true){
+                this.runIntake(speed);
+                co.yield();
+            }
+        }).named("Run Intake - "+speed);
     }
 }

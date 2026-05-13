@@ -9,6 +9,15 @@ import org.wpilib.framework.OpModeRobot;
 import org.wpilib.framework.TimedRobot;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Scheduler;
+import org.wpilib.command3.SchedulerEvent.Completed;
+import org.wpilib.command3.SchedulerEvent.CompletedWithError;
+import org.wpilib.command3.SchedulerEvent.Interrupted;
+import org.wpilib.command3.SchedulerEvent.*;
+import org.wpilib.command3.SchedulerEvent.Mounted;
+import org.wpilib.command3.SchedulerEvent.Scheduled;
+import org.wpilib.command3.SchedulerEvent.Yielded;
+import org.wpilib.command3.SchedulerEvent.Canceled;
+import org.wpilib.command3.SchedulerEvent.Interrupted;
 import org.wpilib.command3.Trigger;
 import org.wpilib.system.Timer;
 import org.wpilib.smartdashboard.SendableChooser;
@@ -31,8 +40,10 @@ import frc.robot.subsystems.Shooter.ShooterConstants;
 import frc.robot.subsystems.Shooter.ShooterConstants.FlywheelConstants;
 import frc.robot.subsystems.Shooter.ShooterFlywheelIOTalonFX;
 import frc.robot.subsystems.Shooter.ShooterHoodIOLinearActuator;
+import frc.robot.subsystems.Shooter.ShooterMechanism;
 import frc.robot.subsystems.Turret.TurretIO;
 import frc.robot.subsystems.Turret.TurretIOTalon;
+import frc.robot.subsystems.Turret.TurretMechanism;
 import frc.robot.subsystems.Vision.VisionConstants;
 import frc.robot.subsystems.Vision.VisionIOPhotonVision;
 import frc.robot.subsystems.Vision.VisionSubsystem;
@@ -46,11 +57,13 @@ import frc.robot.subsystems.intake.IntakeMechanism;
 import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.kicker.KickerIO;
 import frc.robot.subsystems.kicker.KickerIOTalonFX;
+import frc.robot.subsystems.kicker.KickerMechanism;
 import frc.robot.subsystems.leds.LEDManager;
 import frc.robot.subsystems.leds.LEDMechanism;
 import frc.robot.subsystems.leds.LedsIOBlinkin;
 import frc.robot.subsystems.spindexer.SpindexerConstants;
 import frc.robot.subsystems.spindexer.SpindexerIOTalonFX;
+import frc.robot.subsystems.spindexer.SpindexerMechanism;
 import frc.robot.util.GameTimers;
 import frc.robot.util.PhaseTimer;
 import frc.robot.util.ShotSolution;
@@ -66,44 +79,38 @@ public class Robot extends OpModeRobot {
   @SuppressWarnings("unused")
   private final RobotContainer m_robotContainer;
 
-    private final SpindexerIOTalonFX SpinIO = new SpindexerIOTalonFX();
-    private final SpindexerSubsystem spindexer = new SpindexerSubsystem(SpinIO);
-    private final KickerIO kickerIO = new KickerIOTalonFX();
-    private final KickerSubsystem m_kicker = new KickerSubsystem(kickerIO);
-    private final TurretIO turretIO = new TurretIOTalon();
-    private final TurretSubsystem m_turret = new TurretSubsystem(turretIO);
+  private final SpindexerIOTalonFX SpinIO = new SpindexerIOTalonFX();
+  public final SpindexerMechanism spindexer = new SpindexerMechanism(SpinIO);
+  private final KickerIO kickerIO = new KickerIOTalonFX();
+  public final KickerMechanism m_kicker = new KickerMechanism(kickerIO);
+  private final TurretIO turretIO = new TurretIOTalon();
+  public final TurretMechanism m_turret = new TurretMechanism(turretIO);
 
-    private final SendableChooser<Command> autoChooser;
+  private final SendableChooser<Command> autoChooser;
 
-    private final ShooterSubsystem m_shooter = new ShooterSubsystem(new ShooterFlywheelIOTalonFX(),
-            new ShooterHoodIOLinearActuator(ShooterConstants.HoodConstants.hoodLinearActuatorPWMID,
-                    ShooterConstants.HoodConstants.hoodLinearActuatorPWMID2));
+  public final ShooterMechanism m_shooter = new ShooterMechanism(new ShooterFlywheelIOTalonFX(),
+      new ShooterHoodIOLinearActuator(ShooterConstants.HoodConstants.hoodLinearActuatorPWMID,
+          ShooterConstants.HoodConstants.hoodLinearActuatorPWMID2));
 
-    // Replace with CommandPS4Controller or Commandm_driverController if needed
+  // Replace with CommandPS4Controller or Commandm_driverController if needed
 
-    private final IntakeIOTalonFX intakeIO = new IntakeIOTalonFX();
-    private final IntakeMechanism intakeSubsystem = new IntakeMechanism(intakeIO);
+  private final IntakeIOTalonFX intakeIO = new IntakeIOTalonFX();
+  public final IntakeMechanism intakeSubsystem = new IntakeMechanism(intakeIO);
 
-    private final ArmIOSparkMax armIO = new ArmIOSparkMax();
-    private final ArmLimitSwitchIOLimitSwitch limitSwitchIO = new ArmLimitSwitchIOLimitSwitch();
-    private final ArmMechanism armSubsystem = new ArmMechanism(armIO, limitSwitchIO);
+  private final ArmIOSparkMax armIO = new ArmIOSparkMax();
+  private final ArmLimitSwitchIOLimitSwitch limitSwitchIO = new ArmLimitSwitchIOLimitSwitch();
+  public final ArmMechanism armSubsystem = new ArmMechanism(armIO, limitSwitchIO);
 
-    private final LedsIOBlinkin ledIO = new LedsIOBlinkin();
-    private final LEDMechanism ledSubsystem = new LEDMechanism(ledIO);
+  private final LedsIOBlinkin ledIO = new LedsIOBlinkin();
+  private final LEDMechanism ledSubsystem = new LEDMechanism(ledIO);
 
-    private final CommandSwerveDrivetrain m_Swerve = TunerConstants.createDrivetrain();
+  public final CommandSwerveDrivetrain m_Swerve = TunerConstants.createDrivetrain();
 
-    private final VisionSubsystem m_Vision = new VisionSubsystem(m_Swerve::addVisionMeasurement,
-            new VisionIOPhotonVision(VisionConstants.camera0name, VisionConstants.robotToCamera0),
-            new VisionIOPhotonVision(VisionConstants.camera1name, VisionConstants.robotToCamera1),
-            new VisionIOPhotonVision(VisionConstants.camera2name, VisionConstants.robotToCamera2));
+  private final VisionSubsystem m_Vision = new VisionSubsystem(m_Swerve::addVisionMeasurement,
+      new VisionIOPhotonVision(VisionConstants.camera0name, VisionConstants.robotToCamera0),
+      new VisionIOPhotonVision(VisionConstants.camera1name, VisionConstants.robotToCamera1),
+      new VisionIOPhotonVision(VisionConstants.camera2name, VisionConstants.robotToCamera2));
 
-    private Trigger flywheelAtSpeed = new Trigger(
-            () -> (m_shooter.getFlywheelVelocity().minus(m_shooter.targetSpeed)
-                    .abs(RotationsPerSecond)) <= (ShooterConstants.FlywheelConstants.flywheelTolerance
-                            .in(RotationsPerSecond)));
-
-  
   /**
    * This function is run when the robot is first started up and should be used
    * for any
@@ -130,6 +137,39 @@ public class Robot extends OpModeRobot {
           default -> "Unknown";
         });
 
+    /*
+     * Event Description
+     * Scheduled(Command, Time) A command was queued to run
+     * Mounted(Command, Time) The scheduler started or resumed a command
+     * Yielded(Command, Time) A command paused with Coroutine.yield()
+     * Completed(Command, Time) A command successfully completed
+     * CompletedWithError(Command, Throwable, Time) A command encountered an
+     * unhandled exception
+     * Canceled(Command, Time) A command was canceled (various causes)
+     * Interrupted(Command, Command, Time) A command was interrupted by another
+     */
+
+    Scheduler.getDefault().addEventListener(event -> {
+      switch (event) {
+        case Scheduled(var cmd, var time) ->
+          System.out.println("Scheduled " + cmd.name() + " at " + time);
+        case Mounted(var cmd, var time) ->
+          System.out.println("Resumed " + cmd.name() + " at " + time);
+        case Yielded(var cmd, var time) ->
+          System.out.println("Paused " + cmd.name() + " at " + time);
+        case Completed(var cmd, var time) ->
+          System.out.println("Finished " + cmd.name() + " at " + time);
+        case CompletedWithError(var cmd, var error, var time) ->
+          System.out.println("Errored " + cmd.name() + " at " + time + " with " + error);
+        case Canceled(var cmd, var time) ->
+          System.out.println("Canceled " + cmd.name() + " at " + time);
+        case Interrupted(var cmd, var by, var time) ->
+          System.out.println("Interrupted " + cmd.name() + " by " + by.name() + " at " + time);
+        default -> {
+        }
+      }
+    });
+
     Logger.start();
 
     m_robotContainer = new RobotContainer();
@@ -145,7 +185,7 @@ public class Robot extends OpModeRobot {
    * and
    * SmartDashboard integrated updating.
    */
-  
+
   @Override
   public void robotPeriodic() {
     // Runs the Scheduler. This is responsible for polling buttons, adding
@@ -155,8 +195,8 @@ public class Robot extends OpModeRobot {
     // and running subsystem periodic() methods. This must be called from the
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
-    Scheduler.getDefault().run();;
-    m_robotContainer.periodic();
+    Scheduler.getDefault().run();
+    ;
     GameTimers.update();
   }
 
@@ -177,92 +217,6 @@ public class Robot extends OpModeRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {
-  }
-
-  public void configureNamedCommands() {
-      NamedCommands.registerCommand("ArmOut",
-                new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE).withTimeout(Seconds.of(20)));
-        NamedCommands.registerCommand("ArmIn", new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
-        NamedCommands.registerCommand("Intake",
-                new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(3));
-
-        NamedCommands.registerCommand("Spindexer",
-                new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED).withTimeout(6));
-        NamedCommands.registerCommand("Kicker",
-                new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).withTimeout(8));
-
-        NamedCommands.registerCommand("LongSpindexer",
-                new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED).withTimeout(11));
-        NamedCommands.registerCommand("LongKicker",
-                new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).withTimeout(11));
-
-        NamedCommands.registerCommand("Print", new PrintCommand("Print"));
-
-        NamedCommands.registerCommand("LongIntake",
-                new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(10));
-
-        NamedCommands.registerCommand("LongishIntake",
-                new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(3.7));
-
-        NamedCommands.registerCommand("ShootFromLeftBump",
-                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftBump).withTimeout(4));
-
-        NamedCommands.registerCommand("ShootFromLeftTrench",
-                 new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(4));
-
-        NamedCommands.registerCommand("LongShootFromLeftTrench",
-                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(10));
-
-        NamedCommands.registerCommand("ShootFromRightTrench",
-                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(4));
-
-        NamedCommands.registerCommand("LongShootFromRightTrench",
-                new TakeShotCommand(m_turret, m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(10));
-
-        NamedCommands.registerCommand("AimFromTrench", 
-                new AimAtHubCommand(m_turret, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds).withTimeout(0.2));
-
-        NamedCommands.registerCommand("LeftFlywheelFromTrench", 
-                new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(FlywheelConstants.leftTrenchSpeed)).withTimeout(4));
-
-        NamedCommands.registerCommand("LongLeftFlywheelFromTrench", 
-                new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(FlywheelConstants.leftTrenchSpeed)).withTimeout(10));
-
-        NamedCommands.registerCommand("RightFlywheelFromTrench", 
-                new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(FlywheelConstants.rightTrenchSpeed)).withTimeout(4));
-
-        NamedCommands.registerCommand("LongRightFlywheelFromTrench", 
-                new RunFlywheelCommand(m_shooter, RotationsPerSecond.of(FlywheelConstants.rightTrenchSpeed)).withTimeout(10));
-
-        NamedCommands.registerCommand("FullVision", 
-                new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds).withTimeout(4));
-
-        NamedCommands.registerCommand("LongFullVision", 
-                new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds).withTimeout(10));
-
-        NamedCommands.registerCommand("FeedFromNeutral", 
-                new FeedCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds).withTimeout(6)); 
-
-
-        NamedCommands.registerCommand("CenterShoot", new VisionFixedSpeedCommand(m_turret, m_shooter, new ShotSolution(-1,52,-1), ()->m_Swerve.getState().Pose, ()->m_Swerve.getState().Speeds));
-        NamedCommands.registerCommand("Shoot3sec",
-                Commands.parallel(
-                        new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose,
-                                () -> m_Swerve.getState().Speeds),
-                        new ConditionalCommand(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED).andThen(
-                                new WaitCommand(0.75).andThen(
-                                        new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED))),
-                                new InstantCommand(), flywheelAtSpeed))
-                        .withTimeout(3));
-
-        NamedCommands.registerCommand("Shoot6sec",
-                Commands.parallel(
-                        new ShootAtHubCommand(m_turret, m_shooter, () -> m_Swerve.getState().Pose,
-                                () -> m_Swerve.getState().Speeds),
-                        new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED)
-                                .alongWith(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)))
-                        .withTimeout(6));
-
   }
 
 }

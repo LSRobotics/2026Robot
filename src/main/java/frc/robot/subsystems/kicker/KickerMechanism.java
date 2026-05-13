@@ -1,5 +1,6 @@
 package frc.robot.subsystems.kicker;
 
+import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.command3.Scheduler;
 import org.littletonrobotics.junction.Logger;
@@ -35,5 +36,9 @@ public class KickerMechanism extends Mechanism {
 
     public double getKickerSpeed() {
         return inputs.kickerSpeed;
+    }
+
+    public Command runKickerCommand(double speed){
+        return this.runRepeatedly(()->this.runKicker(speed)).named("Run Kicker - "+speed);
     }
 }

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.spindexer;
 
+import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.command3.Scheduler;
 import org.littletonrobotics.junction.Logger;
@@ -10,6 +11,7 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLog;
 import frc.robot.subsystems.spindexer.SpindexerIO;
 import org.wpilib.math.filter.SlewRateLimiter;
+import org.wpilib.system.Timer;
 import org.wpilib.units.measure.AngularVelocity;
 import org.wpilib.units.measure.Current;
 
@@ -63,5 +65,33 @@ public class SpindexerMechanism extends Mechanism {
 
     public Current getSpindexerCurrent() {
         return inputs.spindexerMotorCurrent;
+    }
+
+    public Command runSpindexerCommand(double speed) {
+        return run(co -> {
+            boolean isJammed = false;
+            Timer jamTimer = new Timer();
+
+            while (true) {
+                if (!isJammed && this.getSpindexerCurrent().gte(SpindexerConstants.spindexerJamThreshold)) {
+                    isJammed = true;
+                    jamTimer.restart();
+                }
+
+                if (isJammed && jamTimer.hasElapsed(SpindexerConstants.jamRecoveryTime)) {
+                    isJammed = false;
+                    jamTimer.reset();
+                }
+
+                if (!isJammed) {
+                    this.runSpindexer(speed);
+                } else {
+                    this.runSpindexer(SpindexerConstants.jamRecoverySpeed);
+                }
+
+                Logger.recordOutput("Spindexer/Jammed", isJammed);
+                co.yield();
+            }
+        }).named("Run Spindexer Command");
     }
 }

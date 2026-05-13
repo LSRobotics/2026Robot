@@ -336,11 +336,6 @@
 //         // SmartDashboard.putData("Roll", new SendableSupplier<Double>("Roll",
 //         // operatorRoll));
 
-//         SmartDashboard.putNumber("speed", 0);
-//         SmartDashboard.putNumber("Angle", 0);
-//         DoubleSupplier speedSupplier = () -> SmartDashboard.getNumber("speed", 0);
-//         DoubleSupplier angleSupplier = () -> SmartDashboard.getNumber("Angle", 0);
-
 //         // Regenerate tuner constants b[]\efore doing anything with swerve
 
 //         // Schedule `exampleMethodCommand` when the Xbox controller's B []\button is
@@ -493,10 +488,7 @@
 //      *
 //      * @return the command to run in autonomous
 //      */
-//     public Command getAutonomousCommand() {
-//         // // An example command will be run in autonomous
-//         return autoChooser.getSelected();
-//     }
+
 
 //     public void changeMaxSpeed(double newMaxSpeed) {
 //         Logger.recordOutput("Swerve/MaxSpeed", newMaxSpeed);

@@ -52,8 +52,7 @@ public final class Constants {
     public static final int right6 = 15;
   }
 
-  public static double maxSpeedFast = 4.5;
-    public static double maxSpeedSlow = 4;
+    public static double maxSpeedSlow = 2;
     public static double MaxAngularSpeedNormal = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
 
 }

@@ -50,10 +50,10 @@ public class PathplannerAuto extends PeriodicOpMode {
 
     private void configureNamedCommands() {
         NamedCommands.registerCommand("ArmOut",
-                new ArmOutCommand(robot.armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE).withTimeout(Seconds.of(20)));
-        NamedCommands.registerCommand("ArmIn", new ArmOutCommand(robot.armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
+                robot.armSubsystem.runArmCommand(ArmMotorConstants.ARM_DEPLOY_ANGLE).withTimeout(Seconds.of(20)));
+        NamedCommands.registerCommand("ArmIn", robot.armSubsystem.runArmCommand(ArmMotorConstants.ARM_REST_ANGLE));
         NamedCommands.registerCommand("Intake",
-                new RunIntakeCommand(robot.intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(Seconds.of(3)));
+                robot.intakeSubsystem.runIntakeCommand(IntakeConstants.INTAKE_IN_SPEED).withTimeout(Seconds.of(3)));
 
         NamedCommands.registerCommand("Spindexer", robot.spindexer.runSpindexerCommand(SpindexerConstants.SPINDEXER_SPEED).withTimeout(Seconds.of(6)));
         NamedCommands.registerCommand("Kicker",robot.m_kicker.runKickerCommand(KickerConstants.KICKER_SPEED).withTimeout(Seconds.of(8)));
@@ -64,28 +64,28 @@ public class PathplannerAuto extends PeriodicOpMode {
                 robot.m_kicker.runKickerCommand(KickerConstants.KICKER_SPEED).withTimeout(Seconds.of(11)));
 
         NamedCommands.registerCommand("LongIntake",
-                new RunIntakeCommand(robot.intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(Seconds.of(10)));
+                robot.intakeSubsystem.runIntakeCommand(IntakeConstants.INTAKE_IN_SPEED).withTimeout(Seconds.of(10)));
 
         NamedCommands.registerCommand("LongishIntake",
-                new RunIntakeCommand(robot.intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED).withTimeout(Seconds.of(3.7)));
+                robot.intakeSubsystem.runIntakeCommand(IntakeConstants.INTAKE_IN_SPEED).withTimeout(Seconds.of(3.7)));
 
         NamedCommands.registerCommand("ShootFromLeftBump",
-                new TakeShotCommand(robot.m_turret, robot.m_shooter, TakeShotCommand.ShotData.leftBump).withTimeout(Seconds.of(4)));
+                ShootingCommands.TakeShotCommand(robot.m_turret, robot.m_shooter, ShootingCommands.ShotData.leftBump).withTimeout(Seconds.of(4)));
 
         NamedCommands.registerCommand("ShootFromLeftTrench",
-                new TakeShotCommand(robot.m_turret, robot.m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(Seconds.of(4)));
+                ShootingCommands.TakeShotCommand(robot.m_turret, robot.m_shooter, ShootingCommands.ShotData.leftTrench).withTimeout(Seconds.of(4)));
 
         NamedCommands.registerCommand("LongShootFromLeftTrench",
-                new TakeShotCommand(robot.m_turret, robot.m_shooter, TakeShotCommand.ShotData.leftTrench).withTimeout(Seconds.of(10)));
+                ShootingCommands.TakeShotCommand(robot.m_turret, robot.m_shooter, ShootingCommands.ShotData.leftTrench).withTimeout(Seconds.of(10)));
 
         NamedCommands.registerCommand("ShootFromRightTrench",
-                new TakeShotCommand(robot.m_turret, robot.m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(Seconds.of(4)));
+                ShootingCommands.TakeShotCommand(robot.m_turret, robot.m_shooter, ShootingCommands.ShotData.rightTrench).withTimeout(Seconds.of(4)));
 
         NamedCommands.registerCommand("LongShootFromRightTrench",
-                new TakeShotCommand(robot.m_turret, robot.m_shooter, TakeShotCommand.ShotData.rightTrench).withTimeout(Seconds.of(10)));
+                ShootingCommands.TakeShotCommand(robot.m_turret, robot.m_shooter, ShootingCommands.ShotData.rightTrench).withTimeout(Seconds.of(10)));
 
         NamedCommands.registerCommand("AimFromTrench",
-                new AimAtHubCommand(robot.m_turret, () -> robot.m_Swerve.getState().Pose, () -> robot.m_Swerve.getState().Speeds)
+                ShootingCommands.AimAtHubCommand(robot.m_turret, () -> robot.m_Swerve.getState().Pose, () -> robot.m_Swerve.getState().Speeds)
                         .withTimeout(Seconds.of(0.2)));
 
         NamedCommands.registerCommand("LeftFlywheelFromTrench",
@@ -116,25 +116,30 @@ public class PathplannerAuto extends PeriodicOpMode {
                 ShootingCommands.feed(robot.m_turret, robot.m_shooter, () -> robot.m_Swerve.getState().Pose, () -> robot.m_Swerve.getState().Speeds)
                         .withTimeout(Seconds.of(6)));
 
-        NamedCommands.registerCommand("CenterShoot", new VisionFixedSpeedCommand(robot.m_turret, robot.m_shooter,
+        NamedCommands.registerCommand("CenterShoot", ShootingCommands.VisionFixedSpeedCommand(robot.m_turret, robot.m_shooter,
                 new ShotSolution(-1, 52, -1), () -> robot.m_Swerve.getState().Pose, () -> robot.m_Swerve.getState().Speeds));
-        NamedCommands.registerCommand("Shoot3sec",
-                Command.parallel(
-                        ShootingCommands.shootAtHub(robot.m_turret, robot.m_shooter, () -> robot.m_Swerve.getState().Pose,
-                                () -> robot.m_Swerve.getState().Speeds),
-                        new ConditionalCommand(robot.m_kicker.runKickerCommand(KickerConstants.KICKER_SPEED).andThen(
-                                new WaitCommand(0.75).andThen(
-                                        new RunSpindexerCommand(robot.spindexer, SpindexerConstants.SPINDEXER_SPEED))),
-                                new InstantCommand(), flywheelAtSpeed))
-                        .withTimeout(Seconds.of(3)));
 
-        NamedCommands.registerCommand("Shoot6sec",
-                Command.parallel(
-                        ShootingCommands.shootAtHub(robot.m_turret, robot.m_shooter, () -> robot.m_Swerve.getState().Pose,
-                                () -> robot.m_Swerve.getState().Speeds),
-                        robot.spindexer.runSpindexerCommand(SpindexerConstants.SPINDEXER_SPEED)
-                                .alongWith(robot.m_kicker.runKickerCommand(KickerConstants.KICKER_SPEED)))
-                        .withTimeout(Seconds.of(6)));
+        NamedCommands.registerCommand("Shoot3sec", Command.requiring(robot.m_turret, robot.m_shooter).executing(co -> {
+            co.fork(ShootingCommands.shootAtHub(robot.m_turret, robot.m_shooter, () -> robot.m_Swerve.getState().Pose,
+                    () -> robot.m_Swerve.getState().Speeds));
+                        co.waitUntil(() -> Math.abs(robot.m_shooter.getFlywheelVelocity().in(RotationsPerSecond) 
+                    - robot.m_shooter.targetSpeed.in(RotationsPerSecond)) 
+                    <= FlywheelConstants.flywheelTolerance.in(RotationsPerSecond));
+
+            co.fork(robot.m_kicker.runKickerCommand(KickerConstants.KICKER_SPEED));
+            co.waitFor(Seconds.of(0.75)); //type:ignore Not implemented by wpilib yet but planned
+            co.fork(robot.spindexer.runSpindexerCommand(SpindexerConstants.SPINDEXER_SPEED));
+
+            co.park();
+        }).named("Shoot3sec").withTimeout(Seconds.of(3)));
+
+        NamedCommands.registerCommand("Shoot6sec", Command.requiring(robot.m_turret, robot.m_shooter).executing(co -> {
+            co.fork(ShootingCommands.shootAtHub(robot.m_turret, robot.m_shooter, () -> robot.m_Swerve.getState().Pose,
+                    () -> robot.m_Swerve.getState().Speeds));
+            co.fork(robot.spindexer.runSpindexerCommand(SpindexerConstants.SPINDEXER_SPEED));
+            co.fork(robot.m_kicker.runKickerCommand(KickerConstants.KICKER_SPEED));
+            co.park();
+        }).named("Shoot6sec").withTimeout(Seconds.of(6)));
 
     }
 

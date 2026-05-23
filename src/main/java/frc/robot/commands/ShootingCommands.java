@@ -20,6 +20,7 @@ import org.wpilib.math.controller.SimpleMotorFeedforward;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.geometry.Transform2d;
+import frc.robot.util.ShotSolution;
 import org.wpilib.math.geometry.Translation2d;
 import org.wpilib.math.interpolation.InterpolatingDoubleTreeMap;
 import org.wpilib.math.kinematics.ChassisVelocities;
@@ -462,5 +463,206 @@ public class ShootingCommands {
         }
 
         private AimingConstants() {}
+    }
+
+    public static final class ShotData {
+        public static final ShotSolution leftBump = new ShotSolution(-1, RPM.convertFrom(37, RotationsPerSecond), 39);
+        public static final ShotSolution leftTrench = new ShotSolution(-1, RPM.convertFrom(ShooterConstants.FlywheelConstants.leftTrenchSpeed, RotationsPerSecond), 80);
+        public static final ShotSolution rightTrench = new ShotSolution(-1, RPM.convertFrom(ShooterConstants.FlywheelConstants.rightTrenchSpeed, RotationsPerSecond), -81);
+    }
+
+    public static Command AimAtHubCommand(TurretMechanism turret, Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisVelocities> chassisSpeedSupplier) {
+        return Command.requiring(turret).executing(co -> {
+            PIDController pid = new PIDController(TurretConstants.kP, 0, TurretConstants.kD);
+            pid.setTolerance(TurretConstants.turretTolerance.in(Degrees));
+
+            while (true) {
+                Pose2d hubPose = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red 
+                                 ? TurretConstants.hubRed : TurretConstants.hubBlue;
+                
+                Pose2d turretPose = robotPoseSupplier.get()
+                        .transformBy(new Transform2d(TurretConstants.turretOffset, new Rotation2d()));
+
+                ChassisVelocities robotVelocity = chassisSpeedSupplier.get();
+                Pose2d predictedTurretPose = turretPose.plus(
+                        new Transform2d(
+                                new Translation2d(
+                                        robotVelocity.vx * TurretConstants.lookaheadLatency.in(Seconds),
+                                        robotVelocity.vy * TurretConstants.lookaheadLatency.in(Seconds)),
+                                new Rotation2d(robotVelocity.omega * TurretConstants.lookaheadLatency.in(Seconds))));
+                Rotation2d angleToHub = hubPose.getTranslation().minus(predictedTurretPose.getTranslation()).getAngle();
+                angleToHub = angleToHub.minus(robotPoseSupplier.get().getRotation()).unaryMinus();
+                
+                int trajectoryPoints = 20;
+                Pose2d[] trajectory = new Pose2d[trajectoryPoints];
+                for (int i = 0; i < trajectoryPoints; i++) {
+                    double t = (double) i / (trajectoryPoints - 1);
+                    trajectory[i] = new Pose2d(predictedTurretPose.getTranslation(), new Rotation2d())
+                            .interpolate(new Pose2d(hubPose.getTranslation(), new Rotation2d()), t);
+                }
+
+                Logger.recordOutput("Turret/Trajectory", trajectory);
+                Logger.recordOutput("Turret/AngleToHub", angleToHub.getDegrees());
+                Logger.recordOutput("Turret/PredictedTurretPose", predictedTurretPose);
+                
+                Rotation2d actualFieldAngle = Rotation2d.fromDegrees(turret.getAngle().in(Degrees))
+                        .plus(robotPoseSupplier.get().getRotation());
+                Logger.recordOutput("Field Angle", actualFieldAngle);
+
+                Logger.recordOutput("Turret/TargetRay", new Pose2d[] {
+                        turretPose,
+                        new Pose2d(hubPose.getTranslation(), angleToHub)
+                });
+
+                Logger.recordOutput("Turret/ActualRay", new Pose2d[] {
+                        turretPose,
+                        new Pose2d(turretPose.getTranslation().plus(new Translation2d(5.0, actualFieldAngle)), actualFieldAngle)
+                });
+
+                pid.setSetpoint(MathUtils.clamp(-TurretConstants.turretRangeOneWay.in(Degrees), TurretConstants.turretRangeOneWay.in(Degrees), angleToHub.getDegrees()));
+                double speed = pid.calculate(turret.getAngle().in(Degrees));
+                speed = MathUtils.clamp(-TurretConstants.maxControlSpeed, TurretConstants.maxControlSpeed, speed);
+                turret.setSpeed(speed);
+                Logger.recordOutput("Turret/PID_Error", pid.getError());
+                Logger.recordOutput("Turret/PID_Setpoint", pid.getSetpoint());
+                
+                co.yield();
+            }
+        }).whenCanceled(() -> {
+            turret.setSpeed(0);
+        }).named("Aim At Hub Command");
+    }
+
+    public static Command TakeShotCommand(TurretMechanism turretSubsystem, ShooterMechanism shooterSubsystem, ShotSolution shot) {
+        return Command.requiring(turretSubsystem, shooterSubsystem).executing(co -> {
+            PIDController turretPID = new PIDController(TurretConstants.kP, 0, TurretConstants.kD);
+            BangBangController flywheelController = new BangBangController();
+            SimpleMotorFeedforward flywheelFeedforward = new SimpleMotorFeedforward(
+                ShooterConstants.FlywheelConstants.kS.in(Volts),
+                ShooterConstants.FlywheelConstants.kV, 
+                ShooterConstants.FlywheelConstants.kA);
+
+            flywheelController.setTolerance(ShooterConstants.FlywheelConstants.flywheelTolerance.in(RotationsPerSecond));
+            turretPID.setTolerance(TurretConstants.turretTolerance.in(Degrees));
+            
+            while(true) {
+                setHoodAngle(shooterSubsystem, shot.hoodAngle());
+                
+                double setpoint = MathUtils.clamp(
+                    -TurretConstants.turretRangeOneWay.in(Degrees),
+                     TurretConstants.turretRangeOneWay.in(Degrees),
+                     shot.turretAngle()
+                );
+                turretPID.setSetpoint(setpoint);
+                double speed = turretPID.calculate(turretSubsystem.getAngle().in(Degrees));
+                speed = MathUtils.clamp(-TurretConstants.maxControlSpeed, TurretConstants.maxControlSpeed, speed);
+                turretSubsystem.setSpeed(speed);
+        
+                Logger.recordOutput("Fixed Shot/Turret/PID_Error", turretPID.getError());
+                Logger.recordOutput("Fixed Shot/Turret/PID_Setpoint", turretPID.getSetpoint());
+                
+                spinUpFlywheel(shooterSubsystem, flywheelController, flywheelFeedforward, shot.targetRPM());
+
+                co.yield();
+            }
+        }).whenCanceled(() -> {
+            turretSubsystem.setSpeed(0);
+            shooterSubsystem.setFlywheelVoltage(Volt.of(0));
+            shooterSubsystem.setHoodPosition(-1d);
+        }).named("Take Shot Command");
+    }
+
+    public static Command VisionFixedSpeedCommand(TurretMechanism turretSubsystem, ShooterMechanism shooterSubsystem, Supplier<ShotSolution> shot, Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisVelocities> chassisSpeedSupplier) {
+        return Command.requiring(turretSubsystem, shooterSubsystem).executing(co -> {
+            PIDController turretPID = new PIDController(TurretConstants.kP, 0, TurretConstants.kD);
+            BangBangController flywheelController = new BangBangController();
+            SimpleMotorFeedforward flywheelFeedforward = new SimpleMotorFeedforward(
+                ShooterConstants.FlywheelConstants.kS.in(Volts),
+                ShooterConstants.FlywheelConstants.kV, 
+                ShooterConstants.FlywheelConstants.kA);
+
+            flywheelController.setTolerance(ShooterConstants.FlywheelConstants.flywheelTolerance.in(RotationsPerSecond));
+            turretPID.setTolerance(TurretConstants.turretTolerance.in(Degrees));
+            
+            while(true) {
+                Pose2d targetHubPose = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red 
+                                 ? TurretConstants.hubRed : TurretConstants.hubBlue;
+
+                setHoodAngle(shooterSubsystem, shot.get().hoodAngle());
+                spinUpFlywheel(shooterSubsystem, flywheelController, flywheelFeedforward, shot.get().targetRPM());
+
+                Pose2d robotPose = robotPoseSupplier.get();
+                ChassisVelocities chassisSpeeds = chassisSpeedSupplier.get();
+        
+                Pose2d turretPose = robotPose.transformBy(
+                        new Transform2d(TurretConstants.turretOffset, new Rotation2d()));
+        
+                Translation2d robotVelocity = new Translation2d(
+                        chassisSpeeds.vx,
+                        chassisSpeeds.vy).rotateBy(robotPose.getRotation());
+        
+                Translation2d turretOffset = TurretConstants.turretOffset;
+                Translation2d tangentialVelocity = new Translation2d(
+                        -chassisSpeeds.omega * turretOffset.getY(),
+                        chassisSpeeds.omega * turretOffset.getX());
+        
+                Translation2d relVelocity = robotVelocity.plus(tangentialVelocity);
+        
+                Translation2d relPosition = targetHubPose.getTranslation()
+                        .minus(turretPose.getTranslation());
+                double distanceToTarget = relPosition.getNorm();
+        
+                Logger.recordOutput("Aiming/DistanceToTarget", distanceToTarget);
+                Logger.recordOutput("Aiming/TargetHubPose", targetHubPose);
+                Logger.recordOutput("Aiming/TurretPose", turretPose);
+        
+                double calcTargetRPM = AimingConstants.flywheelSpeedMap.get(distanceToTarget);
+                double TOF = AimingConstants.flywheelTOFMap.get(distanceToTarget);
+                double oldRPM = calcTargetRPM;
+                double predictedDistance = distanceToTarget;
+        
+                for (int i = 0; i < AimingConstants.maxIterations; i++) {
+                    Translation2d predictedTurretTranslation = turretPose.getTranslation().plus(relVelocity.times(TOF));
+        
+                    Translation2d predictedRelPosition = targetHubPose.getTranslation().minus(predictedTurretTranslation);
+                    predictedDistance = predictedRelPosition.getNorm();
+        
+                    calcTargetRPM = AimingConstants.flywheelSpeedMap.get(predictedDistance);
+                    Logger.recordOutput("Aiming/RawSpeedRPM", calcTargetRPM);
+        
+                    double difference = calcTargetRPM - oldRPM;
+                    if (Math.abs(difference) > AimingConstants.maxRPMChange * TOF) {
+                        calcTargetRPM = oldRPM + Math.signum(difference) * AimingConstants.maxRPMChange * TOF;
+                    }
+        
+                    double newTOF = AimingConstants.flywheelTOFMap.get(predictedDistance);
+        
+                    Logger.recordOutput("Aiming/Iteration", i);
+                    Logger.recordOutput("Aiming/PredictedDistance", predictedDistance);
+                    Logger.recordOutput("Aiming/TargetRPM", calcTargetRPM);
+                    Logger.recordOutput("Aiming/TOF", TOF);
+        
+                    if (Math.abs(newTOF - TOF) < AimingConstants.ToFtolerance) {
+                        break;
+                    }
+        
+                    TOF = newTOF;
+                    oldRPM = calcTargetRPM;
+                }
+        
+                Translation2d predictedTurretTranslation = turretPose.getTranslation().plus(relVelocity.times(TOF));
+                aimTurret(turretSubsystem, turretPID, predictedTurretTranslation, robotPose.getRotation(), targetHubPose, () -> 0.0);
+
+                co.yield();
+            }
+        }).whenCanceled(() -> {
+            turretSubsystem.setSpeed(0);
+            shooterSubsystem.setFlywheelVoltage(Volt.of(0));
+            shooterSubsystem.setHoodPosition(-1d);
+        }).named("Vision Fixed Speed Command");
+    }
+
+    public static Command VisionFixedSpeedCommand(TurretMechanism turretSubsystem, ShooterMechanism shooterSubsystem, ShotSolution shot, Supplier<Pose2d> robotPoseSupplier, Supplier<ChassisVelocities> chassisSpeedSupplier) {
+        return VisionFixedSpeedCommand(turretSubsystem, shooterSubsystem, () -> shot, robotPoseSupplier, chassisSpeedSupplier);
     }
 }

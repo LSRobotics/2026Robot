@@ -39,7 +39,7 @@ import frc.robot.util.ManualFlywheelSpeed;
 import frc.robot.util.Telemetry;
 
 @Teleop(name = "Teleop", group = "Teleop")
-public class TeleopOpMode extends CommandOpMode {
+public class TeleopOpMode extends CommandOpMode { //type:ignore CommandOpMode isnt implemented by wpilib yet but is planned
         private final Robot robot;
         private final CommandNiDsXboxController m_driverController = new CommandNiDsXboxController(
                         OperatorConstants.kDriverControllerPort);
@@ -120,39 +120,41 @@ public class TeleopOpMode extends CommandOpMode {
                 // m_driverController.y().whileTrue(new InstantCommand(() ->
                 // m_kicker.runKicker(KickerConstants.KICKER_SPEED)))
                 // .whileFalse(new InstantCommand(() -> m_kicker.runKicker(0)));
-                m_driverController.povUp().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
+                m_driverController.povUp().whileTrue(robot.armSubsystem.runArmCommand(ArmMotorConstants.ARM_REST_ANGLE));
                 m_driverController.povDown()
-                                .whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE));
+                                .whileTrue(robot.armSubsystem.runArmCommand(ArmMotorConstants.ARM_DEPLOY_ANGLE));
                 m_driverController.a()
                                 .whileTrue(robot.intakeSubsystem.runIntakeCommand(IntakeConstants.INTAKE_IN_SPEED));
-                m_driverController.povRight().onTrue(Command.noRequirements((co -> {robot.m_shooter.setHoodPosition(angleSupplier)})).named("Set Hood Position"));
-                m_operatorController.leftBumper().whileTrue(
-                                new AimAtHubCommand(m_turret, () -> robot.m_Swerve.getState().Pose,
-                                                () -> robot.m_Swerve.getState().Speeds));
+                m_driverController.povRight().onTrue(Command.noRequirements((co -> {robot.m_shooter.setHoodPosition(angleSupplier);})).named("Set Hood Position"));
+                // m_operatorController.leftBumper().whileTrue(
+                //                 new AimAtHubCommand(m_turret, () -> robot.m_Swerve.getState().Pose,
+                //                                 () -> robot.m_Swerve.getState().Speeds));
                 m_driverController.leftBumper()
                                 .whileTrue(Command.noRequirements(co -> this.changeMaxSpeed(Constants.maxSpeedFast)).named("Max Speed Fast"))
                                 .onFalse(Command.noRequirements(co -> this.changeMaxSpeed(Constants.maxSpeedSlow)).named("Max Speed Normal"));
 
-                m_driverController.rightTrigger(0.5).onTrue(Command.runOnce(() -> {
+                m_driverController.rightTrigger(0.5).onTrue(Command.noRequirements(_ -> {
                         changeMaxSpeed(2, RotationsPerSecond.of(0.5).in(RadiansPerSecond));
-                })).onFalse(Command.runOnce(() -> {
+                }).named("Change speed")).onFalse(Command.noRequirements(_ -> {
                         changeMaxSpeed(Constants.maxSpeedFast, Constants.MaxAngularSpeedNormal);
-                }));
+                }).named("Reset Speed"));
 
                 opRJoystickX.and(m_operatorController.start().negate())
-                                .whileTrue(new TurnTurretCommand(m_turret, opRightX));
+                                .whileTrue(robot.m_turret.runTurretCommand(opRightX));
 
-                opLJoystickY.whileTrue(
-                                new ConditionalCommand(
-                                                new ArmOutCommand(armSubsystem,
-                                                                () -> ArmConstants.ArmMotorConstants.ARM_DEPLOY_ANGLE,
-                                                                () -> Math.abs(opLeftY.getAsDouble())
-                                                                                * ArmMotorConstants.ARM_SPEED),
-                                                new ArmOutCommand(armSubsystem,
-                                                                () -> ArmConstants.ArmMotorConstants.ARM_REST_ANGLE,
-                                                                () -> Math.abs(opLeftY.getAsDouble())
-                                                                                * ArmMotorConstants.ARM_SPEED),
-                                                () -> opLeftY.getAsDouble() > 0d));
+                opLJoystickY.whileTrue(Command.noRequirements(co -> {
+                        if (opLeftY.getAsDouble()>0d){
+                                co.await(robot.armSubsystem.runArmCommand(
+                                        () -> ArmConstants.ArmMotorConstants.ARM_DEPLOY_ANGLE,
+                                        () -> Math.abs(opLeftY.getAsDouble())* ArmMotorConstants.ARM_SPEED));
+                        }
+                        else{
+                                co.await(robot.armSubsystem.runArmCommand(
+                                        () -> ArmConstants.ArmMotorConstants.ARM_REST_ANGLE,
+                                        () -> Math.abs(opLeftY.getAsDouble())* ArmMotorConstants.ARM_SPEED));
+                        }
+                }).named("Arm - Op Left Y"));
+                                
 
                 // m_driverController.povLeft()
                 // .whileTrue(Command.parallel(new RunKickerCommand(m_kicker,
@@ -196,26 +198,25 @@ public class TeleopOpMode extends CommandOpMode {
 
                 m_operatorController.y()
                                 .whileTrue(Command.parallel(
-                                                Command.waitFor(Seconds.of(0.5))
-                                                                .andThen(new TurnTurretToAngleCommand(m_turret,
-                                                                                TurretConstants.manualAngle1)),
-                                                robot.m_shooter.runFlywheel(() -> ManualFlywheelSpeed.getSpeed())));
+                                                Command.waitFor(Seconds.of(0.5)).named("Wait")
+                                                                .andThen(robot.m_turret.runTurretToAngleCommand(TurretConstants.manualAngle1)).named("Turn Turret"),
+                                                robot.m_shooter.runFlywheel(() -> ManualFlywheelSpeed.getSpeed())).withAutomaticName());
                 m_operatorController.x()
                                 .whileTrue(Command.parallel(
-                                                Command.waitFor(Seconds.of(0.5)).andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle2)).named("Turret to Angle (Operator X)"),
-                                                robot.m_shooter.runFlywheel(() -> ManualFlywheelSpeed.getSpeed())));
+                                                Command.waitFor(Seconds.of(0.5)).named("Wait").andThen(robot.m_turret.runTurretToAngleCommand(TurretConstants.manualAngle2)).named("Turret to Angle (Operator X)"),
+                                                robot.m_shooter.runFlywheel(() -> ManualFlywheelSpeed.getSpeed())).withAutomaticName());
                 m_operatorController.b().and(m_operatorController.a().negate())
                                 .whileTrue(Command.parallel(
-                                                Command.waitFor(Seconds.of(0.5)).andThen(new TurnTurretToAngleCommand(m_turret, TurretConstants.manualAngle3)).named("Turret to Angle (Operator B)"),
-                                                robot.m_shooter.runFlywheel(() -> ManualFlywheelSpeed.getSpeed())));
+                                                Command.waitFor(Seconds.of(0.5)).named("Wait").andThen(robot.m_turret.runTurretToAngleCommand(TurretConstants.manualAngle3)).named("Turret to Angle (Operator B)"),
+                                                robot.m_shooter.runFlywheel(() -> ManualFlywheelSpeed.getSpeed())).withAutomaticName());
 
                 m_operatorController.rightBumper().whileTrue(Command.parallel(robot.m_shooter.runFlywheel(() -> ManualFlywheelSpeed.getSpeed())).withAutomaticName());
 
                 m_operatorController.start().whileTrue(
-                                Command.run(co -> {
+                                Command.noRequirements(co -> {
                                         leftRightTrim = m_operatorController.getRightX() * TRIM_DEGREES;
                                         Logger.recordOutput("LeftRightTrim", leftRightTrim);
-                                }));
+                                }).named("Trim"));
 
                 m_operatorController.back().onTrue(
                                 Command.noRequirements(co -> {
@@ -239,8 +240,7 @@ public class TeleopOpMode extends CommandOpMode {
                                                 () -> robot.m_Swerve.getState().Pose,
                                                 () -> robot.m_Swerve.getState().Speeds));
 
-                m_operatorController.leftTrigger().whileTrue(
-                                new RunIntakeCommand(robot.intakeSubsystem, null, IntakeConstants.OUTTAKE_SPEED));
+                m_operatorController.leftTrigger().whileTrue(robot.intakeSubsystem.runIntakeCommand(IntakeConstants.OUTTAKE_SPEED));
         }
 
         public Angle nextArmAngle() {

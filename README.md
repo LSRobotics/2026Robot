@@ -1,5 +1,5 @@
 # La Salle's 2026 Robot
-## This code is not offocially supported by wpilib or any vendor because i modified vendor deps. It is not fully idomatic and is on an unstable build of alpha5
+## This code is not offocially supported by wpilib or any vendor because of modified vendor deps (Noth in the json file and the source). It is not fully idomatic and is on an a build of alpha6 with some features not yet implemented by wpilib.  
 ```
        .           . .          .        ######=    .   .       .      
          .         .                    :*    .* .   .    .       . .  

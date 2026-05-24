@@ -7,6 +7,8 @@ import org.wpilib.networktables.PubSubOption;
 import org.wpilib.driverstation.DriverStation;
 import org.wpilib.smartdashboard.SmartDashboard;
 
+import frc.robot.Robot;
+
 public final class GameTimers {
 
 	//private static final DoubleTopic shiftTimeTopic =
@@ -38,7 +40,7 @@ public final class GameTimers {
 			return 0.0;
 		}
 
-		if (!DriverStation.isTeleopEnabled()) {
+		if (!Robot.isTeleopEnabled()) {
 			return matchTime;
 		}
 

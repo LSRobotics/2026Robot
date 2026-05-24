@@ -1,9 +1,12 @@
 package frc.robot.util;
 
+import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.DriverStation;
 import org.wpilib.system.Timer;
-import org.wpilib.driverstation.DriverStation.Alliance;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import frc.robot.Robot;
+
 import org.wpilib.simulation.DriverStationSim;
 
 public class HubStatus {
@@ -32,7 +35,7 @@ public class HubStatus {
         }
 
         Alliance myAlliance = allianceOptional.get();
-        char myAllianceChar = (myAlliance == Alliance.Red) ? 'R' : 'B';
+        char myAllianceChar = (myAlliance == Alliance.RED) ? 'R' : 'B';
 
         char activeHub = getActiveHub();
 
@@ -54,7 +57,7 @@ public class HubStatus {
 
         char secondInactive = (firstInactive == 'R') ? 'B' : 'R';
 
-        if (!DriverStation.isTeleopEnabled()) {
+        if (!Robot.isTeleopEnabled()) {
             return 'C'; // both active in auto
         }
 

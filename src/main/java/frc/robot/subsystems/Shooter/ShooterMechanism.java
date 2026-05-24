@@ -21,6 +21,7 @@ import frc.robot.util.MathUtils;
 import org.wpilib.sysid.SysIdRoutineLog;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
+import org.wpilib.sysid.SysIdRoutine;
 import org.wpilib.math.controller.BangBangController;
 import org.wpilib.math.controller.SimpleMotorFeedforward;
 import org.wpilib.math.util.MathUtil;

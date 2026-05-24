@@ -179,11 +179,10 @@ public class TeleopOpMode extends CommandOpMode { //type:ignore CommandOpMode is
                 // robot.m_Swerve.getState().Pose, ()
                 // -> robot.m_Swerve.getState().Speeds));
 
-                m_driverController.start()
-                                .onTrue(Command.noRequirements(co -> robot.m_Swerve.resetRotation(
-                                                DriverStation.getAlliance().get() == Alliance.RED
-                                                                ? Rotation2d.fromDegrees(180)
-                                                                : Rotation2d.fromDegrees(0))).named("Reset field centric heading"));
+                m_driverController.start().onTrue(Command.noRequirements(co -> robot.m_Swerve.resetRotation(
+                        DriverStation.getAlliance().get() == Alliance.RED
+                        ? Rotation2d.fromDegrees(180)
+                        : Rotation2d.fromDegrees(0))).named("Reset field centric heading"));
 
                 // m_operatorController.povUp().whileTrue(new InstantCommand(() ->
                 // armSubsystem.runArm(ArmMotorConstants.ARM_SPEED)));
@@ -279,7 +278,6 @@ public class TeleopOpMode extends CommandOpMode { //type:ignore CommandOpMode is
                 if (Math.random() < 0.01) {
                         Runtime.getRuntime().gc();
                 }
-                Logger.recordOutput("Swerve Current",
-                                robot.m_Swerve.getModules()[0].getDriveMotor().getStatorCurrent().getValueAsDouble());
+                Logger.recordOutput("Swerve Current", robot.m_Swerve.getModules()[0].getDriveMotor().getStatorCurrent().getValueAsDouble());
         }
 }

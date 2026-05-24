@@ -1,7 +1,8 @@
 package frc.robot.util;
 import java.util.Optional;
+
+import org.wpilib.driverstation.Alliance;
 import org.wpilib.driverstation.DriverStation;
-import org.wpilib.driverstation.DriverStation.Alliance;
 import org.wpilib.system.Timer;
 
 public final class PhaseTimer {
@@ -24,8 +25,8 @@ public final class PhaseTimer {
         whoIsInactiveFirst = DriverStation.getGameSpecificMessage();
         
         if (alliance.isPresent()) {
-            if ((alliance.get().equals(Alliance.Red) && whoIsInactiveFirst.equals("R")) || 
-            (alliance.get().equals(Alliance.Blue) && whoIsInactiveFirst.equals("B"))) {
+            if ((alliance.get().equals(Alliance.RED) && whoIsInactiveFirst.equals("R")) || 
+            (alliance.get().equals(Alliance.BLUE) && whoIsInactiveFirst.equals("B"))) {
                 amIInactiveFirst = true;
                 start();
                 return true;

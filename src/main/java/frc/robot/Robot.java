@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -120,10 +121,8 @@ public class Robot extends LoggedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = new PathPlannerAuto(m_robotContainer.getAutonomousCommand())
-        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
-
-    CommandScheduler.getInstance().schedule(m_autonomousCommand);
+    m_autonomousCommand = new WaitCommand(m_robotContainer.getAutonomousTime()).andThen(new PathPlannerAuto(m_robotContainer.getAutonomousCommand())
+        .withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
 
     if (m_autonomousCommand != null) {
       CommandScheduler.getInstance().schedule(m_autonomousCommand);

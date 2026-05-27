@@ -4,10 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
@@ -90,6 +92,8 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
@@ -128,6 +132,7 @@ public class RobotContainer {
     private final TurretSubsystem m_turret = new TurretSubsystem(turretIO);
 
     private final SendableChooser<Command> autoChooser;
+    private final LoggedNetworkNumber autoTime = new LoggedNetworkNumber("Tuning/Autonomous Time", 0);
 
     private final ShooterSubsystem m_shooter = new ShooterSubsystem(new ShooterFlywheelIOTalonFX(),
             new ShooterHoodIOLinearActuator(ShooterConstants.HoodConstants.hoodLinearActuatorPWMID,
@@ -527,6 +532,10 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // // An example command will be run in autonomous
         return autoChooser.getSelected();
+    }
+
+    public Time getAutonomousTime() {
+        return Seconds.of(MathUtil.clamp(autoTime.get(),0,20));
     }
 
     public void changeMaxSpeed(double newMaxSpeed) {

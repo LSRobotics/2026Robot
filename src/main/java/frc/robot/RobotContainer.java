@@ -398,7 +398,7 @@ public class RobotContainer {
         m_driverController.leftBumper().whileTrue(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedFast)))
                 .onFalse(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedSlow)));
 
-        m_driverController.rightTrigger(0.5).onTrue(Commands.runOnce(()->{changeMaxSpeed(2, RotationsPerSecond.of(0.5).in(RadiansPerSecond));})).onFalse(Commands.runOnce(()->{changeMaxSpeed(Constants.maxSpeedFast, Constants.MaxAngularSpeedNormal);}));
+        m_driverController.rightTrigger(0.5).onTrue(Commands.runOnce(()->{changeMaxSpeed(1, RotationsPerSecond.of(0.5).in(RadiansPerSecond));})).onFalse(Commands.runOnce(()->{changeMaxSpeed(Constants.maxSpeedSlow, Constants.MaxAngularSpeedNormal);}));
 
         opRJoystickX.and(m_operatorController.start().negate()).whileTrue(new TurnTurretCommand(m_turret, opRightX));
 

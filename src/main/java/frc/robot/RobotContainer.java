@@ -155,7 +155,7 @@ public class RobotContainer {
     private static final double TRIM_DEGREES = 10.0d;
 
     private Supplier<Double> MaxSpeed = () -> Constants.maxSpeedSlow;
-    private Supplier<Double> MaxAngularRate = () -> RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
+    private Supplier<Double> MaxAngularRate = () -> RotationsPerSecond.of(0.4).in(RadiansPerSecond); // 3/4 of a rotation per second
                                                                                       // max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
@@ -392,7 +392,7 @@ public class RobotContainer {
         m_driverController.povDown().whileTrue(new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE));
         m_driverController.a()
                 .whileTrue(new RunIntakeCommand(intakeSubsystem, ledSubsystem, IntakeConstants.INTAKE_IN_SPEED));
-        m_driverController.povRight().onTrue(new InstantCommand((() -> m_shooter.setHoodPosition(angleSupplier))));
+        m_driverController.povRight().onTrue(new InstantCommand((() -> m_shooter.setHoodPosition(1.0))));
         m_operatorController.leftBumper().whileTrue(
                 new AimAtHubCommand(m_turret, () -> m_Swerve.getState().Pose, () -> m_Swerve.getState().Speeds));
         m_driverController.leftBumper().whileTrue(new InstantCommand(() -> this.changeMaxSpeed(Constants.maxSpeedFast)))
@@ -447,6 +447,7 @@ public class RobotContainer {
         m_operatorController.povUp()
                 .onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed1)));
         m_operatorController.povRight()
+        
                 .onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed2)));
         m_operatorController.povLeft()
                 .onTrue(new InstantCommand(() -> ManualFlywheelSpeed.setSpeed(FlywheelConstants.manualSpeed3)));

@@ -53,7 +53,6 @@ public class ShootAtHubCommand extends Command {
     private final Supplier<Double> leftRightTrim;
     private final Supplier<Double> latencyCompensation;
 
-
     // private PIDController turretPID = new PIDController(0.008, 0, 0.0001);
     private PIDController turretPID = new PIDController(TurretConstants.kP, 0, TurretConstants.kD);
     private BangBangController flywheelController = new BangBangController();
@@ -189,7 +188,7 @@ public class ShootAtHubCommand extends Command {
                         .in(RotationsPerSecond),
                 targetRPS)
                 * ShooterConstants.FlywheelConstants.bangBangVolts.in(Volt);
-                
+
         double totalVoltage = feedforwardVoltage
                 + controlOutput * ShooterConstants.FlywheelConstants.bangBangCoefficient;
         totalVoltage = MathUtil.clamp(totalVoltage, -ShooterConstants.FlywheelConstants.maxVoltage.in(Volt),

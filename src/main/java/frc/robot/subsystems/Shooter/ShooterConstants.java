@@ -46,8 +46,8 @@ public class ShooterConstants {
 
         public static final AngularVelocity manualSpeed1 = RotationsPerSecond.of(38);
         public static final AngularVelocity manualSpeed2 = RotationsPerSecond.of(40);
-        public static final AngularVelocity manualSpeed3 = RotationsPerSecond.of(42);
-        public static final AngularVelocity manualSpeed4 = RotationsPerSecond.of(45);
+        public static final AngularVelocity manualSpeed3 = RotationsPerSecond.of(45);
+        public static final AngularVelocity manualSpeed4 = RotationsPerSecond.of(42);
 
         public static final double rightTrenchSpeed = 45;
         public static final double leftTrenchSpeed = 42;

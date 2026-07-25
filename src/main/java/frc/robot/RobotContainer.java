@@ -29,6 +29,8 @@ import frc.robot.subsystems.leds.LedsIO;
 import frc.robot.subsystems.leds.LedsIOBlinkin;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.intake.IntakeConstants;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOTalonFX;
 import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.ArmIOSparkMax;
@@ -73,9 +75,12 @@ import frc.robot.subsystems.arm.ArmConstants.ArmMotorConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIOPigeon2;
+import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.drive.ModuleIOTalonFXReal;
+import frc.robot.subsystems.drive.ModuleIOTalonFXSim;
 import frc.robot.commands.TurnTurretToAngleCommand;
 import frc.robot.commands.VisionFixedSpeedCommand;
 import frc.robot.commands.TakeShotCommand.ShotData;
@@ -89,6 +94,8 @@ import frc.robot.subsystems.Shooter.ShooterConstants.FlywheelConstants;
 import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
@@ -96,6 +103,11 @@ import static edu.wpi.first.units.Units.Volt;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+
+import org.ironmaple.simulation.IntakeSimulation;
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -152,8 +164,7 @@ public class RobotContainer {
     private final CommandXboxController m_operatorController =
             new CommandXboxController(OperatorConstants.kOperatorControllerPort);
 
-    private final IntakeIOTalonFX intakeIO = new IntakeIOTalonFX();
-    private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem(intakeIO);
+    private final IntakeSubsystem intakeSubsystem;
 
     private final ArmIOSparkMax armIO = new ArmIOSparkMax();
     private final ArmLimitSwitchIOLimitSwitch limitSwitchIO = new ArmLimitSwitchIOLimitSwitch();
@@ -173,7 +184,8 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
 
-    private final Drive drive;
+    public final Drive drive;
+    public SwerveDriveSimulation driveSimulation = null;
 
     private final VisionSubsystem m_Vision;
 
@@ -192,34 +204,44 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        LEDManager.init(ledSubsystem);
-        LEDManager.setDefault();
-        Logger.recordOutput("Swerve/BrakeMode", false);
-        Logger.recordOutput("Swerve/BrakeModeColor", "#000000");
-        Logger.recordOutput("Swerve/MaxSpeed", MaxSpeed.get());
-
         switch (Constants.currentMode) {
             case REAL:
                 drive = new Drive(
                         new GyroIOPigeon2(),
-                        new ModuleIOTalonFX(TunerConstants.FrontLeft),
-                        new ModuleIOTalonFX(TunerConstants.FrontRight),
-                        new ModuleIOTalonFX(TunerConstants.BackLeft),
-                        new ModuleIOTalonFX(TunerConstants.BackRight));
+                        new ModuleIOTalonFXReal(TunerConstants.FrontLeft),
+                        new ModuleIOTalonFXReal(TunerConstants.FrontRight),
+                        new ModuleIOTalonFXReal(TunerConstants.BackLeft),
+                        new ModuleIOTalonFXReal(TunerConstants.BackRight),
+                        (pose) -> {}); //Not in sim so dont need pose consumer
                 m_Vision = new VisionSubsystem(
                         drive::addVisionMeasurement,
                         new VisionIOPhotonVision(VisionConstants.camera0name, VisionConstants.robotToCamera0),
                         new VisionIOPhotonVision(VisionConstants.camera1name, VisionConstants.robotToCamera1),
                         new VisionIOPhotonVision(VisionConstants.camera2name, VisionConstants.robotToCamera2));
+                intakeSubsystem = new IntakeSubsystem(new IntakeIOTalonFX());
                 break;
 
             case SIM:
+                driveSimulation = new SwerveDriveSimulation(Drive.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
                 drive = new Drive(
-                        new GyroIO() {},
-                        new ModuleIOSim(TunerConstants.FrontLeft),
-                        new ModuleIOSim(TunerConstants.FrontRight),
-                        new ModuleIOSim(TunerConstants.BackLeft),
-                        new ModuleIOSim(TunerConstants.BackRight));
+                        new GyroIOSim(driveSimulation.getGyroSimulation()),
+                        new ModuleIOTalonFXSim(
+                                TunerConstants.FrontLeft, driveSimulation.getModules()[0]),
+                        new ModuleIOTalonFXSim(
+                                TunerConstants.FrontRight, driveSimulation.getModules()[1]),
+                        new ModuleIOTalonFXSim(
+                                TunerConstants.BackLeft, driveSimulation.getModules()[2]),
+                        new ModuleIOTalonFXSim(
+                                TunerConstants.BackRight, driveSimulation.getModules()[3]),
+                        driveSimulation::setSimulationWorldPose);
+                IntakeSimulation intakeSimulation = IntakeSimulation.OverTheBumperIntake(
+                        "Fuel",
+                        driveSimulation,
+                        Inches.of(30),
+                        Inches.of(12),
+                        IntakeSimulation.IntakeSide.FRONT,
+                        30);
+                intakeSubsystem = new IntakeSubsystem(new IntakeIOSim(intakeSimulation));
                 m_Vision = new VisionSubsystem(
                         drive::addVisionMeasurement,
                         new VisionIOPhotonVisionSim(VisionConstants.camera0name, VisionConstants.robotToCamera0, ()->drive.getPose()),
@@ -228,33 +250,33 @@ public class RobotContainer {
                 break;
 
             default: // replay so dont need to initialize any hardware
-                drive = new Drive(new GyroIO() {}, new ModuleIO() {}, new ModuleIO() {}, new ModuleIO() {}, new ModuleIO() {});
+                drive = new Drive(new GyroIO() {}, new ModuleIO() {}, new ModuleIO() {}, new ModuleIO() {}, new ModuleIO() {}, (pose) -> {});
                 m_Vision = new VisionSubsystem(drive::addVisionMeasurement, new VisionIO() {}, new VisionIO() {}, new VisionIO() {});
+                intakeSubsystem = new IntakeSubsystem(new IntakeIO() {});
                 break;
         }
 
-        // Set up auto routines
-        autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
-        // Set up SysId routines
-        autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-        autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-        autoChooser.addOption(
-                "Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
         ManualFlywheelSpeed.init();
-
-        // Configure the trigger bindings
-
-        // autoChooser = AutoBuilder.buildAutoChooser();
-        // SmartDashboard.putData("Auto Mode", autoChooser);
+        LEDManager.init(ledSubsystem); // Set up singleton
+        LEDManager.setDefault();
 
         configureBindings();
+        autoChooser = configureAutoChooser();
+        configureNameCommands();
+        configureSmartDashboard();
+        if (Constants.currentMode == Constants.Mode.SIM) {
+            setupSimulation();
+        }
+    }
 
+    private void setupSimulation() {
+        // Set up simulation
+        SimulatedArena.overrideInstance(new Arena2026Rebuilt(false));
+        SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
+    }
+
+    private void configureSmartDashboard(){
         SmartDashboard.putData(
                 "SysId/Flywheel Quasistatic Forward",
                 m_shooter.sysIdFlywheelQuasistatic(SysIdRoutine.Direction.kForward));
@@ -271,7 +293,31 @@ public class RobotContainer {
         SmartDashboard.putData("Start logger", new InstantCommand(() -> SignalLogger.start()));
         SmartDashboard.putData("Stop logger", new InstantCommand(() -> SignalLogger.stop()));
 
-        NamedCommands.registerCommand(
+        Logger.recordOutput("Swerve/BrakeMode", false);
+        Logger.recordOutput("Swerve/BrakeModeColor", "#000000");
+        Logger.recordOutput("Swerve/MaxSpeed", MaxSpeed.get());
+
+        Logger.recordOutput("LeftRightTrim", leftRightTrim);
+    }
+
+    private LoggedDashboardChooser<Command> configureAutoChooser(){
+        // Set up auto routines
+        LoggedDashboardChooser<Command> autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+
+        // Set up SysId routines
+        autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+        autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+        autoChooser.addOption(
+                "Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        autoChooser.addOption(
+                "Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        return autoChooser;
+    }
+
+    private void configureNameCommands(){
+                NamedCommands.registerCommand(
                 "ArmOut",
                 new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_DEPLOY_ANGLE).withTimeout(Seconds.of(20)));
         NamedCommands.registerCommand("ArmIn", new ArmOutCommand(armSubsystem, ArmMotorConstants.ARM_REST_ANGLE));
@@ -389,10 +435,8 @@ public class RobotContainer {
                                 new RunSpindexerCommand(spindexer, SpindexerConstants.SPINDEXER_SPEED)
                                         .alongWith(new RunKickerCommand(m_kicker, KickerConstants.KICKER_SPEED)))
                         .withTimeout(6));
-
-        Logger.recordOutput("LeftRightTrim", leftRightTrim);
     }
-
+    
     private void configureBindings() {
         // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
         new Trigger(m_exampleSubsystem::exampleCondition).onTrue(new ExampleCommand(m_exampleSubsystem));

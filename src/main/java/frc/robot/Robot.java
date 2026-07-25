@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import org.ironmaple.simulation.SimulatedArena;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -23,8 +27,10 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import frc.robot.BuildConstants;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.util.GameTimers;
 import frc.robot.util.PhaseTimer;
+import frc.robot.util.RobotBumpSim;
 
 /**
  * The methods in this class are called automatically corresponding to each
@@ -37,6 +43,7 @@ public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
   @SuppressWarnings("unused")
   private final RobotContainer m_robotContainer;
+  RobotBumpSim robotBumpSim;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -52,6 +59,7 @@ public class Robot extends LoggedRobot {
 
       case SIM:
         Logger.addDataReceiver(new NT4Publisher());
+        robotBumpSim =new RobotBumpSim(Drive.getModuleTranslations());
         break;
 
       case REPLAY:
@@ -175,10 +183,19 @@ public class Robot extends LoggedRobot {
   /** This function is called once when the robot is first started up. */
   @Override
   public void simulationInit() {
+    SimulatedArena.getInstance().resetFieldForAuto();
   }
 
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {
+    SimulatedArena.getInstance().simulationPeriodic();
+    
+    Pose3d[] fuelPoses = SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel");
+      // Publish to telemetry using AdvantageKit
+    Logger.recordOutput("FieldSimulation/FuelPositions", fuelPoses);
+    fuelPoses = null; // Clear the reference to the array to allow for garbage collection
+    Logger.recordOutput("FieldSimulation/RobotPose", m_robotContainer.driveSimulation.getSimulatedDriveTrainPose());
+
   }
 }

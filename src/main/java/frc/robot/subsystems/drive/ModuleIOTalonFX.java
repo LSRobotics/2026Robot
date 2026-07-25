@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static frc.robot.util.PhoenixUtil.*;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -31,6 +33,8 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+
+import frc.robot.Constants;
 import frc.robot.generated.TunerConstants;
 import java.util.Queue;
 import edu.wpi.first.math.filter.Debouncer;
@@ -47,43 +51,41 @@ import edu.wpi.first.units.measure.Voltage;
  *
  * <p>Device configuration and other behaviors not exposed by TunerConstants can be customized here.
  */
-public class ModuleIOTalonFX implements ModuleIO {
-  private final SwerveModuleConstants<
-          TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
-      constants;
+public abstract class ModuleIOTalonFX implements ModuleIO {
+  private final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> constants;
 
   // Hardware objects
-  private final TalonFX driveTalon;
-  private final TalonFX turnTalon;
-  private final CANcoder cancoder;
+  protected final TalonFX driveTalon;
+  protected final TalonFX turnTalon;
+  protected final CANcoder cancoder;
 
   // Voltage control requests
-  private final VoltageOut voltageRequest = new VoltageOut(0);
-  private final MotionMagicExpoVoltage positionVoltageRequest = new MotionMagicExpoVoltage(0.0);
-  private final MotionMagicVelocityVoltage velocityVoltageRequest = new MotionMagicVelocityVoltage(0.0);
+  protected final VoltageOut voltageRequest = new VoltageOut(0);
+  protected final MotionMagicExpoVoltage positionVoltageRequest = new MotionMagicExpoVoltage(0.0);
+  protected final VelocityVoltage velocityVoltageRequest = new VelocityVoltage(0.0);
 
   // Torque-current control requests
-  private final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
-  private final MotionMagicExpoTorqueCurrentFOC positionTorqueCurrentRequest =new MotionMagicExpoTorqueCurrentFOC(0.0);
-  private final MotionMagicVelocityTorqueCurrentFOC velocityTorqueCurrentRequest =new MotionMagicVelocityTorqueCurrentFOC(0.0);
+  protected final TorqueCurrentFOC torqueCurrentRequest = new TorqueCurrentFOC(0);
+  protected final MotionMagicExpoTorqueCurrentFOC positionTorqueCurrentRequest =new MotionMagicExpoTorqueCurrentFOC(0.0);
+  protected final VelocityTorqueCurrentFOC velocityTorqueCurrentRequest =new VelocityTorqueCurrentFOC(0.0);
 
   // Timestamp inputs from Phoenix thread
   private final Queue<Double> timestampQueue;
 
   // Inputs from drive motor
-  private final StatusSignal<Angle> drivePosition;
-  private final Queue<Double> drivePositionQueue;
-  private final StatusSignal<AngularVelocity> driveVelocity;
-  private final StatusSignal<Voltage> driveAppliedVolts;
-  private final StatusSignal<Current> driveCurrent;
+  protected final StatusSignal<Angle> drivePosition;
+  protected final Queue<Double> drivePositionQueue;
+  protected final StatusSignal<AngularVelocity> driveVelocity;
+  protected final StatusSignal<Voltage> driveAppliedVolts;
+  protected final StatusSignal<Current> driveCurrent;
 
   // Inputs from turn motor
-  private final StatusSignal<Angle> turnAbsolutePosition;
-  private final StatusSignal<Angle> turnPosition;
-  private final Queue<Double> turnPositionQueue;
-  private final StatusSignal<AngularVelocity> turnVelocity;
-  private final StatusSignal<Voltage> turnAppliedVolts;
-  private final StatusSignal<Current> turnCurrent;
+  protected final StatusSignal<Angle> turnAbsolutePosition;
+  protected final StatusSignal<Angle> turnPosition;
+  protected final Queue<Double> turnPositionQueue;
+  protected final StatusSignal<AngularVelocity> turnVelocity;
+  protected final StatusSignal<Voltage> turnAppliedVolts;
+  protected final StatusSignal<Current> turnCurrent;
 
   // Connection debouncers
   private final Debouncer driveConnectedDebounce =
@@ -121,6 +123,9 @@ public class ModuleIOTalonFX implements ModuleIO {
     var turnConfig = new TalonFXConfiguration();
     turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turnConfig.Slot0 = constants.SteerMotorGains;
+    if (Constants.currentMode == Constants.Mode.SIM) {
+        turnConfig.Slot0.withKD(0.5).withKS(0);
+    }
     turnConfig.Feedback.FeedbackRemoteSensorID = constants.EncoderId;
     turnConfig.Feedback.FeedbackSensorSource =
         switch (constants.FeedbackSource) {
@@ -142,6 +147,7 @@ public class ModuleIOTalonFX implements ModuleIO {
         constants.SteerMotorInverted
             ? InvertedValue.Clockwise_Positive
             : InvertedValue.CounterClockwise_Positive;
+    
     tryUntilOk(5, () -> turnTalon.getConfigurator().apply(turnConfig, 0.25));
 
     // Configure CANCoder

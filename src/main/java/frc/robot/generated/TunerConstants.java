@@ -27,9 +27,9 @@ public class TunerConstants {
         .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
-    private static final Slot0Configs driveGains = new Slot0Configs()
-        .withKP(0.1).withKI(0).withKD(0)
-        .withKS(0).withKV(0.124);
+    public static final Slot0Configs driveGains = new Slot0Configs()
+        .withKP(3).withKI(0).withKD(0)
+        .withKS(0).withKV(0.7);
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
@@ -81,7 +81,7 @@ public class TunerConstants {
 
     private static final double kDriveGearRatio = 6.026785714285714;
     private static final double kSteerGearRatio = 26.09090909090909;
-    private static final Distance kWheelRadius = Inches.of(1.994);
+    public static final Distance kWheelRadius = Inches.of(1.994);
 
     
     private static final boolean kInvertLeftSide = false;
@@ -90,7 +90,7 @@ public class TunerConstants {
     private static final int kPigeonId = 9;
 
     // These are only used for simulation
-    private static final MomentOfInertia kSteerInertia = KilogramSquareMeters.of(0.004);
+    private static final MomentOfInertia kSteerInertia = KilogramSquareMeters.of(0.08); // COmpletlty wrong real bot is around 0.002 but maplesims integrator will blow up if this is too low
     private static final MomentOfInertia kDriveInertia = KilogramSquareMeters.of(0.025);
     // Simulated voltage necessary to overcome friction
     private static final Voltage kSteerFrictionVoltage = Volts.of(0.2);

@@ -43,6 +43,7 @@ import frc.robot.commands.SetHoodAngleCommand;
 import frc.robot.commands.ShootAtHubCommand;
 import frc.robot.commands.TakeShotCommand;
 import frc.robot.commands.TurnTurretCommand;
+import frc.robot.commands.systemtest.SystemTest;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.fasterxml.jackson.databind.util.Named;
@@ -150,6 +151,9 @@ public class RobotContainer {
 
     private final LedsIOBlinkin ledIO = new LedsIOBlinkin();
     private final LedSubsystem ledSubsystem = new LedSubsystem(ledIO);
+
+    private final SystemTest systemTest = new SystemTest(intakeSubsystem, spindexer, m_kicker,
+            m_shooter, m_turret, armSubsystem);
 
     private double leftRightTrim = 0.0;
     private static final double TRIM_DEGREES = 10.0d;
